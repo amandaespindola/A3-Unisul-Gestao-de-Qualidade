@@ -10,9 +10,9 @@ name: Integração contínua com Maven
 
 on:
   push:
-    branches: [ "feature/ci-cd" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "feature/ci-cd" ]
+    branches: [ "main" ]
 
 jobs:
   build:
