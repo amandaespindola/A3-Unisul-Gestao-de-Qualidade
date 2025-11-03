@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class TelaLogin extends javax.swing.JFrame {
-    public static String passwordDB = "";
-    public static String userDB = "";
+    public static String passwordDB = "1234";
+    public static String userDB = "teste";
     
     public TelaLogin() {
         initComponents();
