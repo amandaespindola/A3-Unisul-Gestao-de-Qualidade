@@ -9,4 +9,4 @@ RA 10722123569 - Laura Maria Firta Foes - [@laurafoes](https://github.com/lauraf
 
 RA 10724114182 - Matheus Bernardo de Souza - [@code-matheu](https://github.com/code-matheu)
 
-RA 10724114382 - José Gustavo de Almeida Alves - 
+RA 10724114382 - José Gustavo de Almeida Alves -  [@Gustavoaals](https://github.com/Gustavoaals)
