@@ -7,27 +7,43 @@ import java.sql.*;
 import java.util.List;
 
 public class AlunoDAOTest {
-
 	private static Connection connection;
 	private AlunoDAO alunoDAO;
 
 	@BeforeAll
 	static void setupDatabase() throws Exception {
-		connection = DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
+		// Carrega o driver SQLite explicitamente
+		Class.forName("org.sqlite.JDBC");
+
+		// Conexão com banco SQLite em memória
+		connection = DriverManager.getConnection("jdbc:sqlite::memory:");
+
 		Statement stmt = connection.createStatement();
-		stmt.execute(
-				"CREATE TABLE tb_alunos (id INT PRIMARY KEY, nome VARCHAR(255), idade INT, curso VARCHAR(255), fase INT)");
+		stmt.execute("CREATE TABLE tb_alunos (" + "id INTEGER PRIMARY KEY, " + "nome TEXT, " + "idade INTEGER, "
+				+ "curso TEXT, " + "fase INTEGER)");
 		stmt.close();
 	}
 
 	@BeforeEach
-	void setup() {
+	void setup() throws SQLException {
+		// Limpa a tabela antes de cada teste
+		Statement stmt = connection.createStatement();
+		stmt.execute("DELETE FROM tb_alunos");
+		stmt.close();
+
 		alunoDAO = new AlunoDAO() {
 			@Override
 			public Connection getConexao() {
 				return connection;
 			}
 		};
+	}
+
+	@AfterAll
+	static void tearDown() throws SQLException {
+		if (connection != null && !connection.isClosed()) {
+			connection.close();
+		}
 	}
 
 	@Test
@@ -40,8 +56,8 @@ public class AlunoDAOTest {
 	void testGetMinhaLista() {
 		alunoDAO.InsertAlunoBD(new Aluno("Engenharia", 3, 1, "João", 20));
 		alunoDAO.InsertAlunoBD(new Aluno("Medicina", 2, 2, "Maria", 22));
+
 		List<Aluno> lista = alunoDAO.getMinhaLista();
 		Assertions.assertEquals(2, lista.size());
 	}
-
 }
