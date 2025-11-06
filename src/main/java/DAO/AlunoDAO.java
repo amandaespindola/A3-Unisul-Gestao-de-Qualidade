@@ -2,182 +2,220 @@ package DAO;
 
 import Model.Aluno;
 import View.TelaLogin;
-import java.util.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AlunoDAO {
 
-    public static ArrayList<Aluno> MinhaLista = new ArrayList<Aluno>();
+    private static final Logger LOGGER = Logger.getLogger(AlunoDAO.class.getName());
+    private static final ArrayList<Aluno> MinhaLista = new ArrayList<>();
 
+    private Connection conexao;          // conexão opcional externa (para testes)
+    private boolean conexaoExterna = false;
+
+    // Construtor padrão (usa MySQL)
     public AlunoDAO() {
     }
 
-    public int maiorID() throws SQLException {
-
-        int maiorID = 0;
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT MAX(id) id FROM tb_alunos");
-            res.next();
-            maiorID = res.getInt("id");
-
-            stmt.close();
-
-        } catch (SQLException ex) {
-        }
-        return maiorID;
+    // Construtor para testes (usa conexão injetada)
+    public AlunoDAO(Connection conexao) {
+        this.conexao = conexao;
+        this.conexaoExterna = true;
     }
 
+    // Retorna a conexão conforme o contexto
     public Connection getConexao() {
-
-        Connection connection = null;  //instância da conexão
+        if (conexaoExterna && conexao != null) {
+            return conexao; // conexão externa (SQLite nos testes)
+        }
 
         try {
-            // Carregamento do JDBC Driver
-            String driver = "com.mysql.cj.jdbc.Driver";
-            Class.forName(driver);
+            Class.forName("com.mysql.cj.jdbc.Driver");
 
-            // Configurar a conexão
             String url = "jdbc:mysql://localhost:3306/db_alunos?useTimezone=true&serverTimezone=UTC";
             String user = TelaLogin.userDB;
             String password = TelaLogin.passwordDB;
 
-            connection = DriverManager.getConnection(url, user, password);
-
-            // Testando..
-            if (connection != null) {
-                System.out.println("Status: Conectado!");
-            } else {
-                System.out.println("Status: N�O CONECTADO!");
-            }
-
+            Connection connection = DriverManager.getConnection(url, user, password);
+            LOGGER.log(Level.INFO, "Conexão com o banco de dados estabelecida com sucesso (MySQL).");
             return connection;
 
-        } catch (ClassNotFoundException e) {  //Driver não encontrado
-            System.out.println("O driver nao foi encontrado. " + e.getMessage() );
-            return null;
-
+        } catch (ClassNotFoundException e) {
+            LOGGER.log(Level.SEVERE, "Driver JDBC não encontrado.", e);
         } catch (SQLException e) {
-            System.out.println("Nao foi possivel conectar...");
-            return null;
+            LOGGER.log(Level.SEVERE, "Erro ao conectar ao banco de dados.", e);
         }
+
+        return null;
     }
 
-    // Retorna a Lista de Alunos(objetos)
-    public ArrayList getMinhaLista() {
-        
-        MinhaLista.clear(); // Limpa o arrayList
+    public int maiorID() {
+        int maiorID = 0;
+        String sql = "SELECT MAX(id) id FROM tb_alunos";
 
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT * FROM tb_alunos");
+        Connection conn = getConexao();
+        if (conn == null) {
+            return 0;
+        }
+
+        try (Statement stmt = conn.createStatement(); ResultSet res = stmt.executeQuery(sql)) {
+            if (res.next()) {
+                maiorID = res.getInt("id");
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Erro ao buscar maior ID de alunos", ex);
+        } finally {
+            fecharConexaoSeInterna(conn);
+        }
+
+        return maiorID;
+    }
+
+    public ArrayList<Aluno> getMinhaLista() {
+        MinhaLista.clear();
+        String sql = "SELECT * FROM tb_alunos";
+
+        Connection conn = getConexao();
+        if (conn == null) {
+            return MinhaLista;
+        }
+
+        try (Statement stmt = conn.createStatement(); ResultSet res = stmt.executeQuery(sql)) {
             while (res.next()) {
-
-                String curso = res.getString("curso");
-                int fase = res.getInt("fase");
-                int id = res.getInt("id");
-                String nome = res.getString("nome");
-                int idade = res.getInt("idade");
-
-                Aluno objeto = new Aluno(curso, fase, id, nome, idade);
-
+                Aluno objeto = new Aluno(
+                        res.getString("curso"),
+                        res.getInt("fase"),
+                        res.getInt("id"),
+                        res.getString("nome"),
+                        res.getInt("idade")
+                );
                 MinhaLista.add(objeto);
             }
-
-            stmt.close();
-
         } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Erro ao buscar lista de alunos", ex);
+        } finally {
+            fecharConexaoSeInterna(conn);
         }
 
         return MinhaLista;
     }
 
-    // Cadastra novo aluno
     public boolean InsertAlunoBD(Aluno objeto) {
-        String sql = "INSERT INTO tb_alunos(id,nome,idade,curso,fase) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO tb_alunos(id, nome, idade, curso, fase) VALUES (?, ?, ?, ?, ?)";
+        Connection conn = getConexao();
+        if (conn == null) {
+            return false;
+        }
 
-        try {
-            PreparedStatement stmt = this.getConexao().prepareStatement(sql);
-
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, objeto.getId());
             stmt.setString(2, objeto.getNome());
             stmt.setInt(3, objeto.getIdade());
             stmt.setString(4, objeto.getCurso());
             stmt.setInt(5, objeto.getFase());
+            stmt.executeUpdate();
 
-            stmt.execute();
-            stmt.close();
-
+            LOGGER.log(Level.INFO, () -> "Aluno inserido com sucesso: ID " + objeto.getId());
             return true;
 
-        } catch (SQLException erro) {
-            throw new RuntimeException(erro);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, String.format("Erro ao inserir aluno com id %d", objeto.getId()), ex);
+            return false;
+        } finally {
+            fecharConexaoSeInterna(conn);
         }
-
     }
 
-    // Deleta um aluno específico pelo seu campo ID
     public boolean DeleteAlunoBD(int id) {
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            stmt.executeUpdate("DELETE FROM tb_alunos WHERE id = " + id);
-            stmt.close();            
-            
-        } catch (SQLException erro) {
+        String sql = "DELETE FROM tb_alunos WHERE id = ?";
+        Connection conn = getConexao();
+        if (conn == null) {
+            return false;
         }
-        
-        return true;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+            LOGGER.log(Level.INFO, () -> "Aluno deletado: ID " + id);
+            return true;
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, String.format("Erro ao deletar aluno com id %d", id), ex);
+            return false;
+        } finally {
+            fecharConexaoSeInterna(conn);
+        }
     }
 
-    // Edita um aluno específico pelo seu campo ID
     public boolean UpdateAlunoBD(Aluno objeto) {
+        String sql = "UPDATE tb_alunos SET nome = ?, idade = ?, curso = ?, fase = ? WHERE id = ?";
+        Connection conn = getConexao();
+        if (conn == null) {
+            return false;
+        }
 
-        String sql = "UPDATE tb_alunos set nome = ? ,idade = ? ,curso = ? ,fase = ? WHERE id = ?";
-
-        try {
-            PreparedStatement stmt = this.getConexao().prepareStatement(sql);
-
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, objeto.getNome());
             stmt.setInt(2, objeto.getIdade());
             stmt.setString(3, objeto.getCurso());
             stmt.setInt(4, objeto.getFase());
             stmt.setInt(5, objeto.getId());
 
-            stmt.execute();
-            stmt.close();
+            int rowsAffected = stmt.executeUpdate();
 
-            return true;
-
-        } catch (SQLException erro) {
-            throw new RuntimeException(erro);
+            if (rowsAffected > 0) {
+                LOGGER.log(Level.INFO, () -> "Aluno atualizado com sucesso: ID " + objeto.getId());
+                return true;
+            } else {
+                LOGGER.log(Level.WARNING, () -> "Nenhum aluno encontrado para atualizar: ID " + objeto.getId());
+                return false;
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, String.format("Erro ao atualizar aluno com id %d", objeto.getId()), ex);
+            return false;
+        } finally {
+            fecharConexaoSeInterna(conn);
         }
-
     }
 
     public Aluno carregaAluno(int id) {
-        
         Aluno objeto = new Aluno();
         objeto.setId(id);
-        
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT * FROM tb_alunos WHERE id = " + id);
-            res.next();
 
-            objeto.setNome(res.getString("nome"));
-            objeto.setIdade(res.getInt("idade"));
-            objeto.setCurso(res.getString("curso"));
-            objeto.setFase(res.getInt("fase"));
-
-            stmt.close();            
-            
-        } catch (SQLException erro) {
+        String sql = "SELECT * FROM tb_alunos WHERE id = ?";
+        Connection conn = getConexao();
+        if (conn == null) {
+            return objeto;
         }
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet res = stmt.executeQuery()) {
+                if (res.next()) {
+                    objeto.setNome(res.getString("nome"));
+                    objeto.setIdade(res.getInt("idade"));
+                    objeto.setCurso(res.getString("curso"));
+                    objeto.setFase(res.getInt("fase"));
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, String.format("Erro ao carregar aluno com id %d", id), ex);
+        } finally {
+            fecharConexaoSeInterna(conn);
+        }
+
         return objeto;
+    }
+
+    // Fecha a conexão apenas se o DAO for interno (MySQL)
+    private void fecharConexaoSeInterna(Connection conn) {
+        if (!conexaoExterna && conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.WARNING, "Erro ao fechar conexão interna", e);
+            }
+        }
     }
 }

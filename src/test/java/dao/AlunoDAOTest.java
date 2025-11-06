@@ -31,7 +31,7 @@ public class AlunoDAOTest {
 		stmt.execute("DELETE FROM tb_alunos");
 		stmt.close();
 
-		alunoDAO = new AlunoDAO() {
+		alunoDAO = new AlunoDAO(connection) {
 			@Override
 			public Connection getConexao() {
 				return connection;
