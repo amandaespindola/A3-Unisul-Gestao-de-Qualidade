@@ -111,7 +111,7 @@ public class TelaLogin extends javax.swing.JFrame {
     private boolean checarConexao() throws Mensagens {
         AlunoDAO teste = new AlunoDAO();
         
-        if (teste.getConexao() != null){
+        if (teste.abrirConexao() != null){
             JOptionPane.showMessageDialog(rootPane, "Conexão efetuada com sucesso!");
             return true;
         } else {
