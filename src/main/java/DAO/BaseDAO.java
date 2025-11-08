@@ -4,8 +4,11 @@ import View.TelaLogin;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 public abstract class BaseDAO<T> {
+
+    private static final Pattern TABLE_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]+$");
 
     protected final Logger logger = Logger.getLogger(getClass().getName());
     protected Connection conexao;
@@ -57,7 +60,7 @@ public abstract class BaseDAO<T> {
 
     public int maiorID(String nomeTabela) {
         // Validação defensiva do nome da tabela
-        if (nomeTabela == null || nomeTabela.trim().isEmpty()) {
+        if (nomeTabela == null || nomeTabela.trim().isEmpty() || !TABLE_NAME_PATTERN.matcher(nomeTabela.trim()).matches()) {
             logger.log(Level.WARNING, "Nome da tabela inválido para maiorID().");
             return 0;
         }
