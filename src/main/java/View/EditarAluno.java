@@ -9,12 +9,21 @@ import javax.swing.JOptionPane;
 public class EditarAluno extends javax.swing.JFrame {
 
     private final AlunoDAO alunoDAO;
+    private final String[] dadosAluno;
 
     public EditarAluno() {
         initComponents();
+        this.alunoDAO = new AlunoDAO();
+        this.dadosAluno = null; 
+        getRootPane().setDefaultButton(this.bConfirmar);
+    }
+    
+    public EditarAluno(String[] dados) {
+        initComponents();
+        this.alunoDAO = new AlunoDAO();
+        this.dadosAluno = dados; 
         preencheCampos();
         getRootPane().setDefaultButton(this.bConfirmar);
-        this.alunoDAO = new AlunoDAO(); // NOVO: Inicializa o DAO
     }
 
     /**
@@ -143,23 +152,32 @@ public class EditarAluno extends javax.swing.JFrame {
         int indexCursos = 0;
         int indexFases = 0;
 
-        for (int i = 0; i < 10; i++) {
-            if (GerenciaAlunos.listaDados2[3].equalsIgnoreCase(arrayCursos[i])) {
+        String cursoAluno = this.dadosAluno[3];
+        int faseAluno = Integer.parseInt(this.dadosAluno[4]);
+
+        // Busca o índice do curso
+        for (int i = 0; i < arrayCursos.length; i++) {
+            if (cursoAluno.equalsIgnoreCase(arrayCursos[i])) {
                 indexCursos = i;
+                break;
             }
         }
 
-        for (int i = 0; i < 10; i++) {
-            if (Integer.parseInt(GerenciaAlunos.listaDados2[4]) == arrayFases[i]) {
+        // Busca o índice da fase
+        for (int i = 0; i < arrayFases.length; i++) {
+            if (faseAluno == arrayFases[i]) {
                 indexFases = i;
+                break;
             }
         }
 
-        this.nome.setText(GerenciaAlunos.listaDados2[1]);
-        this.idade.setText(GerenciaAlunos.listaDados2[2]);
+        // Preenchimento dos campos
+        this.nome.setText(this.dadosAluno[1]);
+        this.idade.setText(this.dadosAluno[2]);
         this.curso.setSelectedIndex(indexCursos);
         this.fase.setSelectedIndex(indexFases);
     }
+
     private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConfirmarActionPerformed
         try {
             String[] arrayCursos = Constantes.CURSOS;
@@ -182,7 +200,7 @@ public class EditarAluno extends javax.swing.JFrame {
             int faseAluno = arrayFases[this.fase.getSelectedIndex()];
 
             // Busca ID do alubno
-            int idAluno = Integer.parseInt(GerenciaAlunos.listaDados2[0]);
+            int idAluno = Integer.parseInt(this.dadosAluno[0]);
 
             // Cria objeto aluno
             Aluno alunoAtualizado = new Aluno(
