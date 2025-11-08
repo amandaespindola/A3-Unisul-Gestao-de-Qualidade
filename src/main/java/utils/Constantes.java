@@ -21,4 +21,22 @@ public final class Constantes {
 
     public static final int[] FASES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
+    public static final String[] CAMPUS = {
+        "-",
+        "Continente",
+        "Dib Mussi",
+        "Ilha",
+        "Pedra Branca",
+        "Trajano",
+        "Tubarão"
+    };
+
+    public static final String[] TITULOS = {
+        "-",
+        "Graduação",
+        "Especialização",
+        "Mestrado",
+        "Doutorado"
+    };
+
 }
