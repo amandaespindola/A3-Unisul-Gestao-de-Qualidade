@@ -197,7 +197,7 @@ public class CadastroProfessor extends javax.swing.JFrame {
             MaskFormatter mask3 = new MaskFormatter("R$#####");
             mask3.install(salarioFormatado);
         } catch (ParseException ex) {
-            JOptionPane.showMessageDialog(null, "Erro ao formatar campos", "ERRO", JOptionPane.ERROR);
+            JOptionPane.showMessageDialog(null, "Erro ao formatar campos", "ERRO", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -242,70 +242,75 @@ public class CadastroProfessor extends javax.swing.JFrame {
         return str;
     }
 
+    private String validarNome() throws Mensagens {
+        if (this.nome.getText().length() < 2) {
+            throw new Mensagens("Nome deve conter ao menos 2 caracteres.");
+        }
+        return this.nome.getText();
+    }
+
+    private String validarCampus(String[] arrayCampus) throws Mensagens {
+        if (this.campus.getSelectedIndex() == 0) {
+            throw new Mensagens("Escolha o campus");
+        }
+        return arrayCampus[this.campus.getSelectedIndex()];
+    }
+
+    private String validarCpf() throws Mensagens {
+        String cpf = this.cpfFormatado.getText();
+        if (validarFormatado(cpf).length() != 11) {
+            throw new Mensagens("O campo CPF deve possuir 11 caracteres numéricos");
+        }
+        if (this.verificaCpf(cpf)) {
+            throw new Mensagens("CPF já cadastrado no sistema");
+        }
+        return cpf;
+    }
+
+    private String validarContato() throws Mensagens {
+        String contato = this.contatoFormatado.getText();
+        if (validarFormatado(contato).length() != 11) {
+            throw new Mensagens("O campo contato deve possuir 11 caracteres numéricos");
+        }
+        return contato;
+    }
+
+    private int validarIdade() throws Mensagens {
+        if (this.idade.getDate() == null || calculaIdade(this.idade.getDate()) < 11) {
+            throw new Mensagens("Data de Nascimento inválida ou professor menor de 11 anos.");
+        }
+        return calculaIdade(this.idade.getDate());
+    }
+
+    private double validarSalario() throws Mensagens {
+        String salarioStr = this.salarioFormatado.getText();
+        if (validarFormatado(salarioStr).length() < 4) {
+            throw new Mensagens("O campo salário deve possuir no mínimo 4 caracteres numéricos");
+        }
+
+        return Double.parseDouble(validarFormatado(salarioStr));
+    }
+
+    private String validarTitulo(String[] arrayTitulo) throws Mensagens {
+        if (this.titulo.getSelectedIndex() == 0) {
+            throw new Mensagens("Defina um título");
+        }
+        return arrayTitulo[this.titulo.getSelectedIndex()];
+    }
 
     private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConfirmarActionPerformed
 
         try {
-            String nomeProfessor = "";
-            String campusProfessor = "";
-            String cpfProfessor = "";
-            String contatoProfessor = "";
-            int idadeProfessor = 0;
-            double salarioProfessor;
-            String tituloProfessor = "";
             String[] arrayCampus = Constantes.CAMPUS;
             String[] arrayTitulo = Constantes.TITULOS;
 
-            // Setando nome
-            if (this.nome.getText().length() < 2) {
-                throw new Mensagens("Nome deve conter ao menos 2 caracteres.");
-            } else {
-                nomeProfessor = this.nome.getText();
-            }
-
-            // Setando campus
-            if (this.campus.getSelectedIndex() == 0) {
-                throw new Mensagens("Escolha o campus");
-            } else {
-                campusProfessor = arrayCampus[this.campus.getSelectedIndex()];
-            }
-
-            // Setando cpf
-            if (validarFormatado(this.cpfFormatado.getText()).length() != 11) {
-                throw new Mensagens("O campo CPF deve possuir 11 caracteres numéricos");
-            } else if (this.verificaCpf(this.cpfFormatado.getText())) {
-                throw new Mensagens("CPF já cadastrado no sistema");
-            } else {
-                cpfProfessor = this.cpfFormatado.getText();
-            }
-
-            // Setando contato
-            if (validarFormatado(this.contatoFormatado.getText()).length() != 11) {
-                throw new Mensagens("O campo contato deve possuir 11 caracteres numéricos");
-            } else {
-                contatoProfessor = this.contatoFormatado.getText();
-            }
-
-            // Setando idade
-            if (this.idade.getDate() == null || calculaIdade(this.idade.getDate()) < 11) {
-                throw new Mensagens("Data de Nascimento inválida ou professor menor de 11 anos.");
-            } else {
-                idadeProfessor = calculaIdade(this.idade.getDate());
-            }
-
-            // Setando salário
-            if (validarFormatado(this.salarioFormatado.getText()).length() < 4) {
-                throw new Mensagens("O campo salário deve possuir no mínimo 4 caracteres numéricos");
-            } else {
-                salarioProfessor = Double.parseDouble(validarFormatado(this.salarioFormatado.getText()));
-            }
-
-            // Setando titulo
-            if (this.titulo.getSelectedIndex() == 0) {
-                throw new Mensagens("Defina um título");
-            } else {
-                tituloProfessor = arrayTitulo[this.titulo.getSelectedIndex()];
-            }
+            String nomeProfessor = validarNome();
+            String campusProfessor = validarCampus(arrayCampus);
+            String cpfProfessor = validarCpf();
+            String contatoProfessor = validarContato();
+            int idadeProfessor = validarIdade();
+            double salarioProfessor = validarSalario();
+            String tituloProfessor = validarTitulo(arrayTitulo);
 
             Professor novoProfessor = new Professor(
                     campusProfessor,
@@ -313,13 +318,13 @@ public class CadastroProfessor extends javax.swing.JFrame {
                     contatoProfessor,
                     tituloProfessor,
                     salarioProfessor,
-                    0, // ID 0 para inserção
+                    0,
                     nomeProfessor,
                     idadeProfessor
             );
 
             // Adicionando dados validados no database usando o DAO
-            if (this.professorDAO.insert(novoProfessor)) { // Usa o método insert do DAO
+            if (this.professorDAO.insert(novoProfessor)) {
                 JOptionPane.showMessageDialog(rootPane, "Professor cadastrado com sucesso! ID: " + novoProfessor.getId());
 
                 this.dispose();
@@ -327,11 +332,11 @@ public class CadastroProfessor extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(rootPane, "Erro ao cadastrar professor no banco de dados.");
             }
 
-            // Capturando exceções    
+            // Capturando exceções    
         } catch (Mensagens erro) {
             JOptionPane.showMessageDialog(null, erro.getMessage());
         } catch (NumberFormatException erro2) {
-            JOptionPane.showMessageDialog(null, "O salário ou a idade não estão em um formato numérico válido.");
+            JOptionPane.showMessageDialog(null, "O salário não está em um formato numérico válido.");
         } catch (NullPointerException erro3) {
             JOptionPane.showMessageDialog(null, "Data de nascimento não pode ser vazia");
         } catch (Exception ex) {
