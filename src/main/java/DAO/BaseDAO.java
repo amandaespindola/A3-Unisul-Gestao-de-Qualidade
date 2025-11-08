@@ -61,7 +61,7 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    public int maiorID() {
+    public int obterMaiorId() {
         String nomeTabela = getNomeTabela();
 
         if (!TABELAS_PERMITIDAS.contains(nomeTabela)) {

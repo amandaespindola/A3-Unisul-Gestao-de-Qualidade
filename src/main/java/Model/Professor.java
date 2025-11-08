@@ -99,7 +99,7 @@ public class Professor extends Pessoa {
 
     // Cadastra novo professor
     public boolean InsertProfessorBD(String campus, String cpf, String contato, String titulo, int salario, String nome, int idade) throws SQLException {
-        int id = this.maiorID() + 1;
+        int id = this.obterMaiorId() + 1;
         Professor objeto = new Professor(campus, cpf, contato, titulo, salario, id, nome, idade);
         dao.insert(objeto);
         return true;
@@ -125,7 +125,7 @@ public class Professor extends Pessoa {
     }
 
     // retorna o maior ID da nossa base de dados
-    public int maiorID() throws SQLException {
-        return dao.maiorId();
+    public int obterMaiorId() throws SQLException {
+        return dao.obterMaiorId();
     }
 }

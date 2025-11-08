@@ -182,7 +182,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
         return "tb_professores";
     }
 
-    public int maiorId() {
-        return super.maiorID();
+    public int obterMaiorId() {
+        return super.obterMaiorId();
     }
 }
