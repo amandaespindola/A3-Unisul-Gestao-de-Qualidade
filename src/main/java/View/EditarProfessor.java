@@ -72,21 +72,13 @@ public class EditarProfessor extends javax.swing.JFrame {
 
 		jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel3.setText("Campus:");
-
+	
 		bCancelar.setText("Cancelar");
-		bCancelar.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				bCancelarActionPerformed(evt);
-			}
-		});
+		bCancelar.addActionListener(this::bCancelarActionPerformed);
 
 		bConfirmar.setText("Confirmar");
 		bConfirmar.setToolTipText("ENTER");
-		bConfirmar.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				bConfirmarActionPerformed(evt);
-			}
-		});
+		bConfirmar.addActionListener(this::bConfirmarActionPerformed);
 
 		// reutilizand constante array_titulo
 		titulo.setModel(new javax.swing.DefaultComboBoxModel<>(ARRAY_TITULO));
@@ -391,7 +383,7 @@ public class EditarProfessor extends javax.swing.JFrame {
 			java.util.logging.Logger.getLogger(EditarProfessor.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		}
-		
+
 		// </editor-fold>
 		// </editor-fold>
 		// </editor-fold>
@@ -402,15 +394,14 @@ public class EditarProfessor extends javax.swing.JFrame {
 		// </editor-fold>
 
 		/* Create and display the form */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					new EditarProfessor().setVisible(true);
-				} catch (java.text.ParseException ex) {
-					Logger.getLogger(EditarProfessor.class.getName()).log(Level.SEVERE, null, ex);
-				}
+		java.awt.EventQueue.invokeLater(() -> {
+			try {
+				new EditarProfessor().setVisible(true);
+			} catch (java.text.ParseException ex) {
+				Logger.getLogger(EditarProfessor.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		});
+
 	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
