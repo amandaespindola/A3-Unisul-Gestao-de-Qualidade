@@ -11,7 +11,9 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class EditarProfessor extends javax.swing.JFrame {
-	private Professor objetoProfessor;
+	//
+	private static final long serialVersionUID = 1L;
+	private transient Professor objetoProfessor;
 
 	// constantes para remover duplicação de arrays campus e titulo
 	private static final String[] ARRAY_CAMPUS = { "-", "Continente", "Dib_Mussi", "Ilha", "Pedra Branca", "Trajano",
