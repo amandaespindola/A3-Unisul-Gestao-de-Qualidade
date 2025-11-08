@@ -2,17 +2,20 @@ package DAO;
 
 import View.TelaLogin;
 import java.sql.*;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 public abstract class BaseDAO<T> {
-
-    private static final Pattern TABLE_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_]+$");
 
     protected final Logger logger = Logger.getLogger(getClass().getName());
     protected Connection conexao;
     private boolean conexaoExterna = false;
+
+    private static final Set<String> TABELAS_PERMITIDAS = Set.of(
+            "tb_professor",
+            "tb_aluno"
+    );
 
     protected BaseDAO() {
     }
@@ -60,6 +63,12 @@ public abstract class BaseDAO<T> {
 
     public int maiorID() {
         String nomeTabela = getNomeTabela();
+
+        if (!TABELAS_PERMITIDAS.contains(nomeTabela)) {
+            logger.log(Level.SEVERE, "Tabela não permitida: {0}", nomeTabela);
+            throw new IllegalArgumentException("Tabela não permitida: " + nomeTabela);
+        }
+
         String sql = String.format("SELECT MAX(id) AS max_id FROM %s", nomeTabela);
 
         try (Connection conn = getConexao()) {
