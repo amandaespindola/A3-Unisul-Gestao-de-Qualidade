@@ -6,58 +6,61 @@ import org.junit.jupiter.api.*;
 import java.sql.*;
 import java.util.List;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AlunoDAOTest {
-	private static Connection connection;
-	private AlunoDAO alunoDAO;
 
-	@BeforeAll
-	static void setupDatabase() throws Exception {
-		// Carrega o driver SQLite explicitamente
-		Class.forName("org.sqlite.JDBC");
+    private Connection connection;
+    private AlunoDAO alunoDAO;
 
-		// Conexão com banco SQLite em memória
-		connection = DriverManager.getConnection("jdbc:sqlite::memory:");
+    @BeforeAll
+    void setupDatabase() throws Exception {
+        // Carrega o driver SQLite explicitamente
+        Class.forName("org.sqlite.JDBC");
 
-		Statement stmt = connection.createStatement();
-		stmt.execute("CREATE TABLE tb_alunos (" + "id INTEGER PRIMARY KEY, " + "nome TEXT, " + "idade INTEGER, "
-				+ "curso TEXT, " + "fase INTEGER)");
-		stmt.close();
-	}
+        // Cria uma conexão em memória compartilhada (persistente até o fim dos testes)
+        connection = DriverManager.getConnection("jdbc:sqlite:file:memdb1?mode=memory&cache=shared");
 
-	@BeforeEach
-	void setup() throws SQLException {
-		// Limpa a tabela antes de cada teste
-		Statement stmt = connection.createStatement();
-		stmt.execute("DELETE FROM tb_alunos");
-		stmt.close();
+        // Cria a tabela se não existir
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("CREATE TABLE IF NOT EXISTS tb_alunos ("
+                    + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "nome TEXT, "
+                    + "idade INTEGER, "
+                    + "curso TEXT, "
+                    + "fase INTEGER)");
 
-		alunoDAO = new AlunoDAO() {
-			@Override
-			public Connection getConexao() {
-				return connection;
-			}
-		};
-	}
+        }
 
-	@AfterAll
-	static void tearDown() throws SQLException {
-		if (connection != null && !connection.isClosed()) {
-			connection.close();
-		}
-	}
+        // Cria o DAO usando a mesma conexão
+        alunoDAO = new AlunoDAO(connection);
+    }
 
-	@Test
-	void testInsertAlunoBD() {
-		Aluno aluno = new Aluno("Engenharia", 3, 1, "João", 20);
-		Assertions.assertTrue(alunoDAO.InsertAlunoBD(aluno));
-	}
+    @BeforeEach
+    void resetTable() throws SQLException {
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("DELETE FROM tb_alunos");
+        }
+    }
 
-	@Test
-	void testGetMinhaLista() {
-		alunoDAO.InsertAlunoBD(new Aluno("Engenharia", 3, 1, "João", 20));
-		alunoDAO.InsertAlunoBD(new Aluno("Medicina", 2, 2, "Maria", 22));
+    @AfterAll
+    void tearDown() throws SQLException {
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
+        }
+    }
 
-		List<Aluno> lista = alunoDAO.getMinhaLista();
-		Assertions.assertEquals(2, lista.size());
-	}
+    @Test
+    void testInsertAlunoBD() {
+        Aluno aluno = new Aluno("Engenharia", 3, 1, "João", 20);
+        Assertions.assertTrue(alunoDAO.insert(aluno));
+    }
+
+    @Test
+    void testGetMinhaLista() {
+        alunoDAO.insert(new Aluno("Engenharia", 3, 1, "João", 20));
+        alunoDAO.insert(new Aluno("Medicina", 2, 2, "Maria", 22));
+
+        List<Aluno> lista = alunoDAO.getMinhaLista();
+        Assertions.assertEquals(2, lista.size());
+    }
 }

@@ -17,10 +17,12 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import utils.ExcelExporter;
 
 public class GerenciaProfessores extends javax.swing.JFrame {
+
     private Professor objetoProfessor;
-    
+
     public GerenciaProfessores() {
         initComponents();
         this.objetoProfessor = new Professor();
@@ -228,63 +230,10 @@ public class GerenciaProfessores extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    private void exportXls() throws IOException{
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Arquivos Excel", "xls");
-        
-        chooser.setFileFilter(filter);
-        chooser.setDialogTitle("Salvar arquivo");
-        chooser.setAcceptAllFileFilterUsed(false);
-        
-        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION){
-            String path = chooser.getSelectedFile().toString().concat(".xls");
-            try {
-                File fileXLS = new File(path);
-                if (fileXLS.exists()){
-                    fileXLS.delete();
-                }
-                fileXLS.createNewFile();
-                Workbook book = new HSSFWorkbook();
-                FileOutputStream file = new FileOutputStream(fileXLS);
-                Sheet sheet = book.createSheet("Minha folha de trabalho 1");
-                sheet.setDisplayGridlines(true);
-                
-                for (int i = 0; i < this.jTableProfessores.getRowCount(); i++){
-                    Row row = sheet.createRow(i);
-                    for (int j = 0; j < this.jTableProfessores.getColumnCount(); j++){
-                        Cell cell = row.createCell(j);
-                        if (i == 0){
-                            cell.setCellValue(this.jTableProfessores.getColumnName(j));
-                        }
-                    }
-                }
-                
-                int firstRow = 1;
-                
-                for (int linha = 0; linha < this.jTableProfessores.getRowCount(); linha++){
-                    Row row2 = sheet.createRow(firstRow);
-                    firstRow++;
-                    for (int coluna = 0; coluna < this.jTableProfessores.getColumnCount(); coluna++){
-                        Cell cell2 = row2.createCell(coluna);
-                        if (this.jTableProfessores.getValueAt(linha, coluna) instanceof Double){
-                            cell2.setCellValue(Double.parseDouble((String) this.jTableProfessores.getValueAt(linha, coluna).toString()));
-                        } else if (this.jTableProfessores.getValueAt(linha, coluna) instanceof Float){
-                            cell2.setCellValue(Float.parseFloat((String) this.jTableProfessores.getValueAt(linha, coluna)));
-                        } else if (this.jTableProfessores.getValueAt(linha, coluna) instanceof Integer){
-                            cell2.setCellValue(Integer.parseInt((String) this.jTableProfessores.getValueAt(linha, coluna).toString()));
-                        } else {
-                            cell2.setCellValue(String.valueOf(this.jTableProfessores.getValueAt(linha, coluna)));
-                        }
-                    }
-                }
-                book.write(file);
-                file.close();
-            } catch (IOException | NumberFormatException e){
-                throw e;
-            }
-        }
+      private void exportXls() throws IOException {
+        ExcelExporter.exportTableToExcel(jTableProfessores);
     }
-    
+
     private void menuGerenciaAlunoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGerenciaAlunoActionPerformed
         GerenciaAlunos tela = new GerenciaAlunos();
         tela.setVisible(true);
@@ -302,37 +251,37 @@ public class GerenciaProfessores extends javax.swing.JFrame {
         } catch (ParseException ex) {
             Logger.getLogger(GerenciaProfessores.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }//GEN-LAST:event_bCadastroActionPerformed
 
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
         try {
-            if (this.jTableProfessores.getSelectedRow() != -1){
+            if (this.jTableProfessores.getSelectedRow() != -1) {
                 EditarProfessor tela = new EditarProfessor();
                 tela.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Selecione um cadastro para alterar");
-            } 
+            }
         } catch (ParseException ex) {
             Logger.getLogger(GerenciaProfessores.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }//GEN-LAST:event_bEditarActionPerformed
-    
+
     public static String listaDados[] = new String[8];
-    
-    private String validarFormatado(String input){
+
+    private String validarFormatado(String input) {
         String str = "";
-            
-        for (int i = 0; i < input.length(); i++){
-            if (("0123456789").contains(input.charAt(i) + "")){
+
+        for (int i = 0; i < input.length(); i++) {
+            if (("0123456789").contains(input.charAt(i) + "")) {
                 str += input.charAt(i) + "";
             }
         }
-        
+
         return str;
     }
-    
+
     private void jTableProfessoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableProfessoresMouseClicked
         if (this.jTableProfessores.getSelectedRow() != -1) {
 
@@ -344,7 +293,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
             String titulo = this.jTableProfessores.getValueAt(this.jTableProfessores.getSelectedRow(), 6).toString();
             String salario = this.jTableProfessores.getValueAt(this.jTableProfessores.getSelectedRow(), 7).toString();
             String id = this.jTableProfessores.getValueAt(this.jTableProfessores.getSelectedRow(), 0).toString();
-            
+
             listaDados[0] = nome;
             listaDados[1] = idade;
             listaDados[2] = campus;
@@ -360,7 +309,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
         try {
             // validando dados da interface gráfica.
             int id = 0;
-            
+
             if (this.jTableProfessores.getSelectedRow() == -1) {
                 throw new Mensagens("Selecione um cadastro para deletar");
             } else {
@@ -368,8 +317,8 @@ public class GerenciaProfessores extends javax.swing.JFrame {
             }
 
             String[] options = {"Sim", "Não"};
-            int respostaUsuario = JOptionPane.showOptionDialog(null, "Tem certeza que deseja apagar este cadastro?", "Confirmar exclusão", 
-            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[1]);
+            int respostaUsuario = JOptionPane.showOptionDialog(null, "Tem certeza que deseja apagar este cadastro?", "Confirmar exclusão",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[1]);
 
             if (respostaUsuario == 0) {// clicou em SIM
 
@@ -414,7 +363,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
         Sobre tela = new Sobre();
         tela.setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-    
+
     @SuppressWarnings("unchecked")
     public void carregaTabela() {
         DefaultTableModel modelo = (DefaultTableModel) this.jTableProfessores.getModel();
@@ -436,8 +385,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
             });
         }
     }
-    
-    
+
     /**
      * @param args the command line arguments
      */

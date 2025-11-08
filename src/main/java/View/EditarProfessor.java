@@ -272,7 +272,7 @@ public class EditarProfessor extends javax.swing.JFrame {
             String cpf = "";
             String contato = "";
             int idade = 0;
-            int salario = 0;
+            double salario = 0;
             int id = Integer.parseInt(GerenciaProfessores.listaDados[7]);
             String titulo = "";
             String[] arrayCampus = {"-", 
@@ -332,7 +332,7 @@ public class EditarProfessor extends javax.swing.JFrame {
             if (validarFormatado(this.salarioFormatado.getText()).length() < 4){
                 throw new Mensagens("O campo salário deve possuir no mínimo 4 caracteres numéricos");
             } else {
-                salario = Integer.parseInt(validarFormatado(this.salarioFormatado.getText()));
+                salario = Double.parseDouble(validarFormatado(this.salarioFormatado.getText()));
             }
             
             // Setando titulo

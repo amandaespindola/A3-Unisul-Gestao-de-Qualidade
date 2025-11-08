@@ -9,26 +9,23 @@ public class Aluno extends Pessoa {
     // Atributos
     private String curso;
     private int fase;
-    private final AlunoDAO dao; 
+    private final AlunoDAO dao;
 
-    // Método Construtor de Objeto Vazio
     public Aluno() {
-        this.dao = new AlunoDAO(); // inicializado n�o importa em qual construtor
+        this.dao = new AlunoDAO();
     }
 
-    // Método Construtor de Objeto, inserindo dados
     public Aluno(String curso, int fase) {
         this.curso = curso;
         this.fase = fase;
-        this.dao = new AlunoDAO(); // inicializado n�o importa em qual construtor
+        this.dao = new AlunoDAO();
     }
 
-    // Método Construtor usando tamb�m o construtor da SUPERCLASSE
     public Aluno(String curso, int fase, int id, String nome, int idade) {
         super(id, nome, idade);
         this.curso = curso;
         this.fase = fase;
-        this.dao = new AlunoDAO(); // inicializado n�o importa em qual construtor
+        this.dao = new AlunoDAO();
     }
 
     // Métodos GET e SET
@@ -48,7 +45,6 @@ public class Aluno extends Pessoa {
         this.fase = fase;
     }
 
-    // Override necess�rio para poder retornar os dados de Pessoa no toString para aluno.
     @Override
     public String toString() {
         return "\n ID: " + this.getId()
@@ -59,50 +55,39 @@ public class Aluno extends Pessoa {
                 + "\n -----------";
     }
 
-    /*
-    
-        ABAIXO OS M�TODOS PARA USO JUNTO COM O DAO
-        SIMULANDO A ESTRUTURA EM CAMADAS PARA USAR COM BANCOS DE DADOS.
-    
-     */
-    
-    
+  
     // Retorna a Lista de Alunos (objetos)
     public ArrayList getMinhaLista() {
-        //return AlunoDAO.MinhaLista;
         return dao.getMinhaLista();
     }
 
     // Cadastra novo aluno
     public boolean InsertAlunoBD(String curso, int fase, String nome, int idade) throws SQLException {
-        int id = this.maiorID() + 1;
-        Aluno objeto = new Aluno(curso, fase, id, nome, idade);
-        dao.InsertAlunoBD(objeto);
-        return true;
-
+        Aluno objeto = new Aluno(curso, fase, 0, nome, idade);
+        return dao.insert(objeto);
     }
 
-    // Deleta um aluno espec�fico pelo seu campo ID
+    // Deleta um aluno específico pelo seu campo ID
     public boolean DeleteAlunoBD(int id) {
-        dao.DeleteAlunoBD(id);
+        dao.delete(id);
         return true;
     }
 
-    // Edita um aluno espec�fico pelo seu campo ID
+    // Edita um aluno específico pelo seu campo ID
     public boolean UpdateAlunoBD(String curso, int fase, int id, String nome, int idade) {
         Aluno objeto = new Aluno(curso, fase, id, nome, idade);
-        dao.UpdateAlunoBD(objeto);
+        dao.update(objeto);
         return true;
     }
 
-    // carrega dados de um aluno espec�fico pelo seu ID
+    // carrega dados de um aluno específico pelo seu ID
     public Aluno carregaAluno(int id) {
-        dao.carregaAluno(id);
+        dao.findById(id);
         return null;
     }
-    
+
     // retorna o maior ID da nossa base de dados
-    public int maiorID() throws SQLException{
-        return dao.maiorID();
-    }   
+    public int maiorID() throws SQLException {
+        return dao.maiorId();
+    }
 }
