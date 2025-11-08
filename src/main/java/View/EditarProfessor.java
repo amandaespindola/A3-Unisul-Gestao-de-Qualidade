@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.text.MaskFormatter;
 import Model.Professor;
+
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class EditarProfessor extends javax.swing.JFrame {
@@ -58,8 +60,8 @@ public class EditarProfessor extends javax.swing.JFrame {
 		jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
 		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel1.setText("Editar Professor");
-		
-		//reutilizando constante array_campus
+
+		// reutilizando constante array_campus
 		campus.setModel(new javax.swing.DefaultComboBoxModel<>(ARRAY_CAMPUS));
 		campus.setName(""); // NOI18N
 
@@ -84,8 +86,7 @@ public class EditarProfessor extends javax.swing.JFrame {
 			}
 		});
 
-
-		//reutilizand constante array_titulo
+		// reutilizand constante array_titulo
 		titulo.setModel(new javax.swing.DefaultComboBoxModel<>(ARRAY_TITULO));
 		jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel6.setText("Título:");
@@ -331,11 +332,13 @@ public class EditarProfessor extends javax.swing.JFrame {
 			}
 
 			// Setando salário
-			if (validarFormatado(this.salarioFormatado.getText()).length() < 4) {
-				throw new Mensagens("O campo salário deve possuir no mínimo 4 caracteres numéricos");
-			} else {
-				salario = Double.parseDouble(validarFormatado(this.salarioFormatado.getText()));
+			try {
+				NumberFormat nf = NumberFormat.getCurrencyInstance(new java.util.Locale("pt", "BR"));
+				salario = nf.parse(this.salarioFormatado.getText()).doubleValue();
+			} catch (java.text.ParseException e) {
+				throw new Mensagens("Formato de salário inválido");
 			}
+			
 
 			// reutilizando a constante array_titulo
 			if (this.titulo.getSelectedIndex() == 0) {

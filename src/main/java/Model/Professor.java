@@ -19,7 +19,7 @@ public class Professor extends Pessoa {
         this.dao = new ProfessorDAO();
     }
 
-    public Professor(String campus, String cpf, String contato, String titulo, int salario) {
+    public Professor(String campus, String cpf, String contato, String titulo, double salario) {
         this.campus = campus;
         this.cpf = cpf;
         this.contato = contato;
@@ -98,7 +98,7 @@ public class Professor extends Pessoa {
     }
 
     // Cadastra novo professor
-    public boolean InsertProfessorBD(String campus, String cpf, String contato, String titulo, int salario, String nome, int idade) throws SQLException {
+    public boolean InsertProfessorBD(String campus, String cpf, String contato, String titulo, double salario, String nome, int idade) throws SQLException {
         int id = this.obterMaiorId() + 1;
         Professor objeto = new Professor(campus, cpf, contato, titulo, salario, id, nome, idade);
         dao.insert(objeto);

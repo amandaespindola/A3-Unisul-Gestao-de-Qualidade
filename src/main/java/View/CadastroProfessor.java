@@ -11,6 +11,9 @@ import Model.Professor;
 import java.util.ArrayList;
 import DAO.ProfessorDAO;
 import utils.Constantes;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import javax.swing.text.NumberFormatter;
 
 public class CadastroProfessor extends javax.swing.JFrame {
 
@@ -194,8 +197,12 @@ public class CadastroProfessor extends javax.swing.JFrame {
             mask.install(cpfFormatado);
             MaskFormatter mask2 = new MaskFormatter("(##) # ####-####");
             mask2.install(contatoFormatado);
-            MaskFormatter mask3 = new MaskFormatter("R$#####");
-            mask3.install(salarioFormatado);
+            NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(new java.util.Locale("pt", "BR"));
+            NumberFormatter formatter = new NumberFormatter(formatoMoeda);
+            formatter.setAllowsInvalid(false);
+            formatter.setMinimum(0.0);
+            salarioFormatado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(formatter));
+            
         } catch (ParseException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar campos", "ERRO", JOptionPane.ERROR_MESSAGE);
         }

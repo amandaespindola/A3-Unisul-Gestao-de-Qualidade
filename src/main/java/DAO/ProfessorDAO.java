@@ -130,7 +130,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
                             res.getString("cpf"),
                             res.getString("contato"),
                             res.getString("titulo"),
-                            res.getInt("salario"),   
+                            res.getDouble("salario"),   
                             res.getInt("id"),
                             res.getString("nome"),
                             res.getInt("idade")
@@ -162,7 +162,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
                         res.getString("cpf"),
                         res.getString("contato"),
                         res.getString("titulo"),
-                        res.getInt("salario"), 
+                        res.getDouble("salario"), 
                         res.getInt("id"),
                         res.getString("nome"),
                         res.getInt("idade")
