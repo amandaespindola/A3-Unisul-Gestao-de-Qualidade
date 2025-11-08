@@ -2,13 +2,11 @@ package View;
 
 import Model.Aluno;
 import DAO.AlunoDAO;
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import utils.Constantes;
+import utils.ValidadorInput;
 
 public class CadastroAluno extends javax.swing.JFrame {
 
@@ -142,58 +140,32 @@ public class CadastroAluno extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    private int calculaIdade(java.util.Date dataNasc) {
-        Calendar dataNascimento = new GregorianCalendar();
-        dataNascimento.setTime(dataNasc);
 
-        Calendar today = Calendar.getInstance();
-
-        int age = today.get(Calendar.YEAR) - dataNascimento.get(Calendar.YEAR);
-
-        dataNascimento.add(Calendar.YEAR, age);
-
-        if (today.before(dataNascimento)) {
-            age--;
-        }
-
-        return age;
-    }
 
     private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bConfirmarActionPerformed
         try {
-            String nome = "";
-            int idade = 0;
-            String curso = "";
-            int fase = 0;
+
             String[] arrayCursos = Constantes.CURSOS;
             int[] arrayFases = Constantes.FASES;
 
-            // Setando nome
-            if (this.nome.getText().length() < 2) {
-                throw new Mensagens("Nome deve conter ao menos 2 caracteres.");
-            } else {
-                nome = this.nome.getText();
-            }
+            // Valida e seta nome
+            String nomeAluno = ValidadorInput.validarNome(this.nome.getText(), 2);
 
-            // Setando idade
-            if (calculaIdade(this.idade.getDate()) < 11) {
-                throw new Mensagens("Idade inválida");
-            } else {
-                idade = calculaIdade(this.idade.getDate());
-            }
+            // Valida e seta a idade
+            int idadeAluno = ValidadorInput.validarIdadePorData(this.idade.getDate(), 11);
 
-            // Setando curso
-            if (this.curso.getSelectedIndex() == 0) {
-                throw new Mensagens("Escolha o curso");
-            } else {
-                curso = arrayCursos[this.curso.getSelectedIndex()];
-            }
+            // Valida e seta o curso
+            String cursoAluno = ValidadorInput.validarSelecaoComboBox(
+                    this.curso.getSelectedIndex(),
+                    arrayCursos,
+                    "Curso"
+            );
 
-            // Setando fase
-            fase = arrayFases[this.fase.getSelectedIndex()];
+            // Valida e seta a fase
+            int faseAluno = arrayFases[this.fase.getSelectedIndex()];
 
             // Cria o objeto Aluno e o insere via AlunoDAO
-            Aluno novoAluno = new Aluno(curso, fase, 0, nome, idade);
+            Aluno novoAluno = new Aluno(cursoAluno, faseAluno, 0, nomeAluno, idadeAluno);
 
             if (this.alunoDAO.insert(novoAluno)) {
                 JOptionPane.showMessageDialog(rootPane, "Aluno cadastrado com sucesso! ID: " + novoAluno.getId());
