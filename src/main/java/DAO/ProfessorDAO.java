@@ -71,7 +71,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
             stmt.setString(4, objeto.getCpf());
             stmt.setString(5, objeto.getContato());
             stmt.setString(6, objeto.getTitulo());
-            stmt.setDouble(7, objeto.getSalario()); // ✓ CORRIGIDO: Double em vez de Int
+            stmt.setDouble(7, objeto.getSalario()); 
             stmt.setInt(8, objeto.getId());
 
             int linhasAfetadas = stmt.executeUpdate();
@@ -130,7 +130,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
                             res.getString("cpf"),
                             res.getString("contato"),
                             res.getString("titulo"),
-                            res.getInt("salario"),
+                            res.getInt("salario"),   
                             res.getInt("id"),
                             res.getString("nome"),
                             res.getInt("idade")
@@ -162,7 +162,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
                         res.getString("cpf"),
                         res.getString("contato"),
                         res.getString("titulo"),
-                        res.getInt("salario"),
+                        res.getInt("salario"), 
                         res.getInt("id"),
                         res.getString("nome"),
                         res.getInt("idade")
