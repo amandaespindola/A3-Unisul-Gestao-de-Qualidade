@@ -177,7 +177,12 @@ public class ProfessorDAO extends BaseDAO<Professor> {
         return minhaLista;
     }
 
+    @Override
+    protected String getNomeTabela() {
+        return "tb_professores";
+    }
+
     public int maiorId() {
-        return super.maiorID("tb_professores");
+        return super.maiorID();
     }
 }

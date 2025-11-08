@@ -58,24 +58,16 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    public int maiorID(String nomeTabela) {
-        // Validação defensiva do nome da tabela
-        if (nomeTabela == null || nomeTabela.trim().isEmpty() || !TABLE_NAME_PATTERN.matcher(nomeTabela.trim()).matches()) {
-            logger.log(Level.WARNING, "Nome da tabela inválido para maiorID().");
-            return 0;
-        }
-
-        // Usa String.format com placeholder seguro (não concatena diretamente em SQL)
-        String sql = String.format("SELECT MAX(id) AS max_id FROM %s", nomeTabela.trim());
+    public int maiorID() {
+        String nomeTabela = getNomeTabela();
+        String sql = String.format("SELECT MAX(id) AS max_id FROM %s", nomeTabela);
 
         try (Connection conn = getConexao()) {
             if (conn == null || conn.isClosed()) {
-                logger.log(Level.SEVERE, "Conexão com o banco de dados está nula ou fechada ao buscar maior ID de {0}.", nomeTabela);
+                logger.log(Level.SEVERE, "Conexão nula ou fechada ao buscar maior ID de {0}.", nomeTabela);
                 return 0;
             }
-
             try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
-
                 if (rs.next()) {
                     int maxId = rs.getInt("max_id");
                     logger.log(Level.FINE, "Maior ID encontrado na tabela {0}: {1}", new Object[]{nomeTabela, maxId});
@@ -90,6 +82,8 @@ public abstract class BaseDAO<T> {
             return 0;
         }
     }
+
+    protected abstract String getNomeTabela();
 
     public abstract boolean insert(T objeto);
 

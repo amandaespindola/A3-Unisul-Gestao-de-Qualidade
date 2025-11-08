@@ -155,7 +155,13 @@ public class AlunoDAO extends BaseDAO<Aluno> {
         return MinhaLista;
     }
 
-    public int maiorId() {
-        return super.maiorID("tb_alunos");
+    @Override
+    protected String getNomeTabela() {
+        return "tb_alunos";
     }
+
+    public int maiorId() {
+        return super.maiorID();
+    }
+
 }
