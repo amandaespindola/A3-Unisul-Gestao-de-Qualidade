@@ -4,7 +4,8 @@ import View.Mensagens;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
+import javax.swing.text.MaskFormatter;
+import javax.swing.text.NumberFormatter;
 import javax.swing.JFormattedTextField;
 
 public final class ValidadorInput {
@@ -123,5 +124,37 @@ public final class ValidadorInput {
             throw new Mensagens("O valor deve ser no mínimo " + tamanhoMinimo + ".");
         }
         return valor;
+    }
+
+    // Formatação de campos de Cadastro/Edição de Professor
+    public static void aplicarFormatacaoProfessor(
+            javax.swing.JFormattedTextField cpfFormatado,
+            javax.swing.JFormattedTextField contatoFormatado,
+            javax.swing.JFormattedTextField salarioFormatado) throws java.text.ParseException {
+
+        try {
+            // Máscara de CPF
+            MaskFormatter mask = new MaskFormatter("###.###.###-##");
+            mask.install(cpfFormatado);
+
+            // Máscara de Contato
+            MaskFormatter mask2 = new MaskFormatter("(##) # ####-####");
+            mask2.install(contatoFormatado);
+
+            // Formatação de Salário (similar à versão do CadastroProfessor)
+            java.text.DecimalFormat formatoDecimal = (java.text.DecimalFormat) java.text.NumberFormat.getNumberInstance(new java.util.Locale("pt", "BR"));
+            formatoDecimal.applyPattern("#,##0.00");
+
+            NumberFormatter formatter = new NumberFormatter(formatoDecimal);
+            formatter.setAllowsInvalid(true);
+            formatter.setMinimum(0.0);
+            formatter.setValueClass(Double.class);
+
+            salarioFormatado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(formatter));
+            salarioFormatado.setFocusLostBehavior(javax.swing.JFormattedTextField.COMMIT);
+
+        } catch (java.text.ParseException ex) {
+            throw ex;
+        }
     }
 }
