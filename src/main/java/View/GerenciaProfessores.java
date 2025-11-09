@@ -23,7 +23,7 @@ import utils.ExcelExporter;
 
 public class GerenciaProfessores extends javax.swing.JFrame {
 
-	private Professor objetoProfessor;
+	private transient Professor objetoProfessor;
 
 	public GerenciaProfessores() {
 		initComponents();
