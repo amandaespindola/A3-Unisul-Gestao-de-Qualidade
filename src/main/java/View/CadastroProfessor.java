@@ -1,25 +1,13 @@
 package View;
 
-import com.formdev.flatlaf.json.ParseException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
-import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.MaskFormatter;
 import Model.Professor;
 import java.util.ArrayList;
 import DAO.ProfessorDAO;
 import utils.Constantes;
 import utils.ValidadorInput;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import javax.swing.text.NumberFormatter;
 
 public class CadastroProfessor extends javax.swing.JFrame {
 
@@ -219,25 +207,13 @@ public class CadastroProfessor extends javax.swing.JFrame {
 
     private void formatarCampos() throws java.text.ParseException {
         try {
-            MaskFormatter mask = new MaskFormatter("###.###.###-##");
-            mask.install(cpfFormatado);
-
-            MaskFormatter mask2 = new MaskFormatter("(##) # ####-####");
-            mask2.install(contatoFormatado);
-
-            DecimalFormat formatoDecimal = (DecimalFormat) NumberFormat.getNumberInstance(new Locale("pt", "BR"));
-            formatoDecimal.applyPattern("#,##0.00");
-
-            NumberFormatter formatter = new NumberFormatter(formatoDecimal);
-            formatter.setAllowsInvalid(true);
-            formatter.setMinimum(0.0);
-            formatter.setValueClass(Double.class);
-
-            salarioFormatado.setFormatterFactory(new DefaultFormatterFactory(formatter));
-            salarioFormatado.setFocusLostBehavior(JFormattedTextField.COMMIT);
-
-        } catch (ParseException ex) {
-            JOptionPane.showMessageDialog(null, "Erro ao formatar campos", "ERRO", JOptionPane.ERROR_MESSAGE);
+            ValidadorInput.aplicarFormatacaoProfessor(
+                    cpfFormatado,
+                    contatoFormatado,
+                    salarioFormatado
+            );
+        } catch (java.text.ParseException ex) {
+            JOptionPane.showMessageDialog(rootPane, "Erro ao formatar campos", "ERRO", JOptionPane.ERROR_MESSAGE);
         }
     }
 
