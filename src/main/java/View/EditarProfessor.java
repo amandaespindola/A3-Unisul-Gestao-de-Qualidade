@@ -1,6 +1,6 @@
 package View;
 
-import com.formdev.flatlaf.json.ParseException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -223,7 +223,7 @@ public class EditarProfessor extends javax.swing.JFrame {
 			salarioFormatado.setFocusLostBehavior(JFormattedTextField.COMMIT_OR_REVERT);
 
 		} catch (ParseException ex) {
-			JOptionPane.showMessageDialog(rootPane, "Erro ao formatar campos", "ERRO", JOptionPane.ERROR);
+			JOptionPane.showMessageDialog(rootPane, "Erro ao formatar campos", "ERRO", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -239,17 +239,6 @@ public class EditarProfessor extends javax.swing.JFrame {
 		return false;
 	}
 
-	private String validarFormatado(String input) {
-		String str = "";
-
-		for (int i = 0; i < input.length(); i++) {
-			if (("0123456789").contains(input.charAt(i) + "")) {
-				str += input.charAt(i) + "";
-			}
-		}
-
-		return str;
-	}
 
 	private void preencheCampos() {
 
@@ -285,83 +274,67 @@ public class EditarProfessor extends javax.swing.JFrame {
 
 	private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bConfirmarActionPerformed
 		try {
-			String nome = "";
-			String campus = "";
-			String cpf = "";
-			String contato = "";
-			int idade = 0;
-			double salario = 0;
 			int id = Integer.parseInt(GerenciaProfessores.listaDados[7]);
-			String titulo = "";
 
-			// reutilizando a constantes array_campus
-			if (this.campus.getSelectedIndex() == 0) {
-				throw new Mensagens("Escolha o campus");
-			} else {
-				campus = ARRAY_CAMPUS[this.campus.getSelectedIndex()];
-			}
+			String campusSelecionado = validarCampus();
+			String nomeDigitado = validarNome();
+			String cpfValidado = validarCpf();
+			String contatoValidado = validarContato();
+			int idadeValidada = validarIdade();
+			double salario = ValidadorInput.validarSalario(this.salarioFormatado, 4);
+			String tituloSelecionado = validarTitulo();
 
-			// Setando nome
-			if (this.nome.getText().length() < 2) {
-				throw new Mensagens("Nome deve conter ao menos 2 caracteres.");
-			} else {
-				nome = this.nome.getText();
-			}
-
-			// Setando cpf
-			if (validarFormatado(this.cpfFormatado.getText()).length() != 11) {
-				throw new Mensagens("O campo CPF deve possuir 11 caracteres numéricos");
-			} else if (this.verificaCpf(this.cpfFormatado.getText())) {
-				throw new Mensagens("CPF já cadastrado no sistema");
-			} else {
-				cpf = this.cpfFormatado.getText();
-			}
-
-			// Setando contato
-			if (validarFormatado(this.contatoFormatado.getText()).length() != 11) {
-				throw new Mensagens("O campo contato deve possuir 11 caracteres numéricos");
-			} else {
-				contato = this.contatoFormatado.getText();
-			}
-
-			// Setando idade
-			if (Integer.parseInt(this.idade.getText()) < 11) {
-				throw new Mensagens("Idade inválida");
-			}
-			if (this.idade.getText().equals("")) {
-				throw new Mensagens("Idade não pode ser vazio");
-			} else {
-				idade = Integer.parseInt(this.idade.getText());
-			}
-
-			// Setando salário
-			salario = ValidadorInput.validarSalario(this.salarioFormatado, 4);
-
-			// reutilizando a constante array_titulo
-			if (this.titulo.getSelectedIndex() == 0) {
-				throw new Mensagens("Defina um título");
-			} else {
-				titulo = ARRAY_TITULO[this.titulo.getSelectedIndex()];
-			}
-
-			// Adicionando dados validados no database
-			if (this.objetoProfessor.UpdateProfessorBD(campus, cpf, contato, titulo, salario, id, nome, idade)) {
-				JOptionPane.showMessageDialog(rootPane, "Professor alterado com sucesso!");
-
+			if (this.objetoProfessor.UpdateProfessorBD(campusSelecionado, cpfValidado, contatoValidado, tituloSelecionado, salario, id, nomeDigitado, idadeValidada)) {
+				JOptionPane.showMessageDialog(rootPane, "Professor alterado com sucesso");
 				this.dispose();
 			}
-
-			// Capturando exceções
 		} catch (Mensagens erro) {
 			JOptionPane.showMessageDialog(rootPane, erro.getMessage());
 		} catch (NumberFormatException erro2) {
-			JOptionPane.showMessageDialog(rootPane, "Informe um número.");
+			JOptionPane.showMessageDialog(rootPane, "Informe um número");
 		}
 	}// GEN-LAST:event_bConfirmarActionPerformed
 
 	private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bCancelarActionPerformed
 		this.dispose();
 	}// GEN-LAST:event_bCancelarActionPerformed
+
+	// Métodos Auxiliares
+	private String validarCampus() throws Mensagens {
+		return ValidadorInput.validarSelecaoComboBox(this.campus.getSelectedIndex(), ARRAY_CAMPUS, "Campus");
+	}
+
+	private String validarTitulo() throws Mensagens {
+		return ValidadorInput.validarSelecaoComboBox(this.titulo.getSelectedIndex(), ARRAY_TITULO, "Título");
+	}
+
+	private String validarNome() throws Mensagens {
+		return ValidadorInput.validarNome(this.nome.getText(), 2);
+	}
+
+	private String validarCpf() throws Mensagens {
+		String cpfFormatado = ValidadorInput.validarTamanhoNumericoFixo(this.cpfFormatado.getText(), 11, "CPF");
+
+		if (verificaCpf(cpfFormatado)) {
+			throw new Mensagens("CPF já cadastrado no sistema");
+		}
+
+		return cpfFormatado;
+	}
+
+	private String validarContato() throws Mensagens {
+		return ValidadorInput.validarTamanhoNumericoFixo(this.contatoFormatado.getText(), 11, "Contato");
+	}
+
+	private int validarIdade() throws Mensagens {
+		String inputIdade = this.idade.getText();
+
+		if (inputIdade.isEmpty()) {
+			throw new Mensagens("Idade não pode ser vazia");
+		}
+
+		return ValidadorInput.validarTamanhoMinimoNumerico(inputIdade, 11);
+	}
 
 	/**
 	 * @param args the command line arguments
