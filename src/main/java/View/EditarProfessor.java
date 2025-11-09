@@ -4,14 +4,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import Model.Professor;
+import DAO.ProfessorDAO;
 import utils.Constantes;
 import utils.ValidadorInput;
 import java.util.ArrayList;
 
 public class EditarProfessor extends javax.swing.JFrame {
 
-    private static final long serialVersionUID = 1L;
-    private transient Professor objetoProfessor;
+    private final transient ProfessorDAO professorDAO;
+    private final String[] dadosProfessor;
 
     private static final String[] ARRAY_CAMPUS = Constantes.CAMPUS;
     private static final String[] ARRAY_TITULOS = Constantes.TITULOS;
@@ -19,9 +20,19 @@ public class EditarProfessor extends javax.swing.JFrame {
     public EditarProfessor() throws java.text.ParseException {
         initComponents();
         formatarCampos();
+        this.professorDAO = new ProfessorDAO();
+        this.dadosProfessor = null;
+        getRootPane().setDefaultButton(this.bConfirmar);
+    }
+
+    public EditarProfessor(String[] dadosParaEdicao) throws java.text.ParseException {
+        this.dadosProfessor = dadosParaEdicao;
+        this.professorDAO = new ProfessorDAO();
+
+        initComponents();
+        formatarCampos();
         preencheCampos();
         getRootPane().setDefaultButton(this.bConfirmar);
-        this.objetoProfessor = new Professor();
     }
 
     /**
@@ -201,11 +212,10 @@ public class EditarProfessor extends javax.swing.JFrame {
     }
 
     private boolean verificaCpf(String cpf) {
-        ArrayList<Professor> minhalista = new ArrayList<>();
-        minhalista = objetoProfessor.getMinhaLista();
+        ArrayList<Professor> minhalista = professorDAO.getMinhaLista();
 
         for (Professor a : minhalista) {
-            if ((cpf.equals(a.getCpf())) && (a.getId() != Integer.parseInt(GerenciaProfessores.listaDados[7]))) {
+            if ((cpf.equals(a.getCpf())) && (a.getId() != Integer.parseInt(dadosProfessor[7]))) {
                 return true;
             }
         }
@@ -213,31 +223,30 @@ public class EditarProfessor extends javax.swing.JFrame {
     }
 
     private void preencheCampos() {
-
         int indexCampus = 0;
         int indexTitulo = 0;
 
         for (int i = 0; i < ARRAY_CAMPUS.length; i++) {
-            if (GerenciaProfessores.listaDados[2].equalsIgnoreCase(ARRAY_CAMPUS[i])) {
+            if (dadosProfessor[2].equalsIgnoreCase(ARRAY_CAMPUS[i])) {
                 indexCampus = i;
             }
         }
 
         for (int i = 0; i < ARRAY_TITULOS.length; i++) {
-            if (GerenciaProfessores.listaDados[5].equalsIgnoreCase(ARRAY_TITULOS[i])) {
+            if (dadosProfessor[5].equalsIgnoreCase(ARRAY_TITULOS[i])) {
                 indexTitulo = i;
             }
         }
 
-        this.nome.setText(GerenciaProfessores.listaDados[0]);
-        this.idade.setText(GerenciaProfessores.listaDados[1]);
+        this.nome.setText(dadosProfessor[0]);
+        this.idade.setText(dadosProfessor[1]);
         this.campus.setSelectedIndex(indexCampus);
-        this.cpfFormatado.setText(GerenciaProfessores.listaDados[3]);
-        this.contatoFormatado.setText(GerenciaProfessores.listaDados[4]);
+        this.cpfFormatado.setText(dadosProfessor[3]);
+        this.contatoFormatado.setText(dadosProfessor[4]);
         this.titulo.setSelectedIndex(indexTitulo);
 
         try {
-            double salario = Double.parseDouble(GerenciaProfessores.listaDados[6]);
+            double salario = Double.parseDouble(dadosProfessor[6]);
             this.salarioFormatado.setValue(salario);
         } catch (NumberFormatException e) {
             this.salarioFormatado.setValue(0.0);
@@ -246,7 +255,7 @@ public class EditarProfessor extends javax.swing.JFrame {
 
     private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bConfirmarActionPerformed
         try {
-            int id = Integer.parseInt(GerenciaProfessores.listaDados[7]);
+            int id = Integer.parseInt(dadosProfessor[7]);
 
             String campusSelecionado = validarCampus();
             String nomeDigitado = validarNome();
@@ -256,9 +265,22 @@ public class EditarProfessor extends javax.swing.JFrame {
             double salario = ValidadorInput.validarSalario(this.salarioFormatado, 4);
             String tituloSelecionado = validarTitulo();
 
-            if (this.objetoProfessor.UpdateProfessorBD(campusSelecionado, cpfValidado, contatoValidado, tituloSelecionado, salario, id, nomeDigitado, idadeValidada)) {
+            Professor professorAtualizado = new Professor(
+                    campusSelecionado,
+                    cpfValidado,
+                    contatoValidado,
+                    tituloSelecionado,
+                    salario,
+                    id,
+                    nomeDigitado,
+                    idadeValidada
+            );
+
+            if (this.professorDAO.update(professorAtualizado)) {
                 JOptionPane.showMessageDialog(rootPane, "Professor alterado com sucesso");
                 this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(rootPane, "Erro ao alterar professor no banco de dados");
             }
         } catch (Mensagens erro) {
             JOptionPane.showMessageDialog(rootPane, erro.getMessage());
