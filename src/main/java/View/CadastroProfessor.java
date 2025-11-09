@@ -23,7 +23,7 @@ import javax.swing.text.NumberFormatter;
 
 public class CadastroProfessor extends javax.swing.JFrame {
 
-	private final ProfessorDAO professorDAO;
+	private final transient ProfessorDAO professorDAO;
 
 	public CadastroProfessor() throws java.text.ParseException {
 		initComponents();

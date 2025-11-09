@@ -11,7 +11,7 @@ import utils.ValidadorInput;
 public class CadastroAluno extends javax.swing.JFrame {
 
     private transient Aluno objetoAluno;
-    private final AlunoDAO alunoDAO;
+    private final transient AlunoDAO alunoDAO;
 
     public CadastroAluno() {
         initComponents();

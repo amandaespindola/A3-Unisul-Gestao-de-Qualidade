@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 public class EditarAluno extends javax.swing.JFrame {
 
-    private final AlunoDAO alunoDAO;
+    private final transient AlunoDAO alunoDAO;
     private final String[] dadosAluno;
 
     public EditarAluno() {
