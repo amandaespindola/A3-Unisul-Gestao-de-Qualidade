@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class GerenciaAlunos extends javax.swing.JFrame {
 
-    private final AlunoDAO alunoDAO;
+    private final transient AlunoDAO alunoDAO;
     private int linhaSelecionada = -1;
 
     public GerenciaAlunos() {
