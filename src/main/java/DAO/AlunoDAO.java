@@ -160,8 +160,8 @@ public class AlunoDAO extends BaseDAO<Aluno> {
         return "tb_alunos";
     }
 
-    public int maiorId() {
-        return super.maiorID();
+    public int obterMaiorId() {
+        return super.obterMaiorId();
     }
 
 }

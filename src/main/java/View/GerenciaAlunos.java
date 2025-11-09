@@ -1,32 +1,24 @@
 package View;
 
 import Model.Aluno;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.io.FileOutputStream;
+import DAO.AlunoDAO;
+import utils.ValidadorInput;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utils.ExcelExporter;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
 public class GerenciaAlunos extends javax.swing.JFrame {
 
-    private Aluno objetoAluno;
+    private final transient AlunoDAO alunoDAO;
+    private int linhaSelecionada = -1;
 
     public GerenciaAlunos() {
         initComponents();
-        this.objetoAluno = new Aluno();
+        this.alunoDAO = new AlunoDAO();
         this.carregaTabela();
     }
 
@@ -251,34 +243,37 @@ public class GerenciaAlunos extends javax.swing.JFrame {
     }//GEN-LAST:event_bCadastroActionPerformed
 
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
-        if (this.jTableAlunos.getSelectedRow() != -1) {
-            EditarAluno tela = new EditarAluno();
-            tela.setVisible(true);
+        if (this.linhaSelecionada != -1) {
+
+            String[] dadosParaEdicao = new String[5];
+
+            String id = this.jTableAlunos.getValueAt(this.linhaSelecionada, 0).toString();
+            String nome = this.jTableAlunos.getValueAt(this.linhaSelecionada, 1).toString();
+            String idade = this.jTableAlunos.getValueAt(this.linhaSelecionada, 2).toString();
+            String curso = this.jTableAlunos.getValueAt(this.linhaSelecionada, 3).toString();
+            String fase = this.jTableAlunos.getValueAt(this.linhaSelecionada, 4).toString();
+
+            String faseLimpa = ValidadorInput.removerMascara(fase);
+
+            dadosParaEdicao[0] = id;
+            dadosParaEdicao[1] = nome;
+            dadosParaEdicao[2] = idade;
+            dadosParaEdicao[3] = curso;
+            dadosParaEdicao[4] = faseLimpa;
+
+            EditarAluno editar = new EditarAluno(dadosParaEdicao);
+            editar.setVisible(true);
+
+            this.linhaSelecionada = -1;
+
         } else {
-            JOptionPane.showMessageDialog(null, "Selecione um cadastro para alterar");
+            JOptionPane.showMessageDialog(null, "Selecione um aluno na tabela para editar.");
         }
-
     }//GEN-LAST:event_bEditarActionPerformed
-
-    public static String listaDados2[] = new String[5];
 
     private void jTableAlunosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableAlunosMouseClicked
         if (this.jTableAlunos.getSelectedRow() != -1) {
-
-            String nome = this.jTableAlunos.getValueAt(this.jTableAlunos.getSelectedRow(), 1).toString();
-            String idade = this.jTableAlunos.getValueAt(this.jTableAlunos.getSelectedRow(), 2).toString();
-            String curso = this.jTableAlunos.getValueAt(this.jTableAlunos.getSelectedRow(), 3).toString();
-            String fase = this.jTableAlunos.getValueAt(this.jTableAlunos.getSelectedRow(), 4).toString();
-            String id = this.jTableAlunos.getValueAt(this.jTableAlunos.getSelectedRow(), 0).toString();
-
-            fase = String.valueOf(fase.charAt(0));
-
-            listaDados2[0] = id;
-            listaDados2[1] = nome;
-            listaDados2[2] = idade;
-            listaDados2[3] = curso;
-            listaDados2[4] = fase;
-
+            this.linhaSelecionada = this.jTableAlunos.getSelectedRow();
         }
     }//GEN-LAST:event_jTableAlunosMouseClicked
 
@@ -297,11 +292,13 @@ public class GerenciaAlunos extends javax.swing.JFrame {
             int respostaUsuario = JOptionPane.showOptionDialog(null, "Tem certeza que deseja apagar este cadastro?", "Confirmar exclusão",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[1]);
 
-            if (respostaUsuario == 0) {// clicou em SIM
+            if (respostaUsuario == 0) {
 
-                // envia os dados para o Professor processar
-                if (this.objetoAluno.DeleteAlunoBD(id)) {
+                // envia os dados para o AlunoDAO processar e trata a resposta
+                if (this.alunoDAO.delete(id)) {
                     JOptionPane.showMessageDialog(rootPane, "Cadastro apagado com sucesso!");
+                } else {
+                    JOptionPane.showMessageDialog(rootPane, "Erro ao apagar o cadastro no banco de dados.");
                 }
             }
         } catch (Mensagens erro) {
@@ -346,8 +343,8 @@ public class GerenciaAlunos extends javax.swing.JFrame {
         DefaultTableModel modelo = (DefaultTableModel) this.jTableAlunos.getModel();
         modelo.setNumRows(0);
 
-        ArrayList<Aluno> minhalista = new ArrayList<>();
-        minhalista = objetoAluno.getMinhaLista();
+        ArrayList<Aluno> minhalista;
+        minhalista = this.alunoDAO.getMinhaLista();
 
         for (Aluno a : minhalista) {
             modelo.addRow(new Object[]{

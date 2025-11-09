@@ -87,7 +87,7 @@ public class Aluno extends Pessoa {
     }
 
     // retorna o maior ID da nossa base de dados
-    public int maiorID() throws SQLException {
-        return dao.maiorId();
+    public int obterMaiorId() throws SQLException {
+        return dao.obterMaiorId();
     }
 }
