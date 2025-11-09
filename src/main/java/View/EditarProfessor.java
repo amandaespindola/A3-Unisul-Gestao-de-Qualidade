@@ -3,9 +3,14 @@ package View;
 import com.formdev.flatlaf.json.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.text.MaskFormatter;
+import javax.swing.text.NumberFormatter;
+
 import Model.Professor;
+import utils.ValidadorInput;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -72,7 +77,7 @@ public class EditarProfessor extends javax.swing.JFrame {
 
 		jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel3.setText("Campus:");
-	
+
 		bCancelar.setText("Cancelar");
 		bCancelar.addActionListener(this::bCancelarActionPerformed);
 
@@ -207,8 +212,16 @@ public class EditarProfessor extends javax.swing.JFrame {
 			mask.install(cpfFormatado);
 			MaskFormatter mask2 = new MaskFormatter("(##) # ####-####");
 			mask2.install(contatoFormatado);
-			MaskFormatter mask3 = new MaskFormatter("R$#####");
-			mask3.install(salarioFormatado);
+
+			NumberFormat formatoMoeda = NumberFormat.getCurrencyInstance(new java.util.Locale("pt", "BR"));
+			NumberFormatter formatter = new NumberFormatter(formatoMoeda);
+			formatter.setAllowsInvalid(true);
+			formatter.setMinimum(0.0);
+			formatter.setValueClass(Double.class);
+
+			salarioFormatado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(formatter));
+			salarioFormatado.setFocusLostBehavior(JFormattedTextField.COMMIT_OR_REVERT);
+
 		} catch (ParseException ex) {
 			JOptionPane.showMessageDialog(rootPane, "Erro ao formatar campos", "ERRO", JOptionPane.ERROR);
 		}
@@ -238,16 +251,6 @@ public class EditarProfessor extends javax.swing.JFrame {
 		return str;
 	}
 
-	private String editSalario(String input) {
-		String str = "";
-
-		for (int i = 0; i < input.length() - 2; i++) {
-			str += input.charAt(i) + "";
-		}
-
-		return str;
-	}
-
 	private void preencheCampos() {
 
 		int indexCampus = 0;
@@ -271,7 +274,13 @@ public class EditarProfessor extends javax.swing.JFrame {
 		this.cpfFormatado.setText(GerenciaProfessores.listaDados[3]);
 		this.contatoFormatado.setText(GerenciaProfessores.listaDados[4]);
 		this.titulo.setSelectedIndex(indexTitulo);
-		this.salarioFormatado.setText(editSalario(GerenciaProfessores.listaDados[6]));
+
+		try {
+			double salario = Double.parseDouble(GerenciaProfessores.listaDados[6]);
+			this.salarioFormatado.setValue(salario);
+		} catch (NumberFormatException e) {
+			this.salarioFormatado.setValue(0.0);
+		}
 	}
 
 	private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bConfirmarActionPerformed
@@ -326,12 +335,7 @@ public class EditarProfessor extends javax.swing.JFrame {
 			}
 
 			// Setando salário
-			try {
-				NumberFormat nf = NumberFormat.getCurrencyInstance(new java.util.Locale("pt", "BR"));
-				salario = nf.parse(this.salarioFormatado.getText()).doubleValue();
-			} catch (java.text.ParseException e) {
-				throw new Mensagens("Formato de salário inválido");
-			}
+			salario = ValidadorInput.validarSalario(this.salarioFormatado, 4);
 
 			// reutilizando a constante array_titulo
 			if (this.titulo.getSelectedIndex() == 0) {
