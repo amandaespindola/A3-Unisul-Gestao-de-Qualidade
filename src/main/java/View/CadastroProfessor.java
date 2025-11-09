@@ -225,7 +225,7 @@ public class CadastroProfessor extends javax.swing.JFrame {
 			MaskFormatter mask2 = new MaskFormatter("(##) # ####-####");
 			mask2.install(contatoFormatado);
 
-			DecimalFormat formatoDecimal = (DecimalFormat) DecimalFormat.getNumberInstance(new Locale("pt", "BR"));
+			DecimalFormat formatoDecimal = (DecimalFormat) NumberFormat.getNumberInstance(new Locale("pt", "BR"));
 			formatoDecimal.applyPattern("#,##0.00");
 
 			NumberFormatter formatter = new NumberFormatter(formatoDecimal);
