@@ -71,10 +71,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 				return false;
 			}
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Erro ao atualizar professor " + objeto.getId(), ex);
-			return false;
-		} finally {
-			fecharConexaoSeInterna(conn);
+			return DaoUtils.tratarErroUpdate("Professor", objeto.getId(), ex, conn, this::fecharConexaoSeInterna);
 		}
 	}
 
@@ -82,22 +79,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 	public boolean delete(int id) {
 		String sql = "DELETE FROM tb_professores WHERE id=?";
 		Connection conn = getConexao();
-		if (conn == null) {
-			logger.warning("Conexão nula ao tentar deletar professor.");
-			return false;
-		}
-
-		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setInt(1, id);
-			stmt.executeUpdate();
-			logger.info(() -> "Professor deletado: ID " + id);
-			return true;
-		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Erro ao deletar professor " + id, ex);
-			return false;
-		} finally {
-			fecharConexaoSeInterna(conn);
-		}
+		return DaoUtils.executarDelete(conn, sql, id, "Professor", this::fecharConexaoSeInterna);
 	}
 
 	@Override
