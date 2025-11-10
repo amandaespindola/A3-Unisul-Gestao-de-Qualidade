@@ -4,6 +4,8 @@
  */
 package View;
 
+import utils.Constantes;
+
 /**
  *
  * @author Lucas
@@ -79,19 +81,19 @@ public class Sobre extends javax.swing.JFrame {
 
         jLabel7.setText("• Julia Schaden Exterkoetter");
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel8.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.BOLD, 14));
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("UNIVERSIDADE DO SUL DE SANTA CATARINA");
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        jLabel10.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.BOLD, 10));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("PROGRAMAÇÃO DE SOLUÇÕES COMPUTACIONAIS");
 
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        jLabel11.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.BOLD, 10));
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("SISTEMAS DE INFORMAÇÃO");
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel9.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.BOLD, 12));
         jLabel9.setText("Florianópolis, 2022");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

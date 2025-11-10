@@ -1,7 +1,5 @@
 package View;
 
-import DAO.AlunoDAO;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -9,8 +7,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import utils.ConexaoManager;
+import utils.Constantes;
 
 public class TelaLogin extends javax.swing.JFrame {
+	private static final Logger logger = Logger.getLogger(TelaLogin.class.getName());
 	private String passwordDB;
 	private String userDB;
 
@@ -28,10 +28,10 @@ public class TelaLogin extends javax.swing.JFrame {
 				userDB = props.getProperty("db.user");
 				passwordDB = props.getProperty("db.password");
 			} else {
-				System.out.println("Arquivo config.properties não encontrado. O usuário deverá inserir manualmente.");
+				logger.warning("Arquivo config.properties não encontrado. O usuário deverá inserir manualmente");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Erro ao carregar arquivo de configuração (config.properties)", e);
 		}
 	}
 
@@ -54,7 +54,7 @@ public class TelaLogin extends javax.swing.JFrame {
 		setBackground(new java.awt.Color(51, 255, 51));
 		setResizable(false);
 
-		login.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+		login.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 18)); // NOI18N
 		login.setText("LOGIN");
 		login.setToolTipText("ENTER");
 		login.setAlignmentX(0.5F);
@@ -64,21 +64,21 @@ public class TelaLogin extends javax.swing.JFrame {
 			}
 		});
 
-		jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+		jLabel1.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 14)); // NOI18N
 		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel1.setText("SisUni - Sistema de Gerenciamento Universitário");
 
-		password.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-		password.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+		password.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 24)); // NOI18N
+		password.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-		jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+		jLabel2.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 10)); // NOI18N
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel2.setText("DIGITE A SENHA (MySQL)");
 
-		user.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-		user.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+		user.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 24)); // NOI18N
+		user.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-		jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+		jLabel3.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 10)); // NOI18N
 		jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel3.setText("DIGITE O USUÁRIO (MySQL)");
 		setJMenuBar(jMenuBar1);
@@ -124,7 +124,6 @@ public class TelaLogin extends javax.swing.JFrame {
 		pack();
 		setLocationRelativeTo(null);
 	}// </editor-fold>//GEN-END:initComponents
-
 
 	private void loginActionPerformed(java.awt.event.ActionEvent evt) {
 		String senhaDigitada = String.copyValueOf(this.password.getPassword());

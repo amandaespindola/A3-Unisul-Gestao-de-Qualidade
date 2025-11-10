@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 
+import utils.Constantes;
+
 public class TelaPrincipal extends javax.swing.JFrame {
 
 	/**
@@ -39,7 +41,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 		setBackground(new java.awt.Color(51, 255, 51));
 		setResizable(false);
 
-		bProfessores.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+		bProfessores.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 18)); // NOI18N
 		bProfessores.setText("Professores");
 		bProfessores.setToolTipText("CTRL+P");
 		bProfessores.setAlignmentX(0.5F);
@@ -49,7 +51,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 			}
 		});
 
-		bAlunos.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+		bAlunos.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 18)); // NOI18N
 		bAlunos.setText("Alunos");
 		bAlunos.setToolTipText("CTRL+A");
 		bAlunos.addActionListener(new java.awt.event.ActionListener() {
@@ -58,7 +60,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 			}
 		});
 
-		jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+		jLabel1.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 14)); // NOI18N
 		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel1.setText("SisUni - Sistema de Gerenciamento Universitário");
 
