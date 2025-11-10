@@ -1,7 +1,5 @@
 package View;
 
-import DAO.AlunoDAO;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -11,6 +9,7 @@ import javax.swing.JOptionPane;
 import utils.ConexaoManager;
 
 public class TelaLogin extends javax.swing.JFrame {
+	private static final Logger logger = Logger.getLogger(TelaLogin.class.getName());
 	private String passwordDB;
 	private String userDB;
 
@@ -28,10 +27,10 @@ public class TelaLogin extends javax.swing.JFrame {
 				userDB = props.getProperty("db.user");
 				passwordDB = props.getProperty("db.password");
 			} else {
-				System.out.println("Arquivo config.properties não encontrado. O usuário deverá inserir manualmente.");
+				logger.warning("Arquivo config.properties não encontrado. O usuário deverá inserir manualmente");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Erro ao carregar arquivo de configuração (config.properties)", e);
 		}
 	}
 
@@ -124,7 +123,6 @@ public class TelaLogin extends javax.swing.JFrame {
 		pack();
 		setLocationRelativeTo(null);
 	}// </editor-fold>//GEN-END:initComponents
-
 
 	private void loginActionPerformed(java.awt.event.ActionEvent evt) {
 		String senhaDigitada = String.copyValueOf(this.password.getPassword());
