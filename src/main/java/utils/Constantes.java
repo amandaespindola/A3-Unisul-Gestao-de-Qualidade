@@ -39,4 +39,7 @@ public final class Constantes {
         "Doutorado"
     };
 
+    public class UIConstants {
+    	public static final String DEFAULT_FONT = "Segoe UI";
+    }
 }

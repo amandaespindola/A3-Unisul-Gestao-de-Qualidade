@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import utils.ConexaoManager;
+import utils.Constantes;
 
 public class TelaLogin extends javax.swing.JFrame {
 	private static final Logger logger = Logger.getLogger(TelaLogin.class.getName());
@@ -53,7 +54,7 @@ public class TelaLogin extends javax.swing.JFrame {
 		setBackground(new java.awt.Color(51, 255, 51));
 		setResizable(false);
 
-		login.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+		login.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 18)); // NOI18N
 		login.setText("LOGIN");
 		login.setToolTipText("ENTER");
 		login.setAlignmentX(0.5F);
@@ -63,21 +64,21 @@ public class TelaLogin extends javax.swing.JFrame {
 			}
 		});
 
-		jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+		jLabel1.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 14)); // NOI18N
 		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel1.setText("SisUni - Sistema de Gerenciamento Universitário");
 
-		password.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+		password.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 24)); // NOI18N
 		password.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-		jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+		jLabel2.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 10)); // NOI18N
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel2.setText("DIGITE A SENHA (MySQL)");
 
-		user.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+		user.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 24)); // NOI18N
 		user.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-		jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+		jLabel3.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 10)); // NOI18N
 		jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel3.setText("DIGITE O USUÁRIO (MySQL)");
 		setJMenuBar(jMenuBar1);
