@@ -4,6 +4,7 @@ import Model.Aluno;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import utils.DaoUtils;
 
 public class AlunoDAO extends BaseDAO<Aluno> {
 
@@ -16,7 +17,6 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 		super(conexao);
 	}
 
-
 	@Override
 	public boolean insert(Aluno objeto) {
 		String sql = "INSERT INTO tb_alunos (nome, idade, curso, fase) VALUES (?, ?, ?, ?)";
@@ -27,31 +27,17 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 		}
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-			// Preenche os campos (sem o ID)
 			stmt.setString(1, objeto.getNome());
 			stmt.setInt(2, objeto.getIdade());
 			stmt.setString(3, objeto.getCurso());
 			stmt.setInt(4, objeto.getFase());
 
-			int linhasAfetadas = stmt.executeUpdate();
-			if (linhasAfetadas > 0) {
-				try (ResultSet rs = stmt.getGeneratedKeys()) {
-					if (rs.next()) {
-						int novoId = rs.getInt(1);
-						objeto.setId(novoId);
-						logger.info(() -> "Aluno inserido: ID " + novoId);
-					}
-				}
-				return true;
-			} else {
-				logger.warning(() -> "Nenhuma linha inserida para o aluno: " + objeto.getNome());
-			}
+			return DaoUtils.tratarInsercao(stmt, objeto, "Aluno", objeto::setId);
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Erro ao inserir aluno: " + objeto.getNome(), ex);
+			DaoUtils.logErro("inserir", "Aluno", objeto.getNome(), ex);
 		} finally {
 			fecharConexaoSeInterna(conn);
 		}
-
 		return false;
 	}
 

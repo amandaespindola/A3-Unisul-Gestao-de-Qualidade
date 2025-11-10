@@ -4,6 +4,7 @@ import Model.Professor;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import utils.DaoUtils;
 
 public class ProfessorDAO extends BaseDAO<Professor> {
 
@@ -15,7 +16,6 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 	public ProfessorDAO(Connection conexao) {
 		super(conexao);
 	}
-
 
 	@Override
 	public boolean insert(Professor objeto) {
@@ -35,25 +35,12 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 			stmt.setString(6, objeto.getTitulo());
 			stmt.setDouble(7, objeto.getSalario());
 
-			int linhasAfetadas = stmt.executeUpdate();
-			if (linhasAfetadas > 0) {
-				try (ResultSet rs = stmt.getGeneratedKeys()) {
-					if (rs.next()) {
-						int novoId = rs.getInt(1);
-						objeto.setId(novoId);
-						logger.info(() -> "Professor inserido: ID " + novoId);
-					}
-				}
-				return true;
-			} else {
-				logger.warning(() -> "Nenhuma linha inserida para o professor: " + objeto.getNome());
-			}
+			return DaoUtils.tratarInsercao(stmt, objeto, "Professor", objeto::setId);
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Erro ao inserir professor: " + objeto.getNome(), ex);
+			DaoUtils.logErro("inserir", "Professor", objeto.getNome(), ex);
 		} finally {
 			fecharConexaoSeInterna(conn);
 		}
-
 		return false;
 	}
 
@@ -136,7 +123,6 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		} finally {
 			fecharConexaoSeInterna(conn);
 		}
-
 		return null;
 	}
 
@@ -160,7 +146,6 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		} finally {
 			fecharConexaoSeInterna(conn);
 		}
-
 		return minhaLista;
 	}
 
