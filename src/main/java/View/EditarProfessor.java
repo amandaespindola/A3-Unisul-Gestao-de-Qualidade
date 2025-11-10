@@ -71,8 +71,8 @@ public class EditarProfessor extends javax.swing.JFrame {
 
 		ViewUtils.configurarTitulo(jLabel1, "Editar Professor");
 
-		campus.setModel(new javax.swing.DefaultComboBoxModel<>(
-				new String[] { "-", "Continente", "Dib Mussi", "Ilha", "Pedra Branca", "Trajano", "Tubarão" }));
+		campus.setModel(new javax.swing.DefaultComboBoxModel<>(utils.Constantes.CAMPUS));
+
 		campus.setName(""); // NOI18N
 
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -85,8 +85,7 @@ public class EditarProfessor extends javax.swing.JFrame {
 
 		ViewUtils.configurarBotaoConfirmar(bConfirmar, this::bConfirmarActionPerformed);
 
-		titulo.setModel(new javax.swing.DefaultComboBoxModel<>(
-				new String[] { "-", "Graduação", "Especialização", "Mestrado", "Doutorado" }));
+		titulo.setModel(new javax.swing.DefaultComboBoxModel<>(utils.Constantes.TITULOS));
 
 		jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel6.setText("Título:");

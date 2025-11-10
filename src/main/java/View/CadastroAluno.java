@@ -49,14 +49,13 @@ public class CadastroAluno extends javax.swing.JFrame {
 
 		ViewUtils.configurarTitulo(jLabel1, "Cadastro de Aluno");
 
-		curso.setModel(new javax.swing.DefaultComboBoxModel<>(
-				new String[] { "-", "Administração", "Análise e Desenvolvimento de Sistemas", "Arquitetura e Urbanismo",
-						"Ciências Contábeis", "Ciências da Computação", "Design", "Design de Moda",
-						"Relações Internacionais", "Sistemas de Informação" }));
+		curso.setModel(new javax.swing.DefaultComboBoxModel<>(utils.Constantes.CURSOS));
+
 		curso.setName(""); // NOI18N
 
-		fase.setModel(new javax.swing.DefaultComboBoxModel<>(
-				new String[] { "1ª", "2ª", "3ª", "4ª", "5ª", "6ª", "7ª", "8ª", "9ª", "10ª" }));
+		String[] fasesFormatadas = java.util.Arrays.stream(utils.Constantes.FASES).mapToObj(f -> f + "ª")
+				.toArray(String[]::new);
+		fase.setModel(new javax.swing.DefaultComboBoxModel<>(fasesFormatadas));
 
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 		jLabel2.setText("Nome:");
@@ -70,9 +69,7 @@ public class CadastroAluno extends javax.swing.JFrame {
 
 		ViewUtils.configurarBotaoCancelar(bCancelar, this);
 
-
 		ViewUtils.configurarBotaoConfirmar(bConfirmar, this::bConfirmarActionPerformed);
-
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
