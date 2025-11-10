@@ -52,19 +52,28 @@ public abstract class BaseDAO<T> {
 	public int obterMaiorId() {
 		String nomeTabela = getNomeTabela();
 
-		if (!TABELAS_PERMITIDAS.contains(nomeTabela)) {
+		String sql;
+
+		switch (nomeTabela) {
+		case "tb_professor":
+			sql = "SELECT MAX(id) AS max_id FROM tb_professor";
+			break;
+		case "tb_aluno":
+			sql = "SELECT MAX(id) AS max_id FROM tb_aluno";
+			break;
+		default:
 			logger.log(Level.SEVERE, "Tabela não permitida: {0}", nomeTabela);
 			throw new IllegalArgumentException("Tabela não permitida: " + nomeTabela);
 		}
-
-		String sql = String.format("SELECT MAX(id) AS max_id FROM %s", nomeTabela);
 
 		try (Connection conn = getConexao()) {
 			if (conn == null || conn.isClosed()) {
 				logger.log(Level.SEVERE, "Conexão nula ou fechada ao buscar maior ID de {0}.", nomeTabela);
 				return 0;
 			}
+
 			try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
 				if (rs.next()) {
 					int maxId = rs.getInt("max_id");
 					logger.log(Level.FINE, "Maior ID encontrado na tabela {0}: {1}",
