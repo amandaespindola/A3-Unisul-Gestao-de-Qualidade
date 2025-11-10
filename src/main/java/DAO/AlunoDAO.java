@@ -7,161 +7,152 @@ import java.util.logging.Level;
 
 public class AlunoDAO extends BaseDAO<Aluno> {
 
-    private static final ArrayList<Aluno> MinhaLista = new ArrayList<>();
+	private static final ArrayList<Aluno> MinhaLista = new ArrayList<>();
 
-    public AlunoDAO() {
-    }
+	public AlunoDAO() {
+	}
 
-    public AlunoDAO(Connection conexao) {
-        super(conexao);
-    }
+	public AlunoDAO(Connection conexao) {
+		super(conexao);
+	}
 
-    @Override
-    public boolean insert(Aluno objeto) {
-        String sql = "INSERT INTO tb_alunos (nome, idade, curso, fase) VALUES (?, ?, ?, ?)";
-        Connection conn = getConexao();
-        if (conn == null) {
-            logger.warning("Conexão nula ao tentar inserir aluno.");
-            return false;
-        }
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            // Preenche os campos (sem o ID)
-            stmt.setString(1, objeto.getNome());
-            stmt.setInt(2, objeto.getIdade());
-            stmt.setString(3, objeto.getCurso());
-            stmt.setInt(4, objeto.getFase());
+	@Override
+	public boolean insert(Aluno objeto) {
+		String sql = "INSERT INTO tb_alunos (nome, idade, curso, fase) VALUES (?, ?, ?, ?)";
+		Connection conn = getConexao();
+		if (conn == null) {
+			logger.warning("Conexão nula ao tentar inserir aluno.");
+			return false;
+		}
 
-            int linhasAfetadas = stmt.executeUpdate();
-            if (linhasAfetadas > 0) {
-                try (ResultSet rs = stmt.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        int novoId = rs.getInt(1);
-                        objeto.setId(novoId);
-                        logger.info(() -> "Aluno inserido: ID " + novoId);
-                    }
-                }
-                return true;
-            } else {
-                logger.warning(() -> "Nenhuma linha inserida para o aluno: " + objeto.getNome());
-            }
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Erro ao inserir aluno: " + objeto.getNome(), ex);
-        } finally {
-            fecharConexaoSeInterna(conn);
-        }
+		try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+			// Preenche os campos (sem o ID)
+			stmt.setString(1, objeto.getNome());
+			stmt.setInt(2, objeto.getIdade());
+			stmt.setString(3, objeto.getCurso());
+			stmt.setInt(4, objeto.getFase());
 
-        return false;
-    }
+			int linhasAfetadas = stmt.executeUpdate();
+			if (linhasAfetadas > 0) {
+				try (ResultSet rs = stmt.getGeneratedKeys()) {
+					if (rs.next()) {
+						int novoId = rs.getInt(1);
+						objeto.setId(novoId);
+						logger.info(() -> "Aluno inserido: ID " + novoId);
+					}
+				}
+				return true;
+			} else {
+				logger.warning(() -> "Nenhuma linha inserida para o aluno: " + objeto.getNome());
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Erro ao inserir aluno: " + objeto.getNome(), ex);
+		} finally {
+			fecharConexaoSeInterna(conn);
+		}
 
-    @Override
-    public boolean update(Aluno objeto) {
-        String sql = "UPDATE tb_alunos SET nome=?, idade=?, curso=?, fase=? WHERE id=?";
-        Connection conn = getConexao();
-        if (conn == null) {
-            return false;
-        }
+		return false;
+	}
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, objeto.getNome());
-            stmt.setInt(2, objeto.getIdade());
-            stmt.setString(3, objeto.getCurso());
-            stmt.setInt(4, objeto.getFase());
-            stmt.setInt(5, objeto.getId());
-            stmt.executeUpdate();
-            logger.info(() -> "Aluno atualizado: ID " + objeto.getId());
-            return true;
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Erro ao atualizar aluno " + objeto.getId(), ex);
-            return false;
-        } finally {
-            fecharConexaoSeInterna(conn);
-        }
-    }
+	@Override
+	public boolean update(Aluno objeto) {
+		String sql = "UPDATE tb_alunos SET nome=?, idade=?, curso=?, fase=? WHERE id=?";
+		Connection conn = getConexao();
+		if (conn == null) {
+			return false;
+		}
 
-    @Override
-    public boolean delete(int id) {
-        String sql = "DELETE FROM tb_alunos WHERE id=?";
-        Connection conn = getConexao();
-        if (conn == null) {
-            return false;
-        }
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, objeto.getNome());
+			stmt.setInt(2, objeto.getIdade());
+			stmt.setString(3, objeto.getCurso());
+			stmt.setInt(4, objeto.getFase());
+			stmt.setInt(5, objeto.getId());
+			stmt.executeUpdate();
+			logger.info(() -> "Aluno atualizado: ID " + objeto.getId());
+			return true;
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Erro ao atualizar aluno " + objeto.getId(), ex);
+			return false;
+		} finally {
+			fecharConexaoSeInterna(conn);
+		}
+	}
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-            logger.info(() -> "Aluno deletado: ID " + id);
-            return true;
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Erro ao deletar aluno " + id, ex);
-            return false;
-        } finally {
-            fecharConexaoSeInterna(conn);
-        }
-    }
+	@Override
+	public boolean delete(int id) {
+		String sql = "DELETE FROM tb_alunos WHERE id=?";
+		Connection conn = getConexao();
+		if (conn == null) {
+			return false;
+		}
 
-    @Override
-    public Aluno findById(int id) {
-        String sql = "SELECT * FROM tb_alunos WHERE id=?";
-        Connection conn = getConexao();
-        if (conn == null) {
-            return null;
-        }
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setInt(1, id);
+			stmt.executeUpdate();
+			logger.info(() -> "Aluno deletado: ID " + id);
+			return true;
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Erro ao deletar aluno " + id, ex);
+			return false;
+		} finally {
+			fecharConexaoSeInterna(conn);
+		}
+	}
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            try (ResultSet res = stmt.executeQuery()) {
-                if (res.next()) {
-                    return new Aluno(
-                            res.getString("curso"),
-                            res.getInt("fase"),
-                            res.getInt("id"),
-                            res.getString("nome"),
-                            res.getInt("idade")
-                    );
-                }
-            }
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Erro ao carregar aluno " + id, ex);
-        } finally {
-            fecharConexaoSeInterna(conn);
-        }
-        return null;
-    }
+	@Override
+	public Aluno findById(int id) {
+		String sql = "SELECT * FROM tb_alunos WHERE id=?";
+		Connection conn = getConexao();
+		if (conn == null) {
+			return null;
+		}
 
-    public ArrayList<Aluno> getMinhaLista() {
-        MinhaLista.clear();
-        String sql = "SELECT * FROM tb_alunos";
-        Connection conn = getConexao();
-        if (conn == null) {
-            return MinhaLista;
-        }
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setInt(1, id);
+			try (ResultSet res = stmt.executeQuery()) {
+				if (res.next()) {
+					return new Aluno(res.getString("curso"), res.getInt("fase"), res.getInt("id"),
+							res.getString("nome"), res.getInt("idade"));
+				}
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Erro ao carregar aluno " + id, ex);
+		} finally {
+			fecharConexaoSeInterna(conn);
+		}
+		return null;
+	}
 
-        try (Statement stmt = conn.createStatement(); ResultSet res = stmt.executeQuery(sql)) {
-            while (res.next()) {
-                MinhaLista.add(new Aluno(
-                        res.getString("curso"),
-                        res.getInt("fase"),
-                        res.getInt("id"),
-                        res.getString("nome"),
-                        res.getInt("idade")
-                ));
-            }
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Erro ao buscar lista de alunos", ex);
-        } finally {
-            fecharConexaoSeInterna(conn);
-        }
-        return MinhaLista;
-    }
+	public ArrayList<Aluno> getMinhaLista() {
+		MinhaLista.clear();
+		String sql = "SELECT * FROM tb_alunos";
+		Connection conn = getConexao();
+		if (conn == null) {
+			return MinhaLista;
+		}
 
-    @Override
-    protected String getNomeTabela() {
-        return "tb_alunos";
-    }
+		try (Statement stmt = conn.createStatement(); ResultSet res = stmt.executeQuery(sql)) {
+			while (res.next()) {
+				MinhaLista.add(new Aluno(res.getString("curso"), res.getInt("fase"), res.getInt("id"),
+						res.getString("nome"), res.getInt("idade")));
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Erro ao buscar lista de alunos", ex);
+		} finally {
+			fecharConexaoSeInterna(conn);
+		}
+		return MinhaLista;
+	}
 
-    public int obterMaiorId() {
-        return super.obterMaiorId();
-    }
+	@Override
+	protected String getNomeTabela() {
+		return "tb_alunos";
+	}
+
+	public int obterMaiorId() {
+		return super.obterMaiorId();
+	}
 
 }

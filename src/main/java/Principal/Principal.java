@@ -1,47 +1,44 @@
 package Principal;
 
 import View.TelaLogin;
+import View.TelaPrincipal;
+
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.JOptionPane;
 
 public class Principal {
 
-    public static void main(String[] args) {
-        try {
-            FlatDarkLaf.setup();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        
-        String[] options = {"Claro", "Escuro"};
-        int n = JOptionPane.showOptionDialog(null, "Escolha um tema", "SisUni", 
-                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-        
-        if (n != 1){
-            java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FlatLightLaf.setup();
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-                new TelaLogin().setVisible(true);
-            }
-            });
-        } else {
-            java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FlatDarkLaf.setup();
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-                new TelaLogin().setVisible(true);
-            }
-            });
-        }
-    }
+	private static final Logger logger = Logger.getLogger(Principal.class.getName());
+
+	public static void main(String[] args) {
+		try {
+			FlatDarkLaf.setup();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Falha ao inicializar o tema FlatDarklaf", e);
+		}
+
+		String[] options = { "Claro", "Escuro" };
+		int n = JOptionPane.showOptionDialog(null, "Escolha um tema", "SisUni", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+		Runnable runTelaLogin = () -> {
+			try {
+				if (n != 1) {
+					FlatLightLaf.setup();
+				} else {
+					FlatDarkLaf.setup();
+				}
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, "Falha ao inicializar o tema selecionado", e);
+			}
+			new TelaLogin().setVisible(true);
+		};
+
+		java.awt.EventQueue.invokeLater(runTelaLogin);
+	}
 }
