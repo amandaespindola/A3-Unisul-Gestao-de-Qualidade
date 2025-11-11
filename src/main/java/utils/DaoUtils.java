@@ -21,7 +21,8 @@ public class DaoUtils {
 				if (rs.next()) {
 					int novoId = rs.getInt(1);
 					setId.accept(novoId); // define o ID no objeto
-					logger.info(() -> tipo + " inserido com sucesso: " + objeto.getClass().getSimpleName() + " ID " + novoId);
+					logger.info(() -> tipo + " inserido com sucesso: " + objeto.getClass().getSimpleName() + " ID "
+							+ novoId);
 				}
 			}
 			return true;
@@ -34,7 +35,8 @@ public class DaoUtils {
 	public static boolean executarDelete(Connection conn, String sql, int id, String tipo,
 			Consumer<Connection> fecharConexao) {
 		if (conn == null) {
-			Logger.getLogger(tipo + "DAO").warning("Conexão nula ao tentar deletar " + tipo.toLowerCase() + ".");
+			Logger.getLogger(tipo + "DAO").log(Level.WARNING, "Conexão nula ao tentar deletar {0}.",
+					tipo.toLowerCase());
 			return false;
 		}
 
