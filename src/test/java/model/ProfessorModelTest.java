@@ -29,7 +29,17 @@ public class ProfessorModelTest {
 
 	@Test
 	void testToStringContainsData() {
-		Professor professor = new Professor("Campus A", "12345678900", "99999-9999", "Doutor", 5000, 1, "Maria", 40);
+		Professor.ProfessorDTO dto = new Professor.ProfessorDTO();
+		dto.setCampus("Campus A");
+		dto.setCpf("12345678900");
+		dto.setContato("99999-9999");
+		dto.setTitulo("Doutor");
+		dto.setSalario((double)5000);
+		dto.setId(1);
+		dto.setNome("Maria");
+		dto.setIdade(40);
+
+		Professor professor = new Professor(dto);
 		String result = professor.toString();
 		Assertions.assertTrue(result.contains("Campus A"));
 		Assertions.assertTrue(result.contains("Maria"));

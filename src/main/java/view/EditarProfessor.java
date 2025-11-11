@@ -269,8 +269,17 @@ public class EditarProfessor extends javax.swing.JFrame {
 			double salario = ValidadorInput.validarSalario(this.salarioFormatado, 4);
 			String tituloSelecionado = validarTitulo();
 
-			Professor professorAtualizado = new Professor(campusSelecionado, cpfValidado, contatoValidado,
-					tituloSelecionado, salario, id, nomeDigitado, idadeValidada);
+			Professor.ProfessorDTO dto = new Professor.ProfessorDTO();
+			dto.setCampus(campusSelecionado);
+			dto.setCpf(cpfValidado);
+			dto.setContato(contatoValidado);
+			dto.setTitulo(tituloSelecionado);
+			dto.setSalario(salario);
+			dto.setId(id);
+			dto.setNome(nomeDigitado);
+			dto.setIdade(idadeValidada);
+
+			Professor professorAtualizado = new Professor(dto);
 
 			if (this.professorDAO.update(professorAtualizado)) {
 				JOptionPane.showMessageDialog(rootPane, "Professor alterado com sucesso");

@@ -12,6 +12,20 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 	private static final ArrayList<Professor> minhaLista = new ArrayList<>();
 	private static final String ENTIDADE = "Professor";
 
+	// método auxiliar professorDTO
+	private Professor.ProfessorDTO mapResultSetToDTO(ResultSet res) throws SQLException {
+		Professor.ProfessorDTO dto = new Professor.ProfessorDTO();
+		dto.setCampus(res.getString("campus"));
+		dto.setCpf(res.getString("cpf"));
+		dto.setContato(res.getString("contato"));
+		dto.setTitulo(res.getString("titulo"));
+		dto.setSalario(res.getDouble("salario"));
+		dto.setId(res.getInt("id"));
+		dto.setNome(res.getString("nome"));
+		dto.setIdade(res.getInt("idade"));
+		return dto;
+	}
+
 	public ProfessorDAO() {
 	}
 
@@ -97,9 +111,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 			stmt.setInt(1, id);
 			try (ResultSet res = stmt.executeQuery()) {
 				if (res.next()) {
-					return new Professor(res.getString("campus"), res.getString("cpf"), res.getString("contato"),
-							res.getString("titulo"), res.getDouble("salario"), res.getInt("id"), res.getString("nome"),
-							res.getInt("idade"));
+					return new Professor(mapResultSetToDTO(res));
 				}
 			}
 		} catch (SQLException ex) {
@@ -121,9 +133,8 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 
 		try (Statement stmt = conn.createStatement(); ResultSet res = stmt.executeQuery(sql)) {
 			while (res.next()) {
-				minhaLista.add(new Professor(res.getString("campus"), res.getString("cpf"), res.getString("contato"),
-						res.getString("titulo"), res.getDouble("salario"), res.getInt("id"), res.getString("nome"),
-						res.getInt("idade")));
+				minhaLista.add(new Professor(mapResultSetToDTO(res)));
+
 			}
 		} catch (SQLException ex) {
 			logger.log(Level.SEVERE, "Erro ao buscar lista de professores", ex);
