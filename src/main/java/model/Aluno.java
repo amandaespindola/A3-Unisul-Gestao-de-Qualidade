@@ -1,7 +1,9 @@
-package Model;
+package model;
 
 import java.util.*;
-import DAO.AlunoDAO;
+
+import dao.AlunoDAO;
+
 import java.sql.SQLException;
 
 public class Aluno extends Pessoa {
@@ -62,19 +64,19 @@ public class Aluno extends Pessoa {
     }
 
     // Cadastra novo aluno
-    public boolean InsertAlunoBD(String curso, int fase, String nome, int idade) throws SQLException {
+    public boolean inserirAlunoBd(String curso, int fase, String nome, int idade) throws SQLException {
         Aluno objeto = new Aluno(curso, fase, 0, nome, idade);
         return dao.insert(objeto);
     }
 
     // Deleta um aluno específico pelo seu campo ID
-    public boolean DeleteAlunoBD(int id) {
+    public boolean deletarAlunoBD(int id) {
         dao.delete(id);
         return true;
     }
 
     // Edita um aluno específico pelo seu campo ID
-    public boolean UpdateAlunoBD(String curso, int fase, int id, String nome, int idade) {
+    public boolean atualizarAlunoBD(String curso, int fase, int id, String nome, int idade) {
         Aluno objeto = new Aluno(curso, fase, id, nome, idade);
         dao.update(objeto);
         return true;

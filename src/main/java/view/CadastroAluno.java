@@ -1,7 +1,8 @@
-package View;
+package view;
 
-import Model.Aluno;
-import DAO.AlunoDAO;
+import dao.AlunoDAO;
+import model.Aluno;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;

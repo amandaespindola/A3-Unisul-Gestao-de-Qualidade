@@ -1,7 +1,8 @@
-package View;
+package view;
 
-import Model.Professor;
-import DAO.ProfessorDAO;
+import dao.ProfessorDAO;
+import model.Professor;
+
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;

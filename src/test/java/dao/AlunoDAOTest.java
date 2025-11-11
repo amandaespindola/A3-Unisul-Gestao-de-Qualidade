@@ -1,7 +1,8 @@
 package dao;
 
-import DAO.AlunoDAO;
-import Model.Aluno;
+import dao.AlunoDAO;
+import model.Aluno;
+
 import org.junit.jupiter.api.*;
 import java.sql.*;
 import java.util.List;

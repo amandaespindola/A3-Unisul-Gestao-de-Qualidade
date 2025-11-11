@@ -1,7 +1,7 @@
-package View;
+package view;
 
-import Model.Aluno;
-import DAO.AlunoDAO;
+import dao.AlunoDAO;
+import model.Aluno;
 import utils.ValidadorInput;
 import java.io.IOException;
 import java.util.ArrayList;

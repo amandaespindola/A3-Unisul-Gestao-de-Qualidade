@@ -1,8 +1,9 @@
 package model;
 
-import Model.Aluno;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import model.Aluno;
 
 public class AlunoModelTest {
 

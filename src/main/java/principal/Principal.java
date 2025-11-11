@@ -1,10 +1,10 @@
-package Principal;
-
-import View.TelaLogin;
-import View.TelaPrincipal;
+package principal;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+
+import view.TelaLogin;
+import view.TelaPrincipal;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

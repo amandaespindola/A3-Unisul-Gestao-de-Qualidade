@@ -18,9 +18,9 @@ public class ConexaoManager {
 	private static final Logger logger = Logger.getLogger(ConexaoManager.class.getName());
 
 	// URL pode vir do properties se quiser (deixa aqui por enquanto)
-	private static String JDBC_URL = "jdbc:mysql://localhost:3306/db_alunos?useTimezone=true&serverTimezone=UTC";
+	private static String jdbcUrl = "jdbc:mysql://localhost:3306/db_alunos?useTimezone=true&serverTimezone=UTC";
 
-	private static volatile Connection conn; // compartilhada
+	private static Connection conn; // compartilhada
 	private static String user; // último user usado
 	private static String password; // última senha usada
 	private static boolean initialized = false; // se já chamamos init()
@@ -80,7 +80,7 @@ public class ConexaoManager {
 	private static Connection abrirNovaConexao(String user, String password) {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection c = DriverManager.getConnection(JDBC_URL, user, password);
+			Connection c = DriverManager.getConnection(jdbcUrl, user, password);
 			logger.info("Conexão MySQL aberta via ConexaoManager.");
 			return c;
 		} catch (ClassNotFoundException e) {
@@ -99,7 +99,7 @@ public class ConexaoManager {
 			p.load(in);
 			String url = p.getProperty("db.url"); // opcional: adicione no seu properties
 			if (url != null && !url.isBlank()) {
-				JDBC_URL = url;
+				jdbcUrl = url;
 			}
 		} catch (Exception e) {
 			// silencioso: se falhar, segue com default

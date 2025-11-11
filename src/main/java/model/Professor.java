@@ -1,8 +1,9 @@
-package Model;
+package model;
 
-import DAO.ProfessorDAO;
 import java.sql.SQLException;
 import java.util.*;
+
+import dao.ProfessorDAO;
 
 public class Professor extends Pessoa {
 
@@ -98,7 +99,7 @@ public class Professor extends Pessoa {
     }
 
     // Cadastra novo professor
-    public boolean InsertProfessorBD(String campus, String cpf, String contato, String titulo, double salario, String nome, int idade) throws SQLException {
+    public boolean inserirProfessorBD(String campus, String cpf, String contato, String titulo, double salario, String nome, int idade) throws SQLException {
         int id = this.obterMaiorId() + 1;
         Professor objeto = new Professor(campus, cpf, contato, titulo, salario, id, nome, idade);
         dao.insert(objeto);
@@ -106,13 +107,13 @@ public class Professor extends Pessoa {
     }
 
     // Deleta um professor específico pelo seu campo ID
-    public boolean DeleteProfessorBD(int id) {
+    public boolean deletarProfessorBD(int id) {
         dao.delete(id);
         return true;
     }
 
     // Edita um professor específico pelo seu campo ID
-    public boolean UpdateProfessorBD(String campus, String cpf, String contato, String titulo,
+    public boolean atualizarAlunoBD(String campus, String cpf, String contato, String titulo,
             double salario, int id, String nome, int idade) {
         Professor objeto = new Professor(campus, cpf, contato, titulo, salario, id, nome, idade);
         return dao.update(objeto);
