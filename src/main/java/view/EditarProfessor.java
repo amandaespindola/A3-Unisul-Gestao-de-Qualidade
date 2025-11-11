@@ -269,7 +269,7 @@ public class EditarProfessor extends javax.swing.JFrame {
 			double salario = ValidadorInput.validarSalario(this.salarioFormatado, 4);
 			String tituloSelecionado = validarTitulo();
 
-			Professor.ProfessorDTO dto = new Professor.ProfessorDTO();
+			model.ProfessorDTO dto = new model.ProfessorDTO();
 			dto.setCampus(campusSelecionado);
 			dto.setCpf(cpfValidado);
 			dto.setContato(contatoValidado);
