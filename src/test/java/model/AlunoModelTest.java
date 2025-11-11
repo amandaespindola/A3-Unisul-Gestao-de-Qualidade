@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import model.Aluno;
 
-public class AlunoModelTest {
+class AlunoModelTest {
 
 	@Test
 	void testGettersAndSetters() {

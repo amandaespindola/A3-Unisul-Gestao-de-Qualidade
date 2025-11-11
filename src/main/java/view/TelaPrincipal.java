@@ -47,7 +47,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 		bProfessores.setAlignmentX(0.5F);
 
 		bProfessores.addActionListener(this::bProfessoresActionPerformed);
-		
+
 		bAlunos.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 18)); // NOI18N
 		bAlunos.setText("Alunos");
 		bAlunos.setToolTipText("CTRL+A");
@@ -62,7 +62,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 		menuAlunos.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A,
 				java.awt.event.InputEvent.CTRL_DOWN_MASK));
 		menuAlunos.setText("Gerenciamento de Alunos");
-		
+
 		menuAlunos.addActionListener(this::menuAlunosActionPerformed);
 		arquivo.add(menuAlunos);
 
@@ -121,28 +121,36 @@ public class TelaPrincipal extends javax.swing.JFrame {
 		setLocationRelativeTo(null);
 	}// </editor-fold>//GEN-END:initComponents
 
-	private void bAlunosActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bAlunosActionPerformed
+	// método utilitário
+	private void abrirTelaGerenciaAlunos() {
 		GerenciaAlunos tela = new GerenciaAlunos();
 		tela.setVisible(true);
 		this.dispose();
+	}
+
+	// método utilitário
+	private void abrirTelaGerenciaProfessores() {
+		GerenciaProfessores tela = new GerenciaProfessores();
+		tela.setVisible(true);
+		this.dispose();
+	}
+
+	private void bAlunosActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bAlunosActionPerformed
+		abrirTelaGerenciaAlunos();
 	}// GEN-LAST:event_bAlunosActionPerformed
 
 	private void bProfessoresActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bProfessoresActionPerformed
-		GerenciaProfessores tela = new GerenciaProfessores();
-		tela.setVisible(true);
-		this.dispose();
+		abrirTelaGerenciaProfessores();
 	}// GEN-LAST:event_bProfessoresActionPerformed
 
 	private void menuAlunosActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuAlunosActionPerformed
-		GerenciaAlunos tela = new GerenciaAlunos();
-		tela.setVisible(true);
-		this.dispose();
+		abrirTelaGerenciaAlunos();
+
 	}// GEN-LAST:event_menuAlunosActionPerformed
 
 	private void menuProfessoresActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuProfessoresActionPerformed
-		GerenciaProfessores tela = new GerenciaProfessores();
-		tela.setVisible(true);
-		this.dispose();
+		abrirTelaGerenciaProfessores();
+
 	}// GEN-LAST:event_menuProfessoresActionPerformed
 
 	private void menuLeaveActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuLeaveActionPerformed

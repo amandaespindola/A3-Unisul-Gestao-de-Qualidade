@@ -233,7 +233,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	}// GEN-LAST:event_bEditarActionPerformed
 
 	private void jTableAlunosMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jTableAlunosMouseClicked
-		if (this.jTableAlunos.getSelectedRow() != -1) {
+		if (evt.getClickCount() >= 1 && this.jTableAlunos.getSelectedRow() != -1) {
 			this.linhaSelecionada = this.jTableAlunos.getSelectedRow();
 		}
 	}// GEN-LAST:event_jTableAlunosMouseClicked

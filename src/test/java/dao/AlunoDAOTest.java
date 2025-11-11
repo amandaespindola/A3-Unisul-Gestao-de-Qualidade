@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AlunoDAOTest {
+class AlunoDAOTest {
 
     private Connection connection;
     private AlunoDAO alunoDAO;
