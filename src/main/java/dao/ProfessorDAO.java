@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import model.Professor;
-import model.Professor.ProfessorDTO;
 import utils.DaoUtils;
 
 public class ProfessorDAO extends BaseDAO<Professor> {

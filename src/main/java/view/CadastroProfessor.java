@@ -74,7 +74,6 @@ public class CadastroProfessor extends javax.swing.JFrame {
 
 		titulo.setModel(new javax.swing.DefaultComboBoxModel<>(utils.Constantes.TITULOS));
 
-
 		jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel6.setText("Título:");
 
@@ -240,8 +239,16 @@ public class CadastroProfessor extends javax.swing.JFrame {
 			String tituloProfessor = ValidadorInput.validarSelecaoComboBox(this.titulo.getSelectedIndex(),
 					Constantes.TITULOS, "Título");
 
-			Professor novoProfessor = new Professor(campusProfessor, cpfProfessor, contatoProfessor, tituloProfessor,
-					salarioProfessor, 0, nomeProfessor, idadeProfessor);
+			Professor.ProfessorDTO dto = new Professor.ProfessorDTO();
+			dto.setCampus(campusProfessor);
+			dto.setCpf(cpfProfessor);
+			dto.setContato(contatoProfessor);
+			dto.setTitulo(tituloProfessor);
+			dto.setSalario(salarioProfessor);
+			dto.setNome(nomeProfessor);
+			dto.setIdade(idadeProfessor);
+			dto.setId(0);
+			Professor novoProfessor = new Professor(dto);
 
 			// Adicionando dados validados no database usando o DAO
 			if (this.professorDAO.insert(novoProfessor)) {
