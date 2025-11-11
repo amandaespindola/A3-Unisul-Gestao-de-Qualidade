@@ -205,7 +205,6 @@ public class CadastroProfessor extends javax.swing.JFrame {
 
 	private boolean verificaCpf(String cpf) {
 		ArrayList<Professor> minhalista = professorDAO.getMinhaLista();
-		minhalista = professorDAO.getMinhaLista();
 
 		for (Professor a : minhalista) {
 			if ((cpf.equals(a.getCpf()))) {
