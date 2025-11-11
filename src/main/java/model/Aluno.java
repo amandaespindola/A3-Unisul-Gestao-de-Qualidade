@@ -59,7 +59,7 @@ public class Aluno extends Pessoa {
 
   
     // Retorna a Lista de Alunos (objetos)
-    public ArrayList getMinhaLista() {
+    public ArrayList<Aluno> getMinhaLista() {
         return dao.getMinhaLista();
     }
 

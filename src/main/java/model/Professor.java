@@ -124,7 +124,7 @@ public class Professor extends Pessoa {
 	}
 
 	// Retorna a Lista de Professores (objetos)
-	public ArrayList getMinhaLista() {
+	public ArrayList<Professor> getMinhaLista() {
 		return dao.getMinhaLista();
 	}
 
