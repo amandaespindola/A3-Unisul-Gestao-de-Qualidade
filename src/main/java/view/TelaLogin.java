@@ -58,11 +58,7 @@ public class TelaLogin extends javax.swing.JFrame {
 		login.setText("LOGIN");
 		login.setToolTipText("ENTER");
 		login.setAlignmentX(0.5F);
-		login.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				loginActionPerformed(evt);
-			}
-		});
+		login.addActionListener(this::loginActionPerformed);
 
 		jLabel1.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 14)); // NOI18N
 		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -155,11 +151,7 @@ public class TelaLogin extends javax.swing.JFrame {
 	 * @param args the command line arguments
 	 */
 	public static void main(String args[]) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new TelaLogin().setVisible(true);
-			}
-		});
+		java.awt.EventQueue.invokeLater(() -> new TelaLogin().setVisible(true));
 	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables

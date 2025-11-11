@@ -50,27 +50,15 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 
 		bCadastro.setText("Cadastrar novo");
 		bCadastro.setToolTipText("");
-		bCadastro.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				bCadastroActionPerformed(evt);
-			}
-		});
+		bCadastro.addActionListener(this::bCadastroActionPerformed);
 
 		bEditar.setText("Editar");
 		bEditar.setToolTipText("");
-		bEditar.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				bEditarActionPerformed(evt);
-			}
-		});
+		bEditar.addActionListener(this::bEditarActionPerformed);
 
 		bDeletar.setText("Deletar");
 		bDeletar.setToolTipText("");
-		bDeletar.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				bDeletarActionPerformed(evt);
-			}
-		});
+		bDeletar.addActionListener(this::bDeletarActionPerformed);
 
 		jTableAlunos.setModel(new javax.swing.table.DefaultTableModel(
 				new Object[][] { { null, null, null, null, null }, { null, null, null, null, null },
@@ -110,19 +98,11 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/refresh.png"))); // NOI18N
 		refresh.setText("  Atualizar tabela");
 		refresh.setToolTipText("CTRL+R");
-		refresh.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				refreshActionPerformed(evt);
-			}
-		});
+		refresh.addActionListener(this::refreshActionPerformed);
 
 		export.setText("Exportar para Excel");
 		export.setToolTipText("CTRL+E");
-		export.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				exportActionPerformed(evt);
-			}
-		});
+		export.addActionListener(this::exportActionPerformed);
 
 		menu.setForeground(new java.awt.Color(239, 239, 239));
 		menu.setText("Arquivo");
@@ -130,49 +110,30 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		menuGerenciaProfessores.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P,
 				java.awt.event.InputEvent.CTRL_DOWN_MASK));
 		menuGerenciaProfessores.setText("Gerência de Professores");
-		menuGerenciaProfessores.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menuGerenciaProfessoresActionPerformed(evt);
-			}
-		});
+		menuGerenciaProfessores.addActionListener(this::menuGerenciaProfessoresActionPerformed);
 		menu.add(menuGerenciaProfessores);
 
 		menuExport.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E,
 				java.awt.event.InputEvent.CTRL_DOWN_MASK));
 		menuExport.setText("Exportar para Excel");
-		menuExport.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menuExportActionPerformed(evt);
-			}
-		});
+		menuExport.addActionListener(this::menuExportActionPerformed);
 		menu.add(menuExport);
 
 		menuRefresh.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R,
 				java.awt.event.InputEvent.CTRL_DOWN_MASK));
 		menuRefresh.setText("Atualizar tabela");
-		menuRefresh.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menuRefreshActionPerformed(evt);
-			}
-		});
+		menuRefresh.addActionListener(this::menuRefreshActionPerformed);
 		menu.add(menuRefresh);
 
 		jMenuItem1.setText("Sobre");
-		jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jMenuItem1ActionPerformed(evt);
-			}
-		});
+		jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
 		menu.add(jMenuItem1);
 
 		menuLeave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S,
 				java.awt.event.InputEvent.CTRL_DOWN_MASK));
 		menuLeave.setText("Sair");
-		menuLeave.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menuLeaveActionPerformed(evt);
-			}
-		});
+
+		menuLeave.addActionListener(this::menuLeaveActionPerformed);
 		menu.add(menuLeave);
 
 		jMenuBar1.add(menu);
@@ -394,11 +355,8 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		// </editor-fold>
 
 		/* Create and display the form */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new GerenciaAlunos().setVisible(true);
-			}
-		});
+		java.awt.EventQueue.invokeLater(() -> new GerenciaAlunos().setVisible(true));
+
 	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables

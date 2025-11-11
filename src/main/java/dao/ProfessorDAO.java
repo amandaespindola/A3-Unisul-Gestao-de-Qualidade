@@ -103,7 +103,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 				}
 			}
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Erro ao carregar professor " + id, ex);
+			logger.log(Level.SEVERE, ex, () -> "Erro ao carregar professor " + id);
 		} finally {
 			fecharConexaoSeInterna(conn);
 		}

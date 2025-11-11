@@ -3,6 +3,7 @@ package dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import model.Aluno;
 import utils.DaoUtils;
@@ -89,7 +90,8 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 				}
 			}
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Erro ao carregar aluno " + id, ex);
+			logger.log(Level.SEVERE, ex, () -> "Erro ao carregar aluno " + id);
+
 		} finally {
 			fecharConexaoSeInterna(conn);
 		}

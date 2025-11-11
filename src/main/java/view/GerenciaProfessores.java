@@ -106,11 +106,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 		menuGerenciaAluno.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A,
 				java.awt.event.InputEvent.CTRL_DOWN_MASK));
 		menuGerenciaAluno.setText("Gerência de Alunos");
-		menuGerenciaAluno.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menuGerenciaAlunoActionPerformed(evt);
-			}
-		});
+		menuGerenciaAluno.addActionListener(this::menuGerenciaAlunoActionPerformed);
 		menu.add(menuGerenciaAluno);
 
 		menuExport = ViewUtils.criarMenuItem("Exportar para Excel", java.awt.event.KeyEvent.VK_E,
@@ -123,12 +119,8 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 
 		menu.add(menuRefresh);
 
-		jMenuItem1.setText("Sobre");
-		jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jMenuItem1ActionPerformed(evt);
-			}
-		});
+		jMenuItem1.setText("Sobre");		
+		jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
 		menu.add(jMenuItem1);
 
 		menuLeave = ViewUtils.criarMenuItem("Sair", java.awt.event.KeyEvent.VK_S, this::menuLeaveActionPerformed);
