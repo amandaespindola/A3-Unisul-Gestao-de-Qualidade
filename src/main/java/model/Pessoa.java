@@ -7,10 +7,10 @@ public abstract class Pessoa {
     private String nome;
     private int idade;
 
-    public Pessoa() {
+    protected Pessoa() {
     }
 
-    public Pessoa(int id, String nome, int idade) {
+    protected Pessoa(int id, String nome, int idade) {
         this.id = id;
         this.nome = nome;
         this.idade = idade;
