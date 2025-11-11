@@ -1,8 +1,9 @@
 package model;
 
-import Model.Professor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import model.Professor;
 
 public class ProfessorModelTest {
 

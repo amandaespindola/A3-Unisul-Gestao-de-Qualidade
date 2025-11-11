@@ -1,10 +1,11 @@
-package View;
+package view;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import Model.Professor;
-import DAO.ProfessorDAO;
+
+import dao.ProfessorDAO;
+import model.Professor;
 import utils.Constantes;
 import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
@@ -302,13 +303,13 @@ public class EditarProfessor extends javax.swing.JFrame {
 	}
 
 	private String validarCpf() throws Mensagens {
-		String cpfFormatado = ValidadorInput.validarTamanhoNumericoFixo(this.cpfFormatado.getText(), 11, "CPF");
+		String cpfLimpo = ValidadorInput.validarTamanhoNumericoFixo(this.cpfFormatado.getText(), 11, "CPF");
 
-		if (verificaCpf(cpfFormatado)) {
+		if (verificaCpf(cpfLimpo)) {
 			throw new Mensagens("CPF já cadastrado no sistema");
 		}
 
-		return cpfFormatado;
+		return cpfLimpo;
 	}
 
 	private String validarContato() throws Mensagens {

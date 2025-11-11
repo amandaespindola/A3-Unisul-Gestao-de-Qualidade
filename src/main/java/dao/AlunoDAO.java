@@ -1,9 +1,10 @@
-package DAO;
+package dao;
 
-import Model.Aluno;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
+
+import model.Aluno;
 import utils.DaoUtils;
 
 public class AlunoDAO extends BaseDAO<Aluno> {

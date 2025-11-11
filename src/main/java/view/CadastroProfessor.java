@@ -1,15 +1,19 @@
-package View;
+package view;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import Model.Professor;
+
+import dao.ProfessorDAO;
+import model.Professor;
+
 import java.util.ArrayList;
-import DAO.ProfessorDAO;
+
 import utils.Constantes;
 import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
+import view.Mensagens;
 
 public class CadastroProfessor extends javax.swing.JFrame {
 
@@ -213,12 +217,12 @@ public class CadastroProfessor extends javax.swing.JFrame {
 	}
 
 	private String validarCpf() throws Mensagens {
-		String cpfFormatado = ValidadorInput.validarTamanhoNumericoFixo(this.cpfFormatado.getText(), 11, "CPF");
+		String cpfLimpo = ValidadorInput.validarTamanhoNumericoFixo(this.cpfFormatado.getText(), 11, "CPF");
 
-		if (this.verificaCpf(cpfFormatado)) {
+		if (this.verificaCpf(cpfLimpo)) {
 			throw new Mensagens("CPF já cadastrado no sistema");
 		}
-		return cpfFormatado;
+		return cpfLimpo;
 	}
 
 	private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bConfirmarActionPerformed

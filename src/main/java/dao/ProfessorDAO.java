@@ -1,9 +1,10 @@
-package DAO;
+package dao;
 
-import Model.Professor;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
+
+import model.Professor;
 import utils.DaoUtils;
 
 public class ProfessorDAO extends BaseDAO<Professor> {
