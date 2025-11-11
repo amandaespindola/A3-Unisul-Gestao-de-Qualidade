@@ -111,6 +111,7 @@ public class ConexaoManager {
 			try {
 				conn.close();
 			} catch (SQLException ignored) {
+				// ignorado intencionalmente: falha ao fechar conexão não é crítica no
 			}
 			conn = null;
 		}
@@ -124,6 +125,7 @@ public class ConexaoManager {
 			try {
 				close();
 			} catch (Exception ignored) {
+				// ignorado intencionalmente: erro ao fechar conexão no shutdown não causa
 			}
 		}));
 	}
