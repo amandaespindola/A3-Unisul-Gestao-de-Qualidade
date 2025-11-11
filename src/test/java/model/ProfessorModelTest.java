@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import model.Professor;
 
-public class ProfessorModelTest {
+class ProfessorModelTest {
 
 	@Test
 	void testGettersAndSetters() {
