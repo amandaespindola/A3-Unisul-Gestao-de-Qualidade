@@ -238,7 +238,7 @@ public class CadastroProfessor extends javax.swing.JFrame {
 			String tituloProfessor = ValidadorInput.validarSelecaoComboBox(this.titulo.getSelectedIndex(),
 					Constantes.TITULOS, "Título");
 
-			Professor.ProfessorDTO dto = new Professor.ProfessorDTO();
+			model.ProfessorDTO dto = new model.ProfessorDTO();
 			dto.setCampus(campusProfessor);
 			dto.setCpf(cpfProfessor);
 			dto.setContato(contatoProfessor);

@@ -13,8 +13,8 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 	private static final String ENTIDADE = "Professor";
 
 	// método auxiliar professorDTO
-	private Professor.ProfessorDTO mapResultSetToDTO(ResultSet res) throws SQLException {
-		Professor.ProfessorDTO dto = new Professor.ProfessorDTO();
+	private model.ProfessorDTO mapResultSetToDTO(ResultSet res) throws SQLException {
+		model.ProfessorDTO dto = new model.ProfessorDTO();
 		dto.setCampus(res.getString("campus"));
 		dto.setCpf(res.getString("cpf"));
 		dto.setContato(res.getString("contato"));
