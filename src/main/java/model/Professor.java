@@ -7,126 +7,159 @@ import dao.ProfessorDAO;
 
 public class Professor extends Pessoa {
 
-    // Atributos
-    private String campus;
-    private String cpf;
-    private String contato;
-    private String titulo;
-    private double salario;
-    private final ProfessorDAO dao;
+	// Atributos
+	private String campus;
+	private String cpf;
+	private String contato;
+	private String titulo;
+	private double salario;
+	private final ProfessorDAO dao;
 
-    // Construtores
-    public Professor() {
-        this.dao = new ProfessorDAO();
-    }
+	// Construtores
+	public Professor() {
+		this.dao = new ProfessorDAO();
+	}
 
-    public Professor(String campus, String cpf, String contato, String titulo, double salario) {
-        this.campus = campus;
-        this.cpf = cpf;
-        this.contato = contato;
-        this.titulo = titulo;
-        this.salario = salario;
-        this.dao = new ProfessorDAO();
-    }
+	public static class ProfessorDTO {
+		private String campus;
+		private String cpf;
+		private String contato;
+		private String titulo;
+		private double salario;
+		private int id;
+		private String nome;
+		private int idade;
+		
+		public String getCampus() { return campus; }
+		public void setCampus(String campus) { this.campus = campus; }
+		
+		public String getCpf() { return cpf; }
+		public void setCpf(String cpf) { this.cpf = cpf; }
+		
+		public String getContato() { return contato; }
+		public void setContato(String contato) { this.contato = contato; }
+		
+		public String getTitulo() { return titulo; }
+		public void setTitulo(String titulo) { this.titulo = titulo; }
+		
+		public Double getSalario() { return salario; }
+		public void setSalario(Double salario) { this.salario = salario; }
 
-    public Professor(String campus, String cpf, String contato, String titulo, double salario, int id, String nome, int idade) {
-        super(id, nome, idade);
-        this.campus = campus;
-        this.cpf = cpf;
-        this.contato = contato;
-        this.titulo = titulo;
-        this.salario = salario;
-        this.dao = new ProfessorDAO();
-    }
+		public int getId() { return id; }
+		public void setId(int id) { this.id = id; }
+		
+		public String getNome() { return nome; }
+		public void setNome(String nome) { this.nome = nome; }
+		
+		public int getIdade() { return idade; }
+		public void setIdade(int idade) { this.idade = idade; }
+		
+	}
 
-    // Métodos GET e SET
-    public String getCampus() {
-        return campus;
-    }
+	public Professor(String campus, String cpf, String contato, String titulo, double salario) {
+		this.campus = campus;
+		this.cpf = cpf;
+		this.contato = contato;
+		this.titulo = titulo;
+		this.salario = salario;
+		this.dao = new ProfessorDAO();
+	}
 
-    public void setCampus(String campus) {
-        this.campus = campus;
-    }
+	public Professor(ProfessorDTO dto) {
+		super(dto.getId(), dto.getNome(), dto.getIdade());
+		this.campus = dto.getCampus();
+		this.cpf = dto.getCpf();
+		this.contato = dto.getContato();
+		this.titulo = dto.getTitulo();
+		this.salario = dto.getSalario();
+		this.dao = new ProfessorDAO();
+	}
 
-    public String getCpf() {
-        return cpf;
-    }
+	// Métodos GET e SET
+	public String getCampus() {
+		return campus;
+	}
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
+	public void setCampus(String campus) {
+		this.campus = campus;
+	}
 
-    public String getContato() {
-        return contato;
-    }
+	public String getCpf() {
+		return cpf;
+	}
 
-    public void setContato(String contato) {
-        this.contato = contato;
-    }
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
 
-    public String getTitulo() {
-        return titulo;
-    }
+	public String getContato() {
+		return contato;
+	}
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
+	public void setContato(String contato) {
+		this.contato = contato;
+	}
 
-    public double getSalario() {
-        return salario;
-    }
+	public String getTitulo() {
+		return titulo;
+	}
 
-    public void setSalario(double salario) {
-        this.salario = salario;
-    }
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
+	}
 
-    @Override
-    public String toString() {
-        return "\n ID: " + this.getId()
-                + "\n Nome: " + this.getNome()
-                + "\n Idade: " + this.getIdade()
-                + "\n Campus: " + this.getCampus()
-                + "\n CPF:" + this.getCpf()
-                + "\n Contato:" + this.getContato()
-                + "\n Título:" + this.getTitulo()
-                + "\n Salário:" + this.getSalario()
-                + "\n -----------";
-    }
+	public double getSalario() {
+		return salario;
+	}
 
-    // Retorna a Lista de Professores (objetos)
-    public ArrayList getMinhaLista() {
-        return dao.getMinhaLista();
-    }
+	public void setSalario(double salario) {
+		this.salario = salario;
+	}
 
-    // Cadastra novo professor
-    public boolean inserirProfessorBD(String campus, String cpf, String contato, String titulo, double salario, String nome, int idade) throws SQLException {
-        int id = this.obterMaiorId() + 1;
-        Professor objeto = new Professor(campus, cpf, contato, titulo, salario, id, nome, idade);
-        dao.insert(objeto);
-        return true;
-    }
+	@Override
+	public String toString() {
+		return "\n ID: " + this.getId() + "\n Nome: " + this.getNome() + "\n Idade: " + this.getIdade() + "\n Campus: "
+				+ this.getCampus() + "\n CPF:" + this.getCpf() + "\n Contato:" + this.getContato() + "\n Título:"
+				+ this.getTitulo() + "\n Salário:" + this.getSalario() + "\n -----------";
+	}
 
-    // Deleta um professor específico pelo seu campo ID
-    public boolean deletarProfessorBD(int id) {
-        dao.delete(id);
-        return true;
-    }
+	// Retorna a Lista de Professores (objetos)
+	public ArrayList getMinhaLista() {
+		return dao.getMinhaLista();
+	}
 
-    // Edita um professor específico pelo seu campo ID
-    public boolean atualizarAlunoBD(String campus, String cpf, String contato, String titulo,
-            double salario, int id, String nome, int idade) {
-        Professor objeto = new Professor(campus, cpf, contato, titulo, salario, id, nome, idade);
-        return dao.update(objeto);
-    }
+	// Cadastra novo professor
+	public boolean inserirProfessorBD(ProfessorDTO dto) throws SQLException {
+		
+		int id = this.obterMaiorId() + 1;
+		dto.setId(id);
 
-    // carrega dados de um professor específico pelo seu ID
-    public Professor carregaProfessor(int id) {
-        dao.findById(id);
-        return null;
-    }
+		Professor objeto = new Professor(dto);
+		dao.insert(objeto);
+		return true;
+	}
 
-    // retorna o maior ID da nossa base de dados
-    public int obterMaiorId() throws SQLException {
-        return dao.obterMaiorId();
-    }
+	// Deleta um professor específico pelo seu campo ID
+	public boolean deletarProfessorBD(int id) {
+		dao.delete(id);
+		return true;
+	}
+
+	// Edita um professor específico pelo seu campo ID
+	public boolean atualizarAlunoBD(ProfessorDTO dto) {
+
+		Professor objeto = new Professor(dto);
+		return dao.update(objeto);
+	}
+
+	// carrega dados de um professor específico pelo seu ID
+	public Professor carregaProfessor(int id) {
+		dao.findById(id);
+		return null;
+	}
+
+	// retorna o maior ID da nossa base de dados
+	public int obterMaiorId() throws SQLException {
+		return dao.obterMaiorId();
+	}
 }
