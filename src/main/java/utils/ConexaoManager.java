@@ -20,7 +20,7 @@ public class ConexaoManager {
 	// URL pode vir do properties se quiser (deixa aqui por enquanto)
 	private static String JDBC_URL = "jdbc:mysql://localhost:3306/db_alunos?useTimezone=true&serverTimezone=UTC";
 
-	private static volatile Connection conn; // compartilhada
+	private static Connection conn; // compartilhada
 	private static String user; // último user usado
 	private static String password; // última senha usada
 	private static boolean initialized = false; // se já chamamos init()
