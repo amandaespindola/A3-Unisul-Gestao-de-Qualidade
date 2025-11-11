@@ -29,7 +29,7 @@ class ProfessorModelTest {
 
 	@Test
 	void testToStringContainsData() {
-		Professor.ProfessorDTO dto = new Professor.ProfessorDTO();
+		model.ProfessorDTO dto = new model.ProfessorDTO();
 		dto.setCampus("Campus A");
 		dto.setCpf("12345678900");
 		dto.setContato("99999-9999");
