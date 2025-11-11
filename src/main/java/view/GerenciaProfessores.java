@@ -242,9 +242,9 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 	}// GEN-LAST:event_bEditarActionPerformed
 
 	private void jTableProfessoresMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jTableProfessoresMouseClicked
-		if (this.jTableProfessores.getSelectedRow() != -1) {
-			this.linhaSelecionada = this.jTableProfessores.getSelectedRow();
-		}
+		if (evt.getClickCount() >= 1 && this.jTableProfessores.getSelectedRow() != -1) {
+	        this.linhaSelecionada = this.jTableProfessores.getSelectedRow();
+	    }
 	}// GEN-LAST:event_jTableProfessoresMouseClicked
 
 	private void bDeletarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bDeletarActionPerformed

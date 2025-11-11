@@ -177,7 +177,9 @@ public class CadastroAluno extends javax.swing.JFrame {
 	}// GEN-LAST:event_bConfirmarActionPerformed
 
 	private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bCancelarActionPerformed
+		if(evt.getSource() instanceof javax.swing.JButton) {
 		this.dispose();
+		}
 	}// GEN-LAST:event_bCancelarActionPerformed
 
 	/**

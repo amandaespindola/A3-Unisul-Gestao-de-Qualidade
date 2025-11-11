@@ -21,7 +21,7 @@ public class DaoUtils {
 				if (rs.next()) {
 					int novoId = rs.getInt(1);
 					setId.accept(novoId); // define o ID no objeto
-					logger.info(() -> tipo + " inserido: ID " + novoId);
+					logger.info(() -> tipo + " inserido com sucesso: " + objeto.getClass().getSimpleName() + " ID " + novoId);
 				}
 			}
 			return true;
