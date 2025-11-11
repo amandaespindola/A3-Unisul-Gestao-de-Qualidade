@@ -44,7 +44,7 @@ public class DaoUtils {
 			logger.info(() -> tipo + " deletado: ID " + id);
 			return true;
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Erro ao deletar " + tipo.toLowerCase() + " " + id, ex);
+			logger.log(Level.SEVERE, ex, () -> "Erro ao deletar " + tipo.toLowerCase() + " " + id);
 			return false;
 		} finally {
 			fecharConexao.accept(conn);
@@ -53,13 +53,13 @@ public class DaoUtils {
 
 	public static boolean tratarErroUpdate(String tipo, Object identificador, SQLException ex, Connection conn,
 			Consumer<Connection> fecharConexao) {
-		logger.log(Level.SEVERE, "Erro ao atualizar " + tipo.toLowerCase() + " " + identificador, ex);
+		logger.log(Level.SEVERE, ex, () -> "Erro ao atualizar " + tipo.toLowerCase() + " " + identificador);
 		fecharConexao.accept(conn);
 		return false;
 	}
 
 	public static void logErro(String acao, String tipo, Object identificador, SQLException ex) {
-		Logger.getLogger(tipo + "DAO").log(Level.SEVERE,
-				"Erro ao " + acao + " " + tipo.toLowerCase() + " " + identificador, ex);
+		Logger.getLogger(tipo + "DAO").log(Level.SEVERE, ex,
+				() -> "Erro ao " + acao + " " + tipo.toLowerCase() + " " + identificador);
 	}
 }

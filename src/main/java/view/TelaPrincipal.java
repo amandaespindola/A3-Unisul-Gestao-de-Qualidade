@@ -45,20 +45,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
 		bProfessores.setText("Professores");
 		bProfessores.setToolTipText("CTRL+P");
 		bProfessores.setAlignmentX(0.5F);
-		bProfessores.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				bProfessoresActionPerformed(evt);
-			}
-		});
 
+		bProfessores.addActionListener(this::bProfessoresActionPerformed);
+		
 		bAlunos.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 18)); // NOI18N
 		bAlunos.setText("Alunos");
 		bAlunos.setToolTipText("CTRL+A");
-		bAlunos.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				bAlunosActionPerformed(evt);
-			}
-		});
+		bAlunos.addActionListener(this::bAlunosActionPerformed);
 
 		jLabel1.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, java.awt.Font.PLAIN, 14)); // NOI18N
 		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -69,39 +62,24 @@ public class TelaPrincipal extends javax.swing.JFrame {
 		menuAlunos.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A,
 				java.awt.event.InputEvent.CTRL_DOWN_MASK));
 		menuAlunos.setText("Gerenciamento de Alunos");
-		menuAlunos.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menuAlunosActionPerformed(evt);
-			}
-		});
+		
+		menuAlunos.addActionListener(this::menuAlunosActionPerformed);
 		arquivo.add(menuAlunos);
 
 		menuProfessores.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P,
 				java.awt.event.InputEvent.CTRL_DOWN_MASK));
 		menuProfessores.setText("Gerenciamento de Professores");
-		menuProfessores.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menuProfessoresActionPerformed(evt);
-			}
-		});
+		menuProfessores.addActionListener(this::menuProfessoresActionPerformed);
 		arquivo.add(menuProfessores);
 
 		jMenuItem1.setText("Sobre");
-		jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jMenuItem1ActionPerformed(evt);
-			}
-		});
+		jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
 		arquivo.add(jMenuItem1);
 
 		menuLeave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S,
 				java.awt.event.InputEvent.CTRL_DOWN_MASK));
 		menuLeave.setText("Sair");
-		menuLeave.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menuLeaveActionPerformed(evt);
-			}
-		});
+		menuLeave.addActionListener(this::menuLeaveActionPerformed);
 		arquivo.add(menuLeave);
 
 		jMenuBar1.add(arquivo);

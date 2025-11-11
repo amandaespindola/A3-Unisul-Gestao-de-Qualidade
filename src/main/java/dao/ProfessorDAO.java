@@ -10,6 +10,7 @@ import utils.DaoUtils;
 public class ProfessorDAO extends BaseDAO<Professor> {
 
 	private static final ArrayList<Professor> minhaLista = new ArrayList<>();
+	private static final String ENTIDADE = "Professor";
 
 	public ProfessorDAO() {
 	}
@@ -36,9 +37,9 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 			stmt.setString(6, objeto.getTitulo());
 			stmt.setDouble(7, objeto.getSalario());
 
-			return DaoUtils.tratarInsercao(stmt, objeto, "Professor", objeto::setId);
+			return DaoUtils.tratarInsercao(stmt, objeto, ENTIDADE, objeto::setId);
 		} catch (SQLException ex) {
-			DaoUtils.logErro("inserir", "Professor", objeto.getNome(), ex);
+			DaoUtils.logErro("inserir", ENTIDADE, objeto.getNome(), ex);
 		} finally {
 			fecharConexaoSeInterna(conn);
 		}
@@ -72,7 +73,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 				return false;
 			}
 		} catch (SQLException ex) {
-			return DaoUtils.tratarErroUpdate("Professor", objeto.getId(), ex, conn, this::fecharConexaoSeInterna);
+			return DaoUtils.tratarErroUpdate(ENTIDADE, objeto.getId(), ex, conn, this::fecharConexaoSeInterna);
 		}
 	}
 
@@ -80,12 +81,12 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 	public boolean delete(int id) {
 		String sql = "DELETE FROM tb_professores WHERE id=?";
 		Connection conn = getConexao();
-		return DaoUtils.executarDelete(conn, sql, id, "Professor", this::fecharConexaoSeInterna);
+		return DaoUtils.executarDelete(conn, sql, id, ENTIDADE, this::fecharConexaoSeInterna);
 	}
 
 	@Override
 	public Professor findById(int id) {
-		String sql = "SELECT * FROM tb_professores WHERE id=?";
+		String sql = "SELECT id, nome, idade, campus, cpf, contato, titulo, salario FROM tb_professores WHERE id=?";
 		Connection conn = getConexao();
 		if (conn == null) {
 			logger.warning("Conexão nula ao tentar buscar professor por ID.");
@@ -102,7 +103,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 				}
 			}
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Erro ao carregar professor " + id, ex);
+			logger.log(Level.SEVERE, ex, () -> "Erro ao carregar professor " + id);
 		} finally {
 			fecharConexaoSeInterna(conn);
 		}
@@ -111,7 +112,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 
 	public ArrayList<Professor> getMinhaLista() {
 		minhaLista.clear();
-		String sql = "SELECT * FROM tb_professores";
+		String sql = "SELECT id, nome, idade, campus, cpf, contato, titulo, salario FROM tb_professores";
 		Connection conn = getConexao();
 		if (conn == null) {
 			logger.warning("Conexão nula ao tentar carregar lista de professores.");
@@ -137,6 +138,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return "tb_professores";
 	}
 
+	@Override
 	public int obterMaiorId() {
 		return super.obterMaiorId();
 	}

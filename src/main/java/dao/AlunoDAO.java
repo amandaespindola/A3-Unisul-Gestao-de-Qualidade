@@ -3,6 +3,7 @@ package dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import model.Aluno;
 import utils.DaoUtils;
@@ -10,6 +11,7 @@ import utils.DaoUtils;
 public class AlunoDAO extends BaseDAO<Aluno> {
 
 	private static final ArrayList<Aluno> MinhaLista = new ArrayList<>();
+	private static final String ENTIDADE = "Aluno";
 
 	public AlunoDAO() {
 	}
@@ -33,9 +35,9 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 			stmt.setString(3, objeto.getCurso());
 			stmt.setInt(4, objeto.getFase());
 
-			return DaoUtils.tratarInsercao(stmt, objeto, "Aluno", objeto::setId);
+			return DaoUtils.tratarInsercao(stmt, objeto, ENTIDADE, objeto::setId);
 		} catch (SQLException ex) {
-			DaoUtils.logErro("inserir", "Aluno", objeto.getNome(), ex);
+			DaoUtils.logErro("inserir", ENTIDADE, objeto.getNome(), ex);
 		} finally {
 			fecharConexaoSeInterna(conn);
 		}
@@ -60,7 +62,7 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 			logger.info(() -> "Aluno atualizado: ID " + objeto.getId());
 			return true;
 		} catch (SQLException ex) {
-			return DaoUtils.tratarErroUpdate("Aluno", objeto.getId(), ex, conn, this::fecharConexaoSeInterna);
+			return DaoUtils.tratarErroUpdate(ENTIDADE, objeto.getId(), ex, conn, this::fecharConexaoSeInterna);
 		}
 	}
 
@@ -68,12 +70,12 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 	public boolean delete(int id) {
 		String sql = "DELETE FROM tb_alunos WHERE id=?";
 		Connection conn = getConexao();
-		return DaoUtils.executarDelete(conn, sql, id, "Aluno", this::fecharConexaoSeInterna);
+		return DaoUtils.executarDelete(conn, sql, id, ENTIDADE, this::fecharConexaoSeInterna);
 	}
 
 	@Override
 	public Aluno findById(int id) {
-		String sql = "SELECT * FROM tb_alunos WHERE id=?";
+		String sql = "SELECT id, nome, idade, curso, fase FROM tb_alunos WHERE id=?";
 		Connection conn = getConexao();
 		if (conn == null) {
 			return null;
@@ -88,7 +90,8 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 				}
 			}
 		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, "Erro ao carregar aluno " + id, ex);
+			logger.log(Level.SEVERE, ex, () -> "Erro ao carregar aluno " + id);
+
 		} finally {
 			fecharConexaoSeInterna(conn);
 		}
@@ -97,7 +100,7 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 
 	public ArrayList<Aluno> getMinhaLista() {
 		MinhaLista.clear();
-		String sql = "SELECT * FROM tb_alunos";
+		String sql = "SELECT id, nome, idade, curso, fase FROM tb_alunos";
 		Connection conn = getConexao();
 		if (conn == null) {
 			return MinhaLista;
@@ -121,6 +124,7 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 		return "tb_alunos";
 	}
 
+	@Override
 	public int obterMaiorId() {
 		return super.obterMaiorId();
 	}
