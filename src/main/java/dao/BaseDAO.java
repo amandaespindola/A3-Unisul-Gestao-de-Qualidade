@@ -13,8 +13,6 @@ public abstract class BaseDAO<T> {
 	protected Connection conexao;
 	private boolean conexaoExterna = false;
 
-	private static final Set<String> TABELAS_PERMITIDAS = Set.of("tb_professor", "tb_aluno");
-
 	protected BaseDAO() {
 	}
 
