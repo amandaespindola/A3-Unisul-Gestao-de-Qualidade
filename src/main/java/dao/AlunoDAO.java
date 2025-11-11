@@ -122,6 +122,7 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 		return "tb_alunos";
 	}
 
+	@Override
 	public int obterMaiorId() {
 		return super.obterMaiorId();
 	}

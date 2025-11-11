@@ -68,12 +68,15 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 				new String[] { "ID", "Nome", "Idade", "Campus", "CPF", "Contato", "Título", "Salário" }) {
 			boolean[] canEdit = new boolean[] { false, false, false, false, false, false, false, false };
 
+            @Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				return canEdit[columnIndex];
 			}
 		});
 		jTableProfessores.setSelectionForeground(new java.awt.Color(239, 239, 239));
 		jTableProfessores.addMouseListener(new java.awt.event.MouseAdapter() {
+
+			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				jTableProfessoresMouseClicked(evt);
 			}

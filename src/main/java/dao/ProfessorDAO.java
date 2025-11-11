@@ -138,6 +138,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return "tb_professores";
 	}
 
+	@Override
 	public int obterMaiorId() {
 		return super.obterMaiorId();
 	}
