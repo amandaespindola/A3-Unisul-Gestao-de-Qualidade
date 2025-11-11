@@ -13,14 +13,12 @@ import utils.ViewUtils;
 
 public class CadastroAluno extends javax.swing.JFrame {
 
-	private transient Aluno objetoAluno;
 	private final transient AlunoDAO alunoDAO;
 
 	public CadastroAluno() {
 		initComponents();
 		getRootPane().setDefaultButton(this.bConfirmar);
 
-		this.objetoAluno = new Aluno();
 		this.alunoDAO = new AlunoDAO();
 	}
 
@@ -176,9 +174,14 @@ public class CadastroAluno extends javax.swing.JFrame {
 		}
 	}// GEN-LAST:event_bConfirmarActionPerformed
 
+	/**
+	 * Método vinculado automaticamente ao evento ActionListener do botão bCancelar.
+	 * O vínculo é definido no arquivo .form e invocado em tempo de execução pelo
+	 * Swing.
+	 */
 	private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bCancelarActionPerformed
-		if(evt.getSource() instanceof javax.swing.JButton) {
-		this.dispose();
+		if (evt.getSource() instanceof javax.swing.JButton) {
+			this.dispose();
 		}
 	}// GEN-LAST:event_bCancelarActionPerformed
 

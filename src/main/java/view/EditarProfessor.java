@@ -294,6 +294,11 @@ public class EditarProfessor extends javax.swing.JFrame {
 		}
 	}// GEN-LAST:event_bConfirmarActionPerformed
 
+	/**
+	 * Método vinculado automaticamente ao evento ActionListener do botão bCancelar.
+	 * O vínculo é definido no arquivo .form e invocado em tempo de execução pelo
+	 * Swing.
+	 */
 	private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bCancelarActionPerformed
 		if (evt.getSource() instanceof javax.swing.JButton) {
 			this.dispose();
