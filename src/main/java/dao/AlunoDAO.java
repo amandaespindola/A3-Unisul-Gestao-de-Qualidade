@@ -74,7 +74,7 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 
 	@Override
 	public Aluno findById(int id) {
-		String sql = "SELECT * FROM tb_alunos WHERE id=?";
+		String sql = "SELECT id, nome, idade, curso, fase FROM tb_alunos WHERE id=?";
 		Connection conn = getConexao();
 		if (conn == null) {
 			return null;
@@ -98,7 +98,7 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 
 	public ArrayList<Aluno> getMinhaLista() {
 		MinhaLista.clear();
-		String sql = "SELECT * FROM tb_alunos";
+		String sql = "SELECT id, nome, idade, curso, fase FROM tb_alunos";
 		Connection conn = getConexao();
 		if (conn == null) {
 			return MinhaLista;

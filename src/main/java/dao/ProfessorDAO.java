@@ -86,7 +86,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 
 	@Override
 	public Professor findById(int id) {
-		String sql = "SELECT * FROM tb_professores WHERE id=?";
+		String sql = "SELECT id, nome, idade, campus, cpf, contato, titulo, salario FROM tb_professores WHERE id=?";
 		Connection conn = getConexao();
 		if (conn == null) {
 			logger.warning("Conexão nula ao tentar buscar professor por ID.");
@@ -112,7 +112,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 
 	public ArrayList<Professor> getMinhaLista() {
 		minhaLista.clear();
-		String sql = "SELECT * FROM tb_professores";
+		String sql = "SELECT id, nome, idade, campus, cpf, contato, titulo, salario FROM tb_professores";
 		Connection conn = getConexao();
 		if (conn == null) {
 			logger.warning("Conexão nula ao tentar carregar lista de professores.");
