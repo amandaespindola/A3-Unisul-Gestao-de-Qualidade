@@ -16,7 +16,7 @@ public abstract class Pessoa {
         this.idade = idade;
     }
 
-    // M�todos GET e SET
+ // Métodos GET e SET
     public int getId() {
         return id;
     }

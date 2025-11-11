@@ -20,42 +20,6 @@ public class Professor extends Pessoa {
 		this.dao = new ProfessorDAO();
 	}
 
-	public static class ProfessorDTO {
-		private String campus;
-		private String cpf;
-		private String contato;
-		private String titulo;
-		private double salario;
-		private int id;
-		private String nome;
-		private int idade;
-		
-		public String getCampus() { return campus; }
-		public void setCampus(String campus) { this.campus = campus; }
-		
-		public String getCpf() { return cpf; }
-		public void setCpf(String cpf) { this.cpf = cpf; }
-		
-		public String getContato() { return contato; }
-		public void setContato(String contato) { this.contato = contato; }
-		
-		public String getTitulo() { return titulo; }
-		public void setTitulo(String titulo) { this.titulo = titulo; }
-		
-		public Double getSalario() { return salario; }
-		public void setSalario(Double salario) { this.salario = salario; }
-
-		public int getId() { return id; }
-		public void setId(int id) { this.id = id; }
-		
-		public String getNome() { return nome; }
-		public void setNome(String nome) { this.nome = nome; }
-		
-		public int getIdade() { return idade; }
-		public void setIdade(int idade) { this.idade = idade; }
-		
-	}
-
 	public Professor(String campus, String cpf, String contato, String titulo, double salario) {
 		this.campus = campus;
 		this.cpf = cpf;
@@ -130,7 +94,7 @@ public class Professor extends Pessoa {
 
 	// Cadastra novo professor
 	public boolean inserirProfessorBD(ProfessorDTO dto) throws SQLException {
-		
+
 		int id = this.obterMaiorId() + 1;
 		dto.setId(id);
 
@@ -162,4 +126,82 @@ public class Professor extends Pessoa {
 	public int obterMaiorId() throws SQLException {
 		return dao.obterMaiorId();
 	}
+
+	//classe interna dto com getters e setters
+	public static class ProfessorDTO {
+		private String campus;
+		private String cpf;
+		private String contato;
+		private String titulo;
+		private double salario;
+		private int id;
+		private String nome;
+		private int idade;
+
+		// Getters e Setters
+		public String getCampus() {
+			return campus;
+		}
+
+		public void setCampus(String campus) {
+			this.campus = campus;
+		}
+
+		public String getCpf() {
+			return cpf;
+		}
+
+		public void setCpf(String cpf) {
+			this.cpf = cpf;
+		}
+
+		public String getContato() {
+			return contato;
+		}
+
+		public void setContato(String contato) {
+			this.contato = contato;
+		}
+
+		public String getTitulo() {
+			return titulo;
+		}
+
+		public void setTitulo(String titulo) {
+			this.titulo = titulo;
+		}
+
+		public double getSalario() {
+			return salario;
+		}
+
+		public void setSalario(double salario) {
+			this.salario = salario;
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
+
+		public String getNome() {
+			return nome;
+		}
+
+		public void setNome(String nome) {
+			this.nome = nome;
+		}
+
+		public int getIdade() {
+			return idade;
+		}
+
+		public void setIdade(int idade) {
+			this.idade = idade;
+		}
+	}
+
 }
