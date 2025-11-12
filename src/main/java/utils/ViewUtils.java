@@ -106,4 +106,142 @@ public class ViewUtils {
 		menuExport.addActionListener(e -> acaoExportar.run());
 	}
 
+	// --------- Config + Builder para telas de cadastro ---------
+	public static final class TelaCadastroConfig {
+		private final JFrame tela;
+		private final JLabel tituloLabel;
+		private final String tituloTexto;
+		private final JComboBox<?> combo1;
+		private final JComboBox<?> combo2;
+		private final JButton botaoCancelar;
+		private final JButton botaoConfirmar;
+		private final ActionListener acaoConfirmar;
+
+		private TelaCadastroConfig(Builder b) {
+			this.tela = b.tela;
+			this.tituloLabel = b.tituloLabel;
+			this.tituloTexto = b.tituloTexto;
+			this.combo1 = b.combo1;
+			this.combo2 = b.combo2;
+			this.botaoCancelar = b.botaoCancelar;
+			this.botaoConfirmar = b.botaoConfirmar;
+			this.acaoConfirmar = b.acaoConfirmar;
+		}
+
+		public static Builder builder() {
+			return new Builder();
+		}
+
+		public static final class Builder {
+			private JFrame tela;
+			private JLabel tituloLabel;
+			private String tituloTexto;
+			private JComboBox<?> combo1;
+			private JComboBox<?> combo2;
+			private JButton botaoCancelar;
+			private JButton botaoConfirmar;
+			private ActionListener acaoConfirmar;
+
+			public Builder tela(JFrame tela) {
+				this.tela = tela;
+				return this;
+			}
+
+			public Builder tituloLabel(JLabel tituloLabel) {
+				this.tituloLabel = tituloLabel;
+				return this;
+			}
+
+			public Builder tituloTexto(String tituloTexto) {
+				this.tituloTexto = tituloTexto;
+				return this;
+			}
+
+			public Builder combo1(JComboBox<?> combo1) {
+				this.combo1 = combo1;
+				return this;
+			}
+
+			public Builder combo2(JComboBox<?> combo2) {
+				this.combo2 = combo2;
+				return this;
+			}
+
+			public Builder botaoCancelar(JButton botaoCancelar) {
+				this.botaoCancelar = botaoCancelar;
+				return this;
+			}
+
+			public Builder botaoConfirmar(JButton botaoConfirmar) {
+				this.botaoConfirmar = botaoConfirmar;
+				return this;
+			}
+
+			public Builder acaoConfirmar(ActionListener acaoConfirmar) {
+				this.acaoConfirmar = acaoConfirmar;
+				return this;
+			}
+
+			public TelaCadastroConfig build() {
+				// validações mínimas
+				if (tela == null || tituloLabel == null || tituloTexto == null || botaoCancelar == null
+						|| botaoConfirmar == null || acaoConfirmar == null) {
+					throw new IllegalArgumentException("Parâmetros obrigatórios não informados em TelaCadastroConfig");
+				}
+				return new TelaCadastroConfig(this);
+			}
+		}
+	}
+
+	/**
+	 * Configura uma tela de cadastro (Aluno/Professor) a partir de um objeto de
+	 * configuração, reduzindo a contagem de parâmetros e evitando duplicação nas
+	 * telas.
+	 */
+	public static void configurarTelaCadastro(TelaCadastroConfig cfg) {
+		configurarTelaPadrao(cfg.tela, cfg.tituloLabel, cfg.tituloTexto);
+		configurarBotoesPadrao(cfg.botaoCancelar, cfg.botaoConfirmar, cfg.tela, cfg.acaoConfirmar);
+
+		// Configuração dos combos (se fornecidos)
+		if (cfg.combo1 != null && cfg.combo2 != null) {
+			final String nomeClasse = cfg.tela.getClass().getSimpleName();
+			if (nomeClasse.contains("Aluno")) {
+				@SuppressWarnings("unchecked")
+				JComboBox<String> c1 = (JComboBox<String>) cfg.combo1;
+				@SuppressWarnings("unchecked")
+				JComboBox<String> c2 = (JComboBox<String>) cfg.combo2;
+				configurarCombosAluno(c1, c2);
+			} else if (nomeClasse.contains("Professor")) {
+				@SuppressWarnings("unchecked")
+				JComboBox<String> c1 = (JComboBox<String>) cfg.combo1;
+				@SuppressWarnings("unchecked")
+				JComboBox<String> c2 = (JComboBox<String>) cfg.combo2;
+				configurarCombosProfessor(c1, c2);
+			}
+		}
+	}
+
+	public static void configurarTelaEdicao(TelaCadastroConfig cfg) {
+		configurarTelaPadrao(cfg.tela, cfg.tituloLabel, cfg.tituloTexto);
+		configurarBotoesPadrao(cfg.botaoCancelar, cfg.botaoConfirmar, cfg.tela, cfg.acaoConfirmar);
+
+		// Combos opcionais (Aluno / Professor)
+		if (cfg.combo1 != null && cfg.combo2 != null) {
+			final String nomeClasse = cfg.tela.getClass().getSimpleName();
+			if (nomeClasse.contains("Aluno")) {
+				@SuppressWarnings("unchecked")
+				JComboBox<String> c1 = (JComboBox<String>) cfg.combo1;
+				@SuppressWarnings("unchecked")
+				JComboBox<String> c2 = (JComboBox<String>) cfg.combo2;
+				configurarCombosAluno(c1, c2);
+			} else if (nomeClasse.contains("Professor")) {
+				@SuppressWarnings("unchecked")
+				JComboBox<String> c1 = (JComboBox<String>) cfg.combo1;
+				@SuppressWarnings("unchecked")
+				JComboBox<String> c2 = (JComboBox<String>) cfg.combo2;
+				configurarCombosProfessor(c1, c2);
+			}
+		}
+	}
+
 }

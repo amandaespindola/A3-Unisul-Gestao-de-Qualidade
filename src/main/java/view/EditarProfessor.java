@@ -68,9 +68,9 @@ public class EditarProfessor extends javax.swing.JFrame {
 		contatoFormatado = new javax.swing.JFormattedTextField();
 		jLabel7 = new javax.swing.JLabel();
 
-		ViewUtils.configurarTelaPadrao(this, jLabel1, "Editar Professor");
-		ViewUtils.configurarCombosProfessor(campus, titulo);
-		ViewUtils.configurarBotoesPadrao(bCancelar, bConfirmar, this, this::bConfirmarActionPerformed);
+		ViewUtils.configurarTelaEdicao(ViewUtils.TelaCadastroConfig.builder().tela(this).tituloLabel(jLabel1)
+				.tituloTexto("Editar Professor").combo1(campus).combo2(titulo).botaoCancelar(bCancelar)
+				.botaoConfirmar(bConfirmar).acaoConfirmar(this::bConfirmarActionPerformed).build());
 
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel2.setText("Nome:");
