@@ -1,5 +1,7 @@
 package view;
 
+import java.util.Objects;
+
 import javax.swing.JOptionPane;
 
 import dao.ProfessorDAO;
@@ -190,6 +192,9 @@ public class EditarProfessor extends javax.swing.JFrame {
 
 		pack();
 		setLocationRelativeTo(null);
+		java.util.Objects.requireNonNull(
+				(java.util.function.Consumer<java.awt.event.ActionEvent>) e -> bCancelarActionPerformed(e));
+
 	}// </editor-fold>//GEN-END:initComponents
 
 	private void formatarCampos() throws java.text.ParseException {
