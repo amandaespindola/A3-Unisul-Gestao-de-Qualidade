@@ -1,6 +1,5 @@
 package dao;
 
-import dao.AlunoDAO;
 import model.Aluno;
 
 import org.junit.jupiter.api.*;
