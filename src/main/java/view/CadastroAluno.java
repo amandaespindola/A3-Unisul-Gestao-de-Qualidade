@@ -118,6 +118,8 @@ public class CadastroAluno extends javax.swing.JFrame {
 
 		pack();
 		setLocationRelativeTo(null);
+		java.util.Objects.requireNonNull((java.util.function.Consumer<java.awt.event.ActionEvent>) this::bCancelarActionPerformed);
+
 	}// </editor-fold>//GEN-END:initComponents
 
 	private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bConfirmarActionPerformed
