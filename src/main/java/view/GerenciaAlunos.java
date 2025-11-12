@@ -7,8 +7,6 @@ import utils.ViewUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import utils.ExcelExporter;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -24,7 +22,6 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		this.carregaTabela();
 	}
 
-	@SuppressWarnings("unchecked")
 	// <editor-fold defaultstate="collapsed" desc="Generated
 	// Code">//GEN-BEGIN:initComponents
 	private void initComponents() {
@@ -271,7 +268,6 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		tela.setVisible(true);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
 
-	@SuppressWarnings("unchecked")
 	public void carregaTabela() {
 		DefaultTableModel modelo = (DefaultTableModel) this.jTableAlunos.getModel();
 		modelo.setNumRows(0);

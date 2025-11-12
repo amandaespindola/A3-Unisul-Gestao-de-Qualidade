@@ -28,7 +28,6 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 		this.carregaTabela();
 	}
 
-	@SuppressWarnings("unchecked")
 	// <editor-fold defaultstate="collapsed" desc="Generated
 	// Code">//GEN-BEGIN:initComponents
 	private void initComponents() {
@@ -285,7 +284,6 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 		tela.setVisible(true);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
 
-	@SuppressWarnings("unchecked")
 	public void carregaTabela() {
 		DefaultTableModel modelo = (DefaultTableModel) this.jTableProfessores.getModel();
 		modelo.setNumRows(0);

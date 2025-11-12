@@ -1,11 +1,9 @@
 package dao;
 
 import java.sql.*;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utils.ConexaoManager;
-import view.TelaLogin;
 
 public abstract class BaseDAO<T> {
 
