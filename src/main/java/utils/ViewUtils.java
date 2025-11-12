@@ -194,15 +194,13 @@ public class ViewUtils {
 	}
 
 	/**
-	 * Configura uma tela de cadastro (Aluno/Professor) a partir de um objeto de
-	 * configuração, reduzindo a contagem de parâmetros e evitando duplicação nas
-	 * telas.
+	 * Método auxiliar comum para configurar telas de cadastro e edição, usado para
+	 * eliminar duplicação entre configurarTelaCadastro e configurarTelaEdicao.
 	 */
-	public static void configurarTelaCadastro(TelaCadastroConfig cfg) {
+	private static void configurarTelaBase(TelaCadastroConfig cfg) {
 		configurarTelaPadrao(cfg.tela, cfg.tituloLabel, cfg.tituloTexto);
 		configurarBotoesPadrao(cfg.botaoCancelar, cfg.botaoConfirmar, cfg.tela, cfg.acaoConfirmar);
 
-		// Configuração dos combos (se fornecidos)
 		if (cfg.combo1 != null && cfg.combo2 != null) {
 			final String nomeClasse = cfg.tela.getClass().getSimpleName();
 			if (nomeClasse.contains("Aluno")) {
@@ -221,27 +219,18 @@ public class ViewUtils {
 		}
 	}
 
-	public static void configurarTelaEdicao(TelaCadastroConfig cfg) {
-		configurarTelaPadrao(cfg.tela, cfg.tituloLabel, cfg.tituloTexto);
-		configurarBotoesPadrao(cfg.botaoCancelar, cfg.botaoConfirmar, cfg.tela, cfg.acaoConfirmar);
+	/**
+	 * Configura uma tela de cadastro (Aluno/Professor) a partir de um objeto de
+	 * configuração, reduzindo a contagem de parâmetros e evitando duplicação nas
+	 * telas.
+	 */
+	public static void configurarTelaCadastro(TelaCadastroConfig cfg) {
+		configurarTelaBase(cfg);
 
-		// Combos opcionais (Aluno / Professor)
-		if (cfg.combo1 != null && cfg.combo2 != null) {
-			final String nomeClasse = cfg.tela.getClass().getSimpleName();
-			if (nomeClasse.contains("Aluno")) {
-				@SuppressWarnings("unchecked")
-				JComboBox<String> c1 = (JComboBox<String>) cfg.combo1;
-				@SuppressWarnings("unchecked")
-				JComboBox<String> c2 = (JComboBox<String>) cfg.combo2;
-				configurarCombosAluno(c1, c2);
-			} else if (nomeClasse.contains("Professor")) {
-				@SuppressWarnings("unchecked")
-				JComboBox<String> c1 = (JComboBox<String>) cfg.combo1;
-				@SuppressWarnings("unchecked")
-				JComboBox<String> c2 = (JComboBox<String>) cfg.combo2;
-				configurarCombosProfessor(c1, c2);
-			}
-		}
+	}
+
+	public static void configurarTelaEdicao(TelaCadastroConfig cfg) {
+		configurarTelaBase(cfg);
 	}
 
 }
