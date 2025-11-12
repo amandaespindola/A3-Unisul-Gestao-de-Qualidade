@@ -153,4 +153,17 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 	public int obterMaiorId() {
 		return super.obterMaiorId();
 	}
+
+	// Verifica CPF para novo cadastro
+	public boolean existeCpf(String cpf) {
+	    return getMinhaLista().stream()
+	        .anyMatch(p -> p.getCpf().equals(cpf));
+	}
+
+	// Verifica CPF ignorando o ID atual (edição)
+	public boolean existeCpf(String cpf, int idIgnorado) {
+	    return getMinhaLista().stream()
+	        .anyMatch(p -> p.getCpf().equals(cpf) && p.getId() != idIgnorado);
+	}
+
 }

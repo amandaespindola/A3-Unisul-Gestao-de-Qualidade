@@ -68,25 +68,15 @@ public class EditarProfessor extends javax.swing.JFrame {
 		contatoFormatado = new javax.swing.JFormattedTextField();
 		jLabel7 = new javax.swing.JLabel();
 
-		ViewUtils.configurarJanela(this, "Editar Professor");
-
-		ViewUtils.configurarTitulo(jLabel1, "Editar Professor");
-
-		campus.setModel(new javax.swing.DefaultComboBoxModel<>(utils.Constantes.CAMPUS));
-
-		campus.setName(""); // NOI18N
+		ViewUtils.configurarTelaPadrao(this, jLabel1, "Editar Professor");
+		ViewUtils.configurarCombosProfessor(campus, titulo);
+		ViewUtils.configurarBotoesPadrao(bCancelar, bConfirmar, this, this::bConfirmarActionPerformed);
 
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel2.setText("Nome:");
 
 		jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel3.setText("Campus:");
-
-		ViewUtils.configurarBotaoCancelar(bCancelar, this);
-
-		ViewUtils.configurarBotaoConfirmar(bConfirmar, this::bConfirmarActionPerformed);
-
-		titulo.setModel(new javax.swing.DefaultComboBoxModel<>(utils.Constantes.TITULOS));
 
 		jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel6.setText("Título:");
@@ -215,17 +205,6 @@ public class EditarProfessor extends javax.swing.JFrame {
 		}
 	}
 
-	private boolean verificaCpf(String cpf) {
-		ArrayList<Professor> minhalista = professorDAO.getMinhaLista();
-
-		for (Professor a : minhalista) {
-			if ((cpf.equals(a.getCpf())) && (a.getId() != Integer.parseInt(dadosProfessor[7]))) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private void preencheCampos() {
 		int indexCampus = 0;
 		int indexTitulo = 0;
@@ -301,9 +280,8 @@ public class EditarProfessor extends javax.swing.JFrame {
 	 * execução pelo Swing e não deve ser removido.
 	 */
 	private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bCancelarActionPerformed
-		if (evt.getSource() instanceof javax.swing.JButton) {
-			this.dispose();
-		}
+		ViewUtils.fecharJanelaAoCancelar(evt.getSource(), this);
+
 	}// GEN-LAST:event_bCancelarActionPerformed
 
 	// Métodos Auxiliares
@@ -322,7 +300,8 @@ public class EditarProfessor extends javax.swing.JFrame {
 	private String validarCpf() throws Mensagens {
 		String cpfLimpo = ValidadorInput.validarTamanhoNumericoFixo(this.cpfFormatado.getText(), 11, "CPF");
 
-		if (verificaCpf(cpfLimpo)) {
+		int idAtual = Integer.parseInt(dadosProfessor[7]);
+		if (professorDAO.existeCpf(cpfLimpo, idAtual)) {
 			throw new Mensagens("CPF já cadastrado no sistema");
 		}
 

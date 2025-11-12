@@ -4,18 +4,11 @@ import java.sql.SQLException;
 import java.util.*;
 
 import dao.ProfessorDAO;
-import model.ProfessorDTO;
 
-public class Professor extends Pessoa {
+public class Professor extends ProfessorBase {
 
-	// Atributos
-	private String campus;
-	private String cpf;
-	private String contato;
-	private String titulo;
-	private double salario;
 	private final ProfessorDAO dao;
-
+	
 	// Construtores
 	public Professor() {
 		this.dao = new ProfessorDAO();
@@ -40,46 +33,7 @@ public class Professor extends Pessoa {
 		this.dao = new ProfessorDAO();
 	}
 
-	// Métodos GET e SET
-	public String getCampus() {
-		return campus;
-	}
-
-	public void setCampus(String campus) {
-		this.campus = campus;
-	}
-
-	public String getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
-	public String getContato() {
-		return contato;
-	}
-
-	public void setContato(String contato) {
-		this.contato = contato;
-	}
-
-	public String getTitulo() {
-		return titulo;
-	}
-
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
-	}
-
-	public double getSalario() {
-		return salario;
-	}
-
-	public void setSalario(double salario) {
-		this.salario = salario;
-	}
+	
 
 	@Override
 	public String toString() {

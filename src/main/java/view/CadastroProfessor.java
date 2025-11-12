@@ -13,7 +13,6 @@ import utils.Constantes;
 import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
-import view.Mensagens;
 
 public class CadastroProfessor extends javax.swing.JFrame {
 
@@ -54,25 +53,15 @@ public class CadastroProfessor extends javax.swing.JFrame {
 		jLabel5 = new javax.swing.JLabel();
 		contatoFormatado = new javax.swing.JFormattedTextField();
 
-		ViewUtils.configurarJanela(this, "Cadastro de Professor");
-
-		ViewUtils.configurarTitulo(jLabel1, "Cadastro de Professor");
-
-		campus.setModel(new javax.swing.DefaultComboBoxModel<>(utils.Constantes.CAMPUS));
-
-		campus.setName(""); // NOI18N
+		ViewUtils.configurarTelaPadrao(this, jLabel1, "Cadastro de Professor");
+		ViewUtils.configurarCombosProfessor(campus, titulo);
+		ViewUtils.configurarBotoesPadrao(bCancelar, bConfirmar, this, this::bConfirmarActionPerformed);
 
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel2.setText("Nome:");
 
 		jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel3.setText("Campus:");
-
-		ViewUtils.configurarBotaoCancelar(bCancelar, this);
-
-		ViewUtils.configurarBotaoConfirmar(bConfirmar, this::bConfirmarActionPerformed);
-
-		titulo.setModel(new javax.swing.DefaultComboBoxModel<>(utils.Constantes.TITULOS));
 
 		jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel6.setText("Título:");
@@ -217,7 +206,7 @@ public class CadastroProfessor extends javax.swing.JFrame {
 	private String validarCpf() throws Mensagens {
 		String cpfLimpo = ValidadorInput.validarTamanhoNumericoFixo(this.cpfFormatado.getText(), 11, "CPF");
 
-		if (this.verificaCpf(cpfLimpo)) {
+		if (this.professorDAO.existeCpf(cpfLimpo)) {
 			throw new Mensagens("CPF já cadastrado no sistema");
 		}
 		return cpfLimpo;
@@ -260,16 +249,8 @@ public class CadastroProfessor extends javax.swing.JFrame {
 			}
 
 			// Capturando exceções    
-		} catch (Mensagens erro) {
-			JOptionPane.showMessageDialog(null, erro.getMessage());
-		} catch (NumberFormatException erro2) {
-			JOptionPane.showMessageDialog(null, "O salário não está em um formato numérico válido.");
-		} catch (NullPointerException erro3) {
-			JOptionPane.showMessageDialog(null, "Data de nascimento não pode ser vazia");
 		} catch (Exception ex) {
-			Logger.getLogger(CadastroProfessor.class.getName()).log(Level.SEVERE,
-					"Erro inesperado ao confirmar cadastro", ex);
-			JOptionPane.showMessageDialog(null, "Ocorreu um erro inesperado durante o cadastro. Verifique os logs.");
+			ViewUtils.tratarErroCadastro(ex);
 		}
 
 	}// GEN-LAST:event_bConfirmarActionPerformed
@@ -280,9 +261,8 @@ public class CadastroProfessor extends javax.swing.JFrame {
 	 * Swing.
 	 */
 	private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bCancelarActionPerformed
-		if (evt.getSource() instanceof javax.swing.JButton) {
-			this.dispose();
-		}
+		ViewUtils.fecharJanelaAoCancelar(evt.getSource(), this);
+
 	}// GEN-LAST:event_bCancelarActionPerformed
 
 	/**

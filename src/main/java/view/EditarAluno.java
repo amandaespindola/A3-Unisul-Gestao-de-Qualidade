@@ -51,17 +51,9 @@ public class EditarAluno extends javax.swing.JFrame {
 		bConfirmar = new javax.swing.JButton();
 		idade = new javax.swing.JTextField();
 
-		ViewUtils.configurarJanela(this, "Editar Aluno");
-
-		ViewUtils.configurarTitulo(jLabel1, "Editar Aluno");
-
-		curso.setModel(new javax.swing.DefaultComboBoxModel<>(utils.Constantes.CURSOS));
-
-		curso.setName(""); // NOI18N
-
-		String[] fasesFormatadas = java.util.Arrays.stream(utils.Constantes.FASES).mapToObj(f -> f + "ª")
-				.toArray(String[]::new);
-		fase.setModel(new javax.swing.DefaultComboBoxModel<>(fasesFormatadas));
+		ViewUtils.configurarTelaPadrao(this, jLabel1, "Editar Aluno");
+		ViewUtils.configurarCombosAluno(curso, fase);
+		ViewUtils.configurarBotoesPadrao(bCancelar, bConfirmar, this, this::bConfirmarActionPerformed);
 
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 		jLabel2.setText("Nome:");
@@ -72,10 +64,6 @@ public class EditarAluno extends javax.swing.JFrame {
 		jLabel4.setText("Idade:");
 
 		jLabel5.setText("Fase:");
-
-		ViewUtils.configurarBotaoCancelar(bCancelar, this);
-
-		ViewUtils.configurarBotaoConfirmar(bConfirmar, this::bConfirmarActionPerformed);
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
@@ -207,11 +195,10 @@ public class EditarAluno extends javax.swing.JFrame {
 			}
 
 			// Capturando exceções
-		} catch (Mensagens erro) {
-			JOptionPane.showMessageDialog(null, erro.getMessage());
-		} catch (NumberFormatException erro2) {
-			JOptionPane.showMessageDialog(null, "Informe um número.");
+		} catch (Exception ex) {
+			ViewUtils.tratarErroCadastro(ex);
 		}
+
 	}// GEN-LAST:event_bConfirmarActionPerformed
 
 	/**
@@ -220,9 +207,8 @@ public class EditarAluno extends javax.swing.JFrame {
 	 * Swing.
 	 */
 	private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bCancelarActionPerformed
-		if (evt.getSource() instanceof javax.swing.JButton) {
-			this.dispose();
-		}
+		ViewUtils.fecharJanelaAoCancelar(evt.getSource(), this);
+
 	}// GEN-LAST:event_bCancelarActionPerformed
 
 	/**
