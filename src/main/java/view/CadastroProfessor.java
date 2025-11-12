@@ -53,9 +53,9 @@ public class CadastroProfessor extends javax.swing.JFrame {
 		jLabel5 = new javax.swing.JLabel();
 		contatoFormatado = new javax.swing.JFormattedTextField();
 
-		ViewUtils.configurarTelaPadrao(this, jLabel1, "Cadastro de Professor");
-		ViewUtils.configurarCombosProfessor(campus, titulo);
-		ViewUtils.configurarBotoesPadrao(bCancelar, bConfirmar, this, this::bConfirmarActionPerformed);
+		ViewUtils.configurarTelaCadastro(ViewUtils.TelaCadastroConfig.builder().tela(this).tituloLabel(jLabel1)
+				.tituloTexto("Cadastro de Professor").combo1(campus).combo2(titulo).botaoCancelar(bCancelar)
+				.botaoConfirmar(bConfirmar).acaoConfirmar(this::bConfirmarActionPerformed).build());
 
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		jLabel2.setText("Nome:");

@@ -44,9 +44,9 @@ public class CadastroAluno extends javax.swing.JFrame {
 		bConfirmar = new javax.swing.JButton();
 		idade = new com.toedter.calendar.JDateChooser();
 
-		ViewUtils.configurarTelaPadrao(this, jLabel1, "Cadastro de Aluno");
-		ViewUtils.configurarCombosAluno(curso, fase);
-		ViewUtils.configurarBotoesPadrao(bCancelar, bConfirmar, this, this::bConfirmarActionPerformed);
+		ViewUtils.configurarTelaCadastro(ViewUtils.TelaCadastroConfig.builder().tela(this).tituloLabel(jLabel1)
+				.tituloTexto("Cadastro de Aluno").combo1(curso).combo2(fase).botaoCancelar(bCancelar)
+				.botaoConfirmar(bConfirmar).acaoConfirmar(this::bConfirmarActionPerformed).build());
 
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 		jLabel2.setText("Nome:");
