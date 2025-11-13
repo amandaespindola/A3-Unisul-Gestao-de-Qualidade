@@ -43,7 +43,18 @@ public final class Constantes {
         }
 
         public static final String DEFAULT_FONT = "Segoe UI";
+
+        // Botões
         public static final String BTN_CONFIRMAR = "Confirmar";
         public static final String BTN_CANCELAR = "Cancelar";
+
+        // Labels
+        public static final String NOME = "Nome:";
+        public static final String NASCIMENTO = "Nasc:";
+        public static final String IDADE = "Idade:";
+        public static final String CPF = "CPF:";
+        public static final String CURSO = "Curso:";
+        public static final String FASE = "Fase:";
+
     }
 }
