@@ -62,6 +62,7 @@ public final class Constantes {
         
         // Titulos
         public static final String TITULO_EDITAR_ALUNO = "Editar Aluno";
+        public static final String TITULO_EDITAR_PROFESSOR = "Editar Professor";
 
     }
 }
