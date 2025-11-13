@@ -6,6 +6,7 @@ import java.util.logging.Level;
 
 import model.Aluno;
 import utils.DaoUtils;
+import java.util.List;
 
 public class AlunoDAO extends BaseDAO<Aluno> {
 
@@ -97,7 +98,7 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 		return null;
 	}
 
-	public ArrayList<Aluno> getMinhaLista() {
+	public List<Aluno> getMinhaLista() {
 		MinhaLista.clear();
 		String sql = "SELECT id, nome, idade, curso, fase FROM tb_alunos";
 		Connection conn = getConexao();

@@ -16,6 +16,8 @@ import utils.ExcelExporter;
 import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
+import java.util.List;
+
 
 public class GerenciaProfessores extends javax.swing.JFrame {
 
@@ -288,7 +290,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 		DefaultTableModel modelo = (DefaultTableModel) this.jTableProfessores.getModel();
 		modelo.setNumRows(0);
 
-		ArrayList<Professor> minhalista = professorDAO.getMinhaLista();
+		List<Professor> minhalista = professorDAO.getMinhaLista();
 
 		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 

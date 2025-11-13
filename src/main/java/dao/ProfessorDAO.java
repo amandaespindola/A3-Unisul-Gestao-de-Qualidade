@@ -6,6 +6,7 @@ import java.util.logging.Level;
 
 import model.Professor;
 import utils.DaoUtils;
+import java.util.List;
 
 public class ProfessorDAO extends BaseDAO<Professor> {
 
@@ -122,7 +123,7 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return null;
 	}
 
-	public ArrayList<Professor> getMinhaLista() {
+	public List<Professor> getMinhaLista() {
 		minhaLista.clear();
 		String sql = "SELECT id, nome, idade, campus, cpf, contato, titulo, salario FROM tb_professores";
 		Connection conn = getConexao();

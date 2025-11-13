@@ -43,7 +43,7 @@ public class Professor extends ProfessorBase {
 	}
 
 	// Retorna a Lista de Professores (objetos)
-	public ArrayList<Professor> getMinhaLista() {
+	public List<Professor> getMinhaLista() {
 		return dao.getMinhaLista();
 	}
 

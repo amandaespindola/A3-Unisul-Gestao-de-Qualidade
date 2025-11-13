@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import utils.ExcelExporter;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.util.List;
 
 public class GerenciaAlunos extends javax.swing.JFrame {
 
@@ -287,7 +288,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		DefaultTableModel modelo = (DefaultTableModel) this.jTableAlunos.getModel();
 		modelo.setNumRows(0);
 
-		ArrayList<Aluno> minhalista;
+		List<Aluno> minhalista;
 		minhalista = this.alunoDAO.getMinhaLista();
 
 		for (Aluno a : minhalista) {
