@@ -32,7 +32,7 @@ public class CadastroAluno extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JLabel lblTitulo = ViewUtils.criarLabelTitulo("Cadastro de Aluno");
+        javax.swing.JLabel lblTitulo = ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_CAD_ALUNO);
         nome = new javax.swing.JTextField();
         curso = new javax.swing.JComboBox<>();
         fase = new javax.swing.JComboBox<>();

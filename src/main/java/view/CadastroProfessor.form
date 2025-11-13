@@ -141,7 +141,7 @@
         <Property name="text" type="java.lang.String" value="Cadastro de Professor"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="ViewUtils.criarLabelTitulo(&quot;Cadastro de Professor&quot;)&#xa;"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_CAD_PROFESSOR)&#xa;"/>
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
       </AuxValues>
