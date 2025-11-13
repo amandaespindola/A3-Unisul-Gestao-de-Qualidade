@@ -59,6 +59,9 @@ public final class Constantes {
         public static final String CONTATO = "Contato:";
         public static final String SALARIO = "Salário:";
         public static final String TITULO = "Título:";
+        
+        // Titulos
+        public static final String TITULO_EDITAR_ALUNO = "Editar Aluno";
 
     }
 }
