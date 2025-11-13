@@ -166,7 +166,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 	 */
 	private static final Logger logger = Logger.getLogger(TelaPrincipal.class.getName());
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		try {
 			FlatDarkLaf.setup();
 		} catch (Exception e) {

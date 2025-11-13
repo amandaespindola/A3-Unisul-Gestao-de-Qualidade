@@ -179,6 +179,8 @@ public class CadastroProfessor extends javax.swing.JFrame {
 
 		pack();
 		setLocationRelativeTo(null);
+		java.util.Objects.requireNonNull((java.util.function.Consumer<java.awt.event.ActionEvent>) this::bCancelarActionPerformed);
+
 	}// </editor-fold>//GEN-END:initComponents
 
 	private void formatarCampos() throws java.text.ParseException {
@@ -189,16 +191,6 @@ public class CadastroProfessor extends javax.swing.JFrame {
 		}
 	}
 
-	private boolean verificaCpf(String cpf) {
-		ArrayList<Professor> minhalista = professorDAO.getMinhaLista();
-
-		for (Professor a : minhalista) {
-			if ((cpf.equals(a.getCpf()))) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	private String validarCpf() throws Mensagens {
 		String cpfLimpo = ValidadorInput.validarTamanhoNumericoFixo(this.cpfFormatado.getText(), 11, "CPF");

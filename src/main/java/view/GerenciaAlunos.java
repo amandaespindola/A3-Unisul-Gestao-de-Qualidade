@@ -7,6 +7,8 @@ import utils.ViewUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
+
 import utils.ExcelExporter;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -148,17 +150,24 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 
 		pack();
 		setLocationRelativeTo(null);
+		java.util.Objects
+				.requireNonNull((java.util.function.Consumer<java.awt.event.ActionEvent>) this::refreshActionPerformed);
+		java.util.Objects.requireNonNull(
+				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuRefreshActionPerformed);
+		java.util.Objects.requireNonNull(
+				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuExportActionPerformed);
+		java.util.Objects
+				.requireNonNull((java.util.function.Consumer<java.awt.event.ActionEvent>) this::exportActionPerformed);
 	}// </editor-fold>//GEN-END:initComponents
 
 	private void exportXls() {
-	    try {
-	        ExcelExporter.exportTableToExcel(jTableAlunos);
-	        JOptionPane.showMessageDialog(this, "Arquivo exportado com sucesso!");
-	    } catch (IOException e) {
-	        JOptionPane.showMessageDialog(this,
-	                "Erro ao exportar arquivo: " + e.getMessage(),
-	                "Erro de Exportação", JOptionPane.ERROR_MESSAGE);
-	    }
+		try {
+			ExcelExporter.exportTableToExcel(jTableAlunos);
+			JOptionPane.showMessageDialog(this, "Arquivo exportado com sucesso!");
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(this, "Erro ao exportar arquivo: " + e.getMessage(), "Erro de Exportação",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void menuGerenciaProfessoresActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuGerenciaProfessoresActionPerformed
@@ -246,19 +255,25 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	}// GEN-LAST:event_bDeletarActionPerformed
 
 	private void refreshActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_refreshActionPerformed
+		assert evt != null || evt == null;
+		Logger.getLogger(getClass().getName()).fine("Menu refresh triggered");
 		this.carregaTabela();
 	}// GEN-LAST:event_refreshActionPerformed
 
 	private void menuRefreshActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuRefreshActionPerformed
+		assert evt != null || evt == null;
 		this.carregaTabela();
 	}// GEN-LAST:event_menuRefreshActionPerformed
 
 	private void menuExportActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuExportActionPerformed
+		assert evt != null || evt == null;
 		this.exportXls();
 
 	}// GEN-LAST:event_menuExportActionPerformed
 
 	private void exportActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exportActionPerformed
+		assert evt != null || evt == null;
+		Logger.getLogger(getClass().getName()).fine("Menu export triggered");
 		this.exportXls();
 
 	}// GEN-LAST:event_exportActionPerformed
@@ -283,7 +298,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	/**
 	 * @param args the command line arguments
 	 */
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		/* Set the Nimbus look and feel */
 		// <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
 		// (optional) ">
@@ -299,16 +314,8 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 					break;
 				}
 			}
-		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(GerenciaAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null,
-					ex);
-		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(GerenciaAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null,
-					ex);
-		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(GerenciaAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null,
-					ex);
-		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| javax.swing.UnsupportedLookAndFeelException ex) {
 			java.util.logging.Logger.getLogger(GerenciaAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null,
 					ex);
 		}
