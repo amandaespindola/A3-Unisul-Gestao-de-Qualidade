@@ -5,8 +5,6 @@ import javax.swing.JOptionPane;
 import dao.ProfessorDAO;
 import model.Professor;
 
-import java.util.ArrayList;
-
 import utils.Constantes;
 import utils.LookAndFeelHelper;
 import utils.ValidadorInput;

@@ -1,6 +1,5 @@
 package view;
 
-import java.util.Objects;
 
 import javax.swing.JOptionPane;
 

@@ -4,7 +4,6 @@ import java.util.*;
 
 import dao.AlunoDAO;
 
-import java.sql.SQLException;
 
 public class Aluno extends Pessoa {
 
@@ -64,7 +63,7 @@ public class Aluno extends Pessoa {
     }
 
     // Cadastra novo aluno
-    public boolean inserirAlunoBd(String curso, int fase, String nome, int idade) throws SQLException {
+    public boolean inserirAlunoBd(String curso, int fase, String nome, int idade) {
         Aluno objeto = new Aluno(curso, fase, 0, nome, idade);
         return dao.insert(objeto);
     }
@@ -89,7 +88,7 @@ public class Aluno extends Pessoa {
     }
 
     // retorna o maior ID da nossa base de dados
-    public int obterMaiorId() throws SQLException {
+    public int obterMaiorId() {
         return dao.obterMaiorId();
     }
 }
