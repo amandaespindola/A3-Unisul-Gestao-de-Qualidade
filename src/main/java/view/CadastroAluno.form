@@ -113,7 +113,7 @@
         <Property name="text" type="java.lang.String" value="Cadastro de Aluno"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="ViewUtils.criarLabel(&quot;Cadastro de Aluno&quot;, &quot;lblNascimento&quot;);"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="ViewUtils.criarLabelTitulo(&quot;Cadastro de Aluno&quot;)"/>
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
       </AuxValues>

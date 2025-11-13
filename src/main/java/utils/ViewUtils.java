@@ -54,6 +54,13 @@ public class ViewUtils {
         return label;
     }
 
+    public static JLabel criarLabelTitulo(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("Tahoma", Font.BOLD, 24));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        return label;
+    }
+
     public static void configurarTelaPadrao(JFrame frame, JLabel labelTitulo, String tituloJanela) {
         configurarJanela(frame, tituloJanela);
         configurarTitulo(labelTitulo, tituloJanela);

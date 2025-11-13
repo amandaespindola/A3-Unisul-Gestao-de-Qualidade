@@ -31,40 +31,41 @@ public class CadastroProfessor extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel lblTitulo = ViewUtils.criarLabelTitulo("Cadastro de Professor")
+        ;
         nome = new javax.swing.JTextField();
         campus = new javax.swing.JComboBox<>();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        javax.swing.JLabel lblNome = new javax.swing.JLabel();
+        javax.swing.JLabel lblCampus = ViewUtils.criarLabel(Constantes.UIConstants.CAMPUS, "lblCampus");
         javax.swing.JButton bCancelar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CANCELAR, this::bCancelarActionPerformed);
         javax.swing.JButton bConfirmar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CONFIRMAR, this::bConfirmarActionPerformed);
         titulo = new javax.swing.JComboBox<>();
-        jLabel6 = new javax.swing.JLabel();
+        javax.swing.JLabel lblTituloProfessor = ViewUtils.criarLabel(Constantes.UIConstants.TITULO, "lblTituloProfessor");
         idade = new com.toedter.calendar.JDateChooser();
-        jLabel8 = new javax.swing.JLabel();
+        javax.swing.JLabel lblNascimento = ViewUtils.criarLabel(Constantes.UIConstants.NASCIMENTO, "lblNascimento");
         cpfFormatado = new javax.swing.JFormattedTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        javax.swing.JLabel lblCPF = ViewUtils.criarLabel(Constantes.UIConstants.CPF, "lblCPF");
+        javax.swing.JLabel lblContato = ViewUtils.criarLabel(Constantes.UIConstants.CONTATO, "lblContato");
         salarioFormatado = new javax.swing.JFormattedTextField();
-        jLabel5 = new javax.swing.JLabel();
+        javax.swing.JLabel lblSalario = ViewUtils.criarLabel(Constantes.UIConstants.SALARIO, "lblSalario");
         contatoFormatado = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cadastro de Professor");
         setResizable(false);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Cadastro de Professor");
+        lblTitulo.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitulo.setText("Cadastro de Professor");
 
         campus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-", "Continente", "Dib Mussi", "Ilha", "Pedra Branca", "Trajano", "Tubarão" }));
         campus.setName(""); // NOI18N
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel2.setText("Nome:");
+        lblNome.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblNome.setText("Nome:");
 
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel3.setText("Campus:");
+        lblCampus.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblCampus.setText("Campus:");
 
         bCancelar.setText("Cancelar");
 
@@ -73,20 +74,20 @@ public class CadastroProfessor extends javax.swing.JFrame {
 
         titulo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-", "Graduação", "Especialização", "Mestrado", "Doutorado" }));
 
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel6.setText("Título:");
+        lblTituloProfessor.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblTituloProfessor.setText("Título:");
 
         idade.setBackground(new java.awt.Color(153, 153, 153));
         idade.setForeground(new java.awt.Color(51, 51, 51));
 
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel8.setText("Nasc.:");
+        lblNascimento.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblNascimento.setText("Nasc.:");
 
-        jLabel9.setText("CPF:");
+        lblCPF.setText("CPF:");
 
-        jLabel4.setText("Contato:");
+        lblContato.setText("Contato:");
 
-        jLabel5.setText("Salário:");
+        lblSalario.setText("Salário:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -96,14 +97,14 @@ public class CadastroProfessor extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE))
+                        .addComponent(lblTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(29, 29, 29)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel8))
+                                    .addComponent(lblTituloProfessor)
+                                    .addComponent(lblNascimento))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -115,14 +116,14 @@ public class CadastroProfessor extends javax.swing.JFrame {
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(idade, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel5)
+                                            .addComponent(lblSalario)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                             .addComponent(salarioFormatado, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel9))
+                                    .addComponent(lblNome)
+                                    .addComponent(lblCampus)
+                                    .addComponent(lblCPF))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(nome)
@@ -130,7 +131,7 @@ public class CadastroProfessor extends javax.swing.JFrame {
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                         .addComponent(cpfFormatado)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel4)
+                                        .addComponent(lblContato)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(contatoFormatado, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -140,32 +141,32 @@ public class CadastroProfessor extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(lblNome))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(campus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
+                    .addComponent(lblCampus))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cpfFormatado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel4)
+                    .addComponent(lblCPF)
+                    .addComponent(lblContato)
                     .addComponent(contatoFormatado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(idade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
+                    .addComponent(lblNascimento)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(salarioFormatado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel5)))
+                        .addComponent(lblSalario)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(titulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                    .addComponent(lblTituloProfessor))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -267,14 +268,6 @@ public class CadastroProfessor extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField contatoFormatado;
     private javax.swing.JFormattedTextField cpfFormatado;
     private com.toedter.calendar.JDateChooser idade;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField nome;
     private javax.swing.JFormattedTextField salarioFormatado;
     private javax.swing.JComboBox<String> titulo;

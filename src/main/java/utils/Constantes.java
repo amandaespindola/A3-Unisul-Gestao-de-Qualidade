@@ -55,6 +55,10 @@ public final class Constantes {
         public static final String CPF = "CPF:";
         public static final String CURSO = "Curso:";
         public static final String FASE = "Fase:";
+        public static final String CAMPUS = "Campus:";
+        public static final String CONTATO = "Contato:";
+        public static final String SALARIO = "Salário:";
+        public static final String TITULO = "Título:";
 
     }
 }
