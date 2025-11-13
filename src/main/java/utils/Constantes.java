@@ -47,6 +47,13 @@ public final class Constantes {
         // Botões
         public static final String BTN_CONFIRMAR = "Confirmar";
         public static final String BTN_CANCELAR = "Cancelar";
+        public static final String BTN_CADASTRAR = "Cadastrar";
+        public static final String BTN_EDITAR = "Editar";
+        public static final String BTN_DELETAR = "Excluir";
+        public static final String BTN_ATUALIZAR = "Atualizar";
+        public static final String BTN_EXPORTAR = "Exportar";
+        public static final String BTN_VOLTAR = "Voltar";
+        public static final String BTN_SAIR = "Sair";
 
         // Labels
         public static final String NOME = "Nome:";
@@ -59,10 +66,24 @@ public final class Constantes {
         public static final String CONTATO = "Contato:";
         public static final String SALARIO = "Salário:";
         public static final String TITULO = "Título:";
-        
+
         // Titulos
+        public static final String TITULO_CAD_ALUNO = "Cadastro de Aluno";
         public static final String TITULO_EDITAR_ALUNO = "Editar Aluno";
+        public static final String TITULO_GERENCIA_ALUNOS = "Cadastro de Alunos";
+
+        public static final String TITULO_CAD_PROFESSOR = "Cadastro de Professor";
         public static final String TITULO_EDITAR_PROFESSOR = "Editar Professor";
+        public static final String TITULO_GERENCIA_PROFESSORES = "Cadastro de Professores";
+
+        // Textos de Menu
+        public static final String MENU_PRINCIPAL = "Menu";
+        public static final String GERENCIAR_PROFESSORES = "Gerenciar Professores";
+        public static final String GERENCIAR_ALUNOS = "Gerenciar Alunos";
+        public static final String REFRESH = "Atualizar";
+        public static final String EXPORTAR = "Exportar";
+        public static final String SOBRE = "Sobre";
+        public static final String LEAVE = "Sair";
 
     }
 }

@@ -4,6 +4,7 @@ import dao.AlunoDAO;
 import model.Aluno;
 import utils.ValidadorInput;
 import utils.ViewUtils;
+import utils.Constantes;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -25,140 +26,174 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	}
 
 	// <editor-fold defaultstate="collapsed" desc="Generated
-	// Code">//GEN-BEGIN:initComponents
-	private void initComponents() {
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-		bCadastro = new javax.swing.JButton();
-		bEditar = new javax.swing.JButton();
-		bDeletar = new javax.swing.JButton();
-		jScrollPane2 = new javax.swing.JScrollPane();
-		jTableAlunos = new javax.swing.JTable();
-		jLabel1 = new javax.swing.JLabel();
-		refresh = new javax.swing.JButton();
-		export = new javax.swing.JButton();
-		jMenuBar1 = new javax.swing.JMenuBar();
-		menu = new javax.swing.JMenu();
-		menuGerenciaProfessores = new javax.swing.JMenuItem();
-		menuExport = new javax.swing.JMenuItem();
-		menuRefresh = new javax.swing.JMenuItem();
-		jMenuItem1 = new javax.swing.JMenuItem();
-		menuLeave = new javax.swing.JMenuItem();
+        javax.swing.JButton bCadastro = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CADASTRAR, this::bCadastroActionPerformed);
+        javax.swing.JButton bEditar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_EDITAR, this::bEditarActionPerformed);
+        javax.swing.JButton bDeletar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_DELETAR, this::bDeletarActionPerformed);
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableAlunos = new javax.swing.JTable();
+        javax.swing.JLabel lblTitulo = ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_GERENCIA_ALUNOS);
+        javax.swing.JButton refresh = ViewUtils.criarBotao(Constantes.UIConstants.BTN_ATUALIZAR, this::refreshActionPerformed);
+        javax.swing.JButton export = ViewUtils.criarBotao(Constantes.UIConstants.BTN_EXPORTAR, this::exportActionPerformed);
+        javax.swing.JMenuBar jMenuBar1 = ViewUtils.criarMenuBar();
+        javax.swing.JMenu menu = ViewUtils.criarMenu("Menu", "menu");
+        javax.swing.JMenuItem menuGerenciaProfessores = ViewUtils.criarMenuItem(
+            "Gerenciar Professores",
+            this::menuGerenciaProfessoresActionPerformed,
+            "menuGerenciaProfessores"
+        );
+        javax.swing.JMenuItem menuExport = ViewUtils.criarMenuItem(
+            "Exportar",
+            this::menuExportActionPerformed,
+            "menuExport"
+        );
+        javax.swing.JMenuItem menuRefresh = ViewUtils.criarMenuItem(
+            "Atualizar",
+            this::menuRefreshActionPerformed,
+            "menuRefresh"
+        );
+        javax.swing.JMenuItem menuSobre = ViewUtils.criarMenuItem(
+            Constantes.UIConstants.SOBRE,
+            this::menuSobreActionPerformed,
+            "menuSobre"
+        );
+        javax.swing.JMenuItem menuLeave = ViewUtils.criarMenuItem(
+            "Sair",
+            this::menuLeaveActionPerformed,
+            "menuLeave"
+        );
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-		setTitle("Gerência de Alunos");
-		setResizable(false);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Gerência de Alunos");
+        setBackground(new java.awt.Color(80, 80, 80));
+        setResizable(false);
 
-		bCadastro.setText("Cadastrar novo");
-		bCadastro.addActionListener(this::bCadastroActionPerformed);
+        bCadastro.setText("Cadastrar novo");
+        bCadastro.setToolTipText("");
 
-		bEditar.setText("Editar");
-		bEditar.addActionListener(this::bEditarActionPerformed);
+        bEditar.setText("Editar");
+        bEditar.setToolTipText("");
 
-		bDeletar.setText("Deletar");
-		bDeletar.addActionListener(this::bDeletarActionPerformed);
+        bDeletar.setText("Deletar");
+        bDeletar.setToolTipText("");
 
-		jTableAlunos.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {},
-				new String[] { "ID", "Nome", "Idade", "Curso", "Fase" }) {
-			boolean[] canEdit = new boolean[] { false, false, false, false, true };
+        jTableAlunos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nome", "Idade", "Curso", "Fase"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true
+            };
 
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				return canEdit[columnIndex];
-			}
-		});
-		jTableAlunos.addMouseListener(new java.awt.event.MouseAdapter() {
-			@Override
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				jTableAlunosMouseClicked(evt);
-			}
-		});
-		jScrollPane2.setViewportView(jTableAlunos);
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTableAlunos.setSelectionForeground(new java.awt.Color(239, 239, 239));
+        jTableAlunos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableAlunosMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jTableAlunos);
+        if (jTableAlunos.getColumnModel().getColumnCount() > 0) {
+            jTableAlunos.getColumnModel().getColumn(0).setMinWidth(40);
+            jTableAlunos.getColumnModel().getColumn(0).setMaxWidth(40);
+            jTableAlunos.getColumnModel().getColumn(1).setMinWidth(400);
+            jTableAlunos.getColumnModel().getColumn(1).setMaxWidth(400);
+            jTableAlunos.getColumnModel().getColumn(2).setMinWidth(60);
+            jTableAlunos.getColumnModel().getColumn(2).setMaxWidth(60);
+            jTableAlunos.getColumnModel().getColumn(3).setMinWidth(300);
+            jTableAlunos.getColumnModel().getColumn(3).setMaxWidth(300);
+        }
 
-		jLabel1.setFont(new java.awt.Font("Tahoma", 1, 40)); // NOI18N
-		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		jLabel1.setText("Cadastro de Alunos");
+        lblTitulo.setFont(new java.awt.Font("Tahoma", 1, 40)); // NOI18N
+        lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitulo.setText("Cadastro de Alunos");
 
-		refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/refresh.png"))); // ✅ caminho corrigido
-		refresh.setText("  Atualizar tabela");
+        refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/refresh.png"))); // NOI18N
+        refresh.setText("  Atualizar tabela");
+        refresh.setToolTipText("CTRL+R");
 
-		export.setText("Exportar para Excel");
+        export.setText("Exportar para Excel");
+        export.setToolTipText("CTRL+E");
 
-		// ✅ Centraliza configuração dos botões e menus
-		ViewUtils.configurarBotoesGerencia(refresh, menuRefresh, menuExport, this::exportXls, this::carregaTabela);
+        menu.setForeground(new java.awt.Color(239, 239, 239));
+        menu.setText("Arquivo");
 
-		menu.setText("Arquivo");
+        menuGerenciaProfessores.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuGerenciaProfessores.setText("Gerência de Professores");
+        menu.add(menuGerenciaProfessores);
 
-		menuGerenciaProfessores.setText("Gerência de Professores");
-		menuGerenciaProfessores.addActionListener(this::menuGerenciaProfessoresActionPerformed);
-		menu.add(menuGerenciaProfessores);
+        menuExport.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuExport.setText("Exportar para Excel");
+        menu.add(menuExport);
 
-		menuExport.setText("Exportar para Excel");
-		menu.add(menuExport);
+        menuRefresh.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuRefresh.setText("Atualizar tabela");
+        menu.add(menuRefresh);
 
-		menuRefresh.setText("Atualizar tabela");
-		menu.add(menuRefresh);
+        menuSobre.setText("Sobre");
+        menu.add(menuSobre);
 
-		jMenuItem1.setText("Sobre");
-		jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
-		menu.add(jMenuItem1);
+        menuLeave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuLeave.setText("Sair");
+        menu.add(menuLeave);
 
-		menuLeave.setText("Sair");
-		menuLeave.addActionListener(this::menuLeaveActionPerformed);
-		menu.add(menuLeave);
+        jMenuBar1.add(menu);
 
-		jMenuBar1.add(menu);
-		setJMenuBar(jMenuBar1);
+        setJMenuBar(jMenuBar1);
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap().addGroup(layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 859, Short.MAX_VALUE)
-						.addGroup(layout.createSequentialGroup()
-								.addComponent(refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 143,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addGap(64, 64, 64)
-								.addComponent(bCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 144,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(bEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 144,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addComponent(bDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 144,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(export, javax.swing.GroupLayout.PREFERRED_SIZE, 143,
-										javax.swing.GroupLayout.PREFERRED_SIZE))
-						.addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE))
-						.addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
-				.createSequentialGroup().addContainerGap()
-				.addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 99,
-						javax.swing.GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(bCadastro)
-						.addComponent(bEditar).addComponent(bDeletar).addComponent(refresh).addComponent(export,
-								javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-				.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-				.addContainerGap()));
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 859, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(64, 64, 64)
+                        .addComponent(bCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(export, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bCadastro)
+                    .addComponent(bEditar)
+                    .addComponent(bDeletar)
+                    .addComponent(refresh)
+                    .addComponent(export, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
-		pack();
-		setLocationRelativeTo(null);
-		java.util.Objects
-				.requireNonNull((java.util.function.Consumer<java.awt.event.ActionEvent>) this::refreshActionPerformed);
-		java.util.Objects.requireNonNull(
-				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuRefreshActionPerformed);
-		java.util.Objects.requireNonNull(
-				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuExportActionPerformed);
-		java.util.Objects
-				.requireNonNull((java.util.function.Consumer<java.awt.event.ActionEvent>) this::exportActionPerformed);
-	}// </editor-fold>//GEN-END:initComponents
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
 
 	private void exportXls() {
 		try {
@@ -278,7 +313,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 
 	}// GEN-LAST:event_exportActionPerformed
 
-	private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
+	private void menuSobreActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
 		Sobre tela = new Sobre();
 		tela.setVisible(true);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
@@ -333,21 +368,8 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton bCadastro;
-	private javax.swing.JButton bDeletar;
-	private javax.swing.JButton bEditar;
-	private javax.swing.JButton export;
-	private javax.swing.JLabel jLabel1;
-	private javax.swing.JMenuBar jMenuBar1;
-	private javax.swing.JMenuItem jMenuItem1;
-	private javax.swing.JScrollPane jScrollPane2;
-	private javax.swing.JTable jTableAlunos;
-	private javax.swing.JMenu menu;
-	private javax.swing.JMenuItem menuExport;
-	private javax.swing.JMenuItem menuGerenciaProfessores;
-	private javax.swing.JMenuItem menuLeave;
-	private javax.swing.JMenuItem menuRefresh;
-	private javax.swing.JButton refresh;
-	// End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTableAlunos;
+    // End of variables declaration//GEN-END:variables
 }

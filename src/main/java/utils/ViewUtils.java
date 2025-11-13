@@ -12,6 +12,24 @@ public class ViewUtils {
         // Construtor privado para evitar instanciação
     }
 
+    // Cria componentes de Menu
+    public static JMenu criarMenu(String texto, String name) {
+        JMenu menu = new JMenu(texto);
+        menu.setName(name);
+        return menu;
+    }
+
+    public static JMenuItem criarMenuItem(String texto, Consumer<ActionEvent> acao, String name) {
+        JMenuItem item = new JMenuItem(texto);
+        item.setName(name);
+        item.addActionListener(acao::accept);
+        return item;
+    }
+
+    public static JMenuBar criarMenuBar() {
+        return new JMenuBar();
+    }
+
     public static void configurarJanela(JFrame frame, String titulo) {
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setTitle(titulo);
