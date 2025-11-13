@@ -1,6 +1,8 @@
 package view;
 
 
+import java.util.List;
+
 import javax.swing.JOptionPane;
 
 import dao.ProfessorDAO;
@@ -15,8 +17,8 @@ public class EditarProfessor extends javax.swing.JFrame {
 	private final transient ProfessorDAO professorDAO;
 	private final String[] dadosProfessor;
 
-	private static final String[] ARRAY_CAMPUS = Constantes.CAMPUS;
-	private static final String[] ARRAY_TITULOS = Constantes.TITULOS;
+	private static final List<String> LISTA_CAMPUS = Constantes.getCampus();
+	private static final List<String> LISTA_TITULOS = Constantes.getTitulos();
 
 	public EditarProfessor() throws java.text.ParseException {
 		initComponents();
@@ -208,14 +210,14 @@ public class EditarProfessor extends javax.swing.JFrame {
 		int indexCampus = 0;
 		int indexTitulo = 0;
 
-		for (int i = 0; i < ARRAY_CAMPUS.length; i++) {
-			if (dadosProfessor[2].equalsIgnoreCase(ARRAY_CAMPUS[i])) {
+		for (int i = 0; i < LISTA_CAMPUS.size(); i++) {
+			if (dadosProfessor[2].equalsIgnoreCase(LISTA_CAMPUS.get(i))) {
 				indexCampus = i;
 			}
 		}
 
-		for (int i = 0; i < ARRAY_TITULOS.length; i++) {
-			if (dadosProfessor[5].equalsIgnoreCase(ARRAY_TITULOS[i])) {
+		for (int i = 0; i < LISTA_TITULOS.size(); i++) {
+			if (dadosProfessor[5].equalsIgnoreCase(LISTA_TITULOS.get(i))) {
 				indexTitulo = i;
 			}
 		}
@@ -285,11 +287,11 @@ public class EditarProfessor extends javax.swing.JFrame {
 
 	// Métodos Auxiliares
 	private String validarCampus() throws Mensagens {
-		return ValidadorInput.validarSelecaoComboBox(this.campus.getSelectedIndex(), ARRAY_CAMPUS, "Campus");
+		return ValidadorInput.validarSelecaoComboBox(this.campus.getSelectedIndex(), LISTA_CAMPUS, "Campus");
 	}
 
 	private String validarTitulo() throws Mensagens {
-		return ValidadorInput.validarSelecaoComboBox(this.titulo.getSelectedIndex(), ARRAY_TITULOS, "Título");
+		return ValidadorInput.validarSelecaoComboBox(this.titulo.getSelectedIndex(), LISTA_TITULOS, "Título");
 	}
 
 	private String validarNome() throws Mensagens {

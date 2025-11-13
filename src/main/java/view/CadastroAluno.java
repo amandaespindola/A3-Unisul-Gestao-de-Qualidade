@@ -2,6 +2,9 @@ package view;
 
 import dao.AlunoDAO;
 import model.Aluno;
+
+import java.util.List;
+
 import javax.swing.JOptionPane;
 import utils.Constantes;
 import utils.LookAndFeelHelper;
@@ -125,8 +128,8 @@ public class CadastroAluno extends javax.swing.JFrame {
 	private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bConfirmarActionPerformed
 		try {
 
-			String[] arrayCursos = Constantes.CURSOS;
-			int[] arrayFases = Constantes.FASES;
+			List<String> listaCursos = Constantes.getCursos();
+			List<Integer> listaFases = Constantes.getFases();
 
 			// Valida e seta nome
 			String nomeAluno = ValidadorInput.validarNome(this.nome.getText(), 2);
@@ -135,11 +138,11 @@ public class CadastroAluno extends javax.swing.JFrame {
 			int idadeAluno = ValidadorInput.validarIdadePorData(this.idade.getDate(), 11);
 
 			// Valida e seta o curso
-			String cursoAluno = ValidadorInput.validarSelecaoComboBox(this.curso.getSelectedIndex(), arrayCursos,
+			String cursoAluno = ValidadorInput.validarSelecaoComboBox(this.curso.getSelectedIndex(), listaCursos,
 					"Curso");
 
 			// Valida e seta a fase
-			int faseAluno = arrayFases[this.fase.getSelectedIndex()];
+			int faseAluno = listaFases.get(this.fase.getSelectedIndex());
 
 			// Cria o objeto Aluno e o insere via AlunoDAO
 			Aluno novoAluno = new Aluno(cursoAluno, faseAluno, 0, nomeAluno, idadeAluno);

@@ -3,6 +3,8 @@ package utils;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
+
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
 
@@ -57,12 +59,12 @@ public final class ValidadorInput {
     }
 
     // Validação de Seleção de ComboBox
-    public static String validarSelecaoComboBox(int selectedIndex, String[] arrayValores, String campoMensagem)
+    public static String validarSelecaoComboBox(int selectedIndex, List<String> opcoes, String campoMensagem)
             throws Mensagens {
-        if (selectedIndex <= 0) { // O índice 0 é sempre o valor padrão ("-" ou similar)
+        if (selectedIndex <= 0 || selectedIndex >= opcoes.size()) { // O índice 0 é sempre o valor padrão ("-" ou similar)
             throw new Mensagens("Escolha o valor para o campo: " + campoMensagem);
         }
-        return arrayValores[selectedIndex];
+        return opcoes.get(selectedIndex);
     }
 
     // Validação de CPF/Contato (Tamanho Numérico Fixo)

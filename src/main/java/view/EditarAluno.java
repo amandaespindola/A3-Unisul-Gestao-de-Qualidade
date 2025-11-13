@@ -7,6 +7,8 @@ import utils.ViewUtils;
 import utils.Constantes;
 import utils.LookAndFeelHelper;
 
+import java.util.List;
+
 import javax.swing.JOptionPane;
 
 public class EditarAluno extends javax.swing.JFrame {
@@ -130,8 +132,8 @@ public class EditarAluno extends javax.swing.JFrame {
 	}// </editor-fold>//GEN-END:initComponents
 
 	private void preencheCampos() {
-		String[] arrayCursos = Constantes.CURSOS;
-		int[] arrayFases = Constantes.FASES;
+		List<String> listaCursos = Constantes.getCursos();
+		List<Integer> listaFases = Constantes.getFases();
 
 		int indexCursos = 0;
 		int indexFases = 0;
@@ -140,16 +142,16 @@ public class EditarAluno extends javax.swing.JFrame {
 		int faseAluno = Integer.parseInt(this.dadosAluno[4]);
 
 		// Busca o índice do curso
-		for (int i = 0; i < arrayCursos.length; i++) {
-			if (cursoAluno.equalsIgnoreCase(arrayCursos[i])) {
+		for (int i = 0; i < listaCursos.size(); i++) {
+			if (cursoAluno.equalsIgnoreCase(listaCursos.get(i))) {
 				indexCursos = i;
 				break;
 			}
 		}
 
 		// Busca o índice da fase
-		for (int i = 0; i < arrayFases.length; i++) {
-			if (faseAluno == arrayFases[i]) {
+		for (int i = 0; i < listaFases.size(); i++) {
+			if (faseAluno == listaFases.get(i)) {
 				indexFases = i;
 				break;
 			}
@@ -164,8 +166,8 @@ public class EditarAluno extends javax.swing.JFrame {
 
 	private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bConfirmarActionPerformed
 		try {
-			String[] arrayCursos = Constantes.CURSOS;
-			int[] arrayFases = Constantes.FASES;
+			List<String> listaCursos = Constantes.getCursos();
+			List<Integer> listaFases = Constantes.getFases();
 
 			// Valida e seta nome
 			String nomeAluno = ValidadorInput.validarNome(this.nome.getText(), 2);
@@ -174,11 +176,11 @@ public class EditarAluno extends javax.swing.JFrame {
 			int idadeAluno = ValidadorInput.validarTamanhoMinimoNumerico(this.idade.getText(), 11);
 
 			// Valida e seta o curso
-			String cursoAluno = ValidadorInput.validarSelecaoComboBox(this.curso.getSelectedIndex(), arrayCursos,
+			String cursoAluno = ValidadorInput.validarSelecaoComboBox(this.curso.getSelectedIndex(), listaCursos,
 					"Curso");
 
 			// Valida e seta a fase
-			int faseAluno = arrayFases[this.fase.getSelectedIndex()];
+			int faseAluno = listaFases.get(this.fase.getSelectedIndex());
 
 			// Busca ID do alubno
 			int idAluno = Integer.parseInt(this.dadosAluno[0]);
