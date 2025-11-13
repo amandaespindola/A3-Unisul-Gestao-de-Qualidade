@@ -24,16 +24,20 @@ public final class ValidadorInput {
 
 	// Remove caracteres não-numéricos (máscara) de uma string
 	public static String removerMascara(String input) {
-		String str = "";
 		if (input == null) {
-			return str;
+			return "";
 		}
+
+		StringBuilder sb = new StringBuilder();
+
 		for (int i = 0; i < input.length(); i++) {
-			if (Character.isDigit(input.charAt(i))) {
-				str += input.charAt(i);
+			char c = input.charAt(i);
+			if (Character.isDigit(c)) {
+				sb.append(c);
 			}
 		}
-		return str;
+
+		return sb.toString();
 	}
 
 	// Calcula a idade com base na data de nascimento
