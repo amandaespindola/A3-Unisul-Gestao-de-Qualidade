@@ -5,8 +5,6 @@ import javax.swing.JOptionPane;
 import dao.ProfessorDAO;
 import model.Professor;
 
-import java.util.ArrayList;
-
 import utils.Constantes;
 import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
@@ -207,14 +205,14 @@ public class CadastroProfessor extends javax.swing.JFrame {
 
 			String nomeProfessor = ValidadorInput.validarNome(this.nome.getText(), 2);
 			String campusProfessor = ValidadorInput.validarSelecaoComboBox(this.campus.getSelectedIndex(),
-					Constantes.CAMPUS, "Campus");
+					Constantes.getCampus(), "Campus");
 			String cpfProfessor = validarCpf();
 			String contatoProfessor = ValidadorInput.validarTamanhoNumericoFixo(this.contatoFormatado.getText(), 11,
 					"Contato");
 			int idadeProfessor = ValidadorInput.validarIdadePorData(this.idade.getDate(), 11);
 			double salarioProfessor = ValidadorInput.validarSalario(this.salarioFormatado, 4);
 			String tituloProfessor = ValidadorInput.validarSelecaoComboBox(this.titulo.getSelectedIndex(),
-					Constantes.TITULOS, "Título");
+					Constantes.getTitulos(), "Título");
 
 			model.ProfessorDTO dto = new model.ProfessorDTO();
 			dto.setCampus(campusProfessor);

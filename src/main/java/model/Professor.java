@@ -1,6 +1,5 @@
 package model;
 
-import java.sql.SQLException;
 import java.util.*;
 
 import dao.ProfessorDAO;
@@ -43,12 +42,12 @@ public class Professor extends ProfessorBase {
 	}
 
 	// Retorna a Lista de Professores (objetos)
-	public ArrayList<Professor> getMinhaLista() {
+	public List<Professor> getMinhaLista() {
 		return dao.getMinhaLista();
 	}
 
 	// Cadastra novo professor
-	public boolean inserirProfessorBD(ProfessorDTO dto) throws SQLException {
+	public boolean inserirProfessorBD(ProfessorDTO dto) {
 
 		int id = this.obterMaiorId() + 1;
 		dto.setId(id);
@@ -78,7 +77,7 @@ public class Professor extends ProfessorBase {
 	}
 
 	// retorna o maior ID da nossa base de dados
-	public int obterMaiorId() throws SQLException {
+	public int obterMaiorId() {
 		return dao.obterMaiorId();
 	}
 

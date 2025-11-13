@@ -6,7 +6,6 @@ import model.Professor;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +15,8 @@ import utils.ExcelExporter;
 import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
+import java.util.List;
+
 
 public class GerenciaProfessores extends javax.swing.JFrame {
 
@@ -288,7 +289,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 		DefaultTableModel modelo = (DefaultTableModel) this.jTableProfessores.getModel();
 		modelo.setNumRows(0);
 
-		ArrayList<Professor> minhalista = professorDAO.getMinhaLista();
+		List<Professor> minhalista = professorDAO.getMinhaLista();
 
 		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 

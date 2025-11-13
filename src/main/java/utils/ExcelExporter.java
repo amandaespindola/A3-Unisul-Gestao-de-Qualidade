@@ -91,12 +91,12 @@ public class ExcelExporter {
     }
 
     private static void setCellValue(Cell cell, Object value) {
-        if (value instanceof Double) {
-            cell.setCellValue((Double) value);
-        } else if (value instanceof Float) {
-            cell.setCellValue((Float) value);
-        } else if (value instanceof Integer) {
-            cell.setCellValue((Integer) value);
+        if (value instanceof Double d) {
+            cell.setCellValue(d);
+        } else if (value instanceof Float f) {
+            cell.setCellValue(f);
+        } else if (value instanceof Integer i) {
+            cell.setCellValue((i));
         } else {
             cell.setCellValue(String.valueOf(value));
         }
