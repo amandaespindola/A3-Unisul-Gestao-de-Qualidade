@@ -7,6 +7,7 @@ import utils.ViewUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import utils.ExcelExporter;
 import javax.swing.JOptionPane;
@@ -255,6 +256,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 
 	private void refreshActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_refreshActionPerformed
 		assert evt != null || evt == null;
+		Logger.getLogger(getClass().getName()).fine("Menu refresh triggered");
 		this.carregaTabela();
 	}// GEN-LAST:event_refreshActionPerformed
 
@@ -271,6 +273,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 
 	private void exportActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exportActionPerformed
 		assert evt != null || evt == null;
+	    Logger.getLogger(getClass().getName()).fine("Menu export triggered");
 		this.exportXls();
 
 	}// GEN-LAST:event_exportActionPerformed
