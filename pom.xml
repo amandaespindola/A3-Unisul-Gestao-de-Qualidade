@@ -93,7 +93,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Principal.Principal</mainClass>
+                            <mainClass>principal.Principal</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
