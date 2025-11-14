@@ -4,15 +4,34 @@ import java.util.List;
 
 import dao.ProfessorDAO;
 
+/**
+ * Representa um professor, contendo informações herdadas de {@link ProfessorBase}
+ * e dados específicos como campus, CPF, contato, título e salário.
+ * 
+ * Esta classe também funciona como camada intermediária entre a interface
+ * e o banco de dados, realizando operações CRUD utilizando o {@link ProfessorDAO}.
+ */
 public class Professor extends ProfessorBase {
 
+        /** DAO responsável pelas operações de persistência relacionadas a professores. */
 	private final ProfessorDAO dao;
 	
-	// Construtores
-	public Professor() {
+        /**
+        * Construtor padrão. Inicializa o DAO.
+        */
+        public Professor() {
 		this.dao = new ProfessorDAO();
 	}
 
+        /**
+        * Construtor utilizado para criação de um novo professor sem ID definido.
+        *
+        * @param campus  Campus onde o professor atua.
+        * @param cpf     CPF do professor.
+        * @param contato Contato do professor.
+        * @param titulo  Título acadêmico do professor.
+        * @param salario Salário do professor.
+        */
 	public Professor(String campus, String cpf, String contato, String titulo, double salario) {
 		this.campus = campus;
 		this.cpf = cpf;
@@ -22,6 +41,12 @@ public class Professor extends ProfessorBase {
 		this.dao = new ProfessorDAO();
 	}
 
+        /**
+        * Construtor baseado em um {@link ProfessorDTO}. 
+        * Utilizado para reconstruir o objeto a partir dos dados vindos do banco de dados.
+        *
+        * @param dto Objeto contendo os dados do professor.
+        */
 	public Professor(ProfessorDTO dto) {
 		super(dto.getId(), dto.getNome(), dto.getIdade());
 		this.campus = dto.getCampus();
@@ -34,6 +59,12 @@ public class Professor extends ProfessorBase {
 
 	
 
+        /**
+        * Retorna uma representação textual completa do professor,
+        * contendo todos os seus atributos.
+        *
+        * @return String formatada com os dados do professor.
+        */
 	@Override
 	public String toString() {
 		return "\n ID: " + this.getId() + "\n Nome: " + this.getNome() + "\n Idade: " + this.getIdade() + "\n Campus: "
@@ -41,13 +72,22 @@ public class Professor extends ProfessorBase {
 				+ this.getTitulo() + "\n Salário:" + this.getSalario() + "\n -----------";
 	}
 
-	// Retorna a Lista de Professores (objetos)
-	public List<Professor> getMinhaLista() {
+        /**
+        * Retorna a lista de todos os professores cadastrados no banco.
+        *
+        * @return Lista de professores.
+        */
+        public List<Professor> getMinhaLista() {
 		return dao.getMinhaLista();
 	}
 
-	// Cadastra novo professor
-	public boolean inserirProfessorBD(ProfessorDTO dto) {
+        /**
+        * Insere um novo professor no banco de dados.
+        *
+        * @param dto Dados do professor a ser inserido.
+        * @return {@code true} sempre, pois o método não verifica o retorno da DAO.
+        */
+        public boolean inserirProfessorBD(ProfessorDTO dto) {
 
 		int id = this.obterMaiorId() + 1;
 		dto.setId(id);
@@ -57,26 +97,45 @@ public class Professor extends ProfessorBase {
 		return true;
 	}
 
-	// Deleta um professor específico pelo seu campo ID
+	/**
+        * Remove um professor com base em seu ID.
+        *
+        * @param id ID do professor a ser removido.
+        * @return {@code true} sempre, pois o método não verifica o retorno da DAO.
+        */
 	public boolean deletarProfessorBD(int id) {
 		dao.delete(id);
 		return true;
 	}
 
-	// Edita um professor específico pelo seu campo ID
+	/**
+        * Atualiza os dados de um professor existente.
+        *
+        * @param dto Objeto contendo os novos dados do professor.
+        * @return {@code true} se o professor foi atualizado com sucesso.
+        */
 	public boolean atualizarAlunoBD(ProfessorDTO dto) {
 
 		Professor objeto = new Professor(dto);
 		return dao.update(objeto);
 	}
 
-	// carrega dados de um professor específico pelo seu ID
+	/**
+        * Carrega os dados de um professor específico a partir do ID.
+        *
+        * @param id ID do professor.
+        * @return Objeto {@link Professor} encontrado ou {@code null} caso não exista.
+        */
 	public Professor carregaProfessor(int id) {
 		dao.findById(id);
 		return null;
 	}
 
-	// retorna o maior ID da nossa base de dados
+	/**
+        * Obtém o maior ID de professor presente na base de dados.
+        *
+        * @return Maior valor de ID encontrado.
+        */
 	public int obterMaiorId() {
 		return dao.obterMaiorId();
 	}
