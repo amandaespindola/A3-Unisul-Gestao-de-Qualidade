@@ -13,18 +13,43 @@ import java.util.logging.Level;
 import model.Aluno;
 import utils.DaoUtils;
 
+/**
+ * DAO responsável por executar operações de persistência da entidade
+ * {@link Aluno}. Implementa os métodos básicos de CRUD, utilizando a
+ * infraestrutura fornecida por {@link BaseDAO}.
+ */
 public class AlunoDAO extends BaseDAO<Aluno> {
 
+        /** 
+        * Lista utilizada como cache temporário dos alunos carregados do banco. 
+        * Renomada a cada chamada de {@link #getMinhaLista()}.
+        */
 	private static final ArrayList<Aluno> MinhaLista = new ArrayList<>();
+        
+        /** Nome da entidade usado para compor mensagens de log e erros. */
 	private static final String ENTIDADE = "Aluno";
 
+        /**
+        * Construtor padrão. Utiliza a conexão interna definida em {@link BaseDAO}.
+        */
 	public AlunoDAO() {
 	}
 
+        /**
+        * Construtor que permite receber uma conexão externa.
+        *
+        * @param conexao conexão já aberta que será utilizada pelas operações do DAO
+        */
 	public AlunoDAO(Connection conexao) {
 		super(conexao);
 	}
 
+        /**
+        * Insere um novo aluno no banco.
+        *
+        * @param objeto aluno a ser inserido
+        * @return {@code true} se a inserção ocorreu com sucesso
+        */
 	@Override
 	public boolean insert(Aluno objeto) {
 		String sql = "INSERT INTO tb_alunos (nome, idade, curso, fase) VALUES (?, ?, ?, ?)";
@@ -49,6 +74,12 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 		return false;
 	}
 
+        /**
+        * Atualiza os dados de um aluno existente.
+        *
+        * @param objeto aluno com os novos valores
+        * @return {@code true} se a atualização foi bem-sucedida
+        */
 	@Override
 	public boolean update(Aluno objeto) {
 		String sql = "UPDATE tb_alunos SET nome=?, idade=?, curso=?, fase=? WHERE id=?";
@@ -71,6 +102,12 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 		}
 	}
 
+        /**
+        * Exclui um aluno pelo seu ID.
+        *
+        * @param id identificador do aluno
+        * @return {@code true} se a exclusão foi realizada
+        */
 	@Override
 	public boolean delete(int id) {
 		String sql = "DELETE FROM tb_alunos WHERE id=?";
@@ -78,6 +115,12 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 		return DaoUtils.executarDelete(conn, sql, id, ENTIDADE, this::fecharConexaoSeInterna);
 	}
 
+        /**
+        * Busca um aluno pelo ID.
+        *
+        * @param id identificador do aluno
+        * @return o aluno encontrado, ou {@code null} se não existir
+        */
 	@Override
 	public Aluno findById(int id) {
 		String sql = "SELECT id, nome, idade, curso, fase FROM tb_alunos WHERE id=?";
@@ -103,6 +146,12 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 		return null;
 	}
 
+        /**
+        * Retorna uma lista contendo todos os alunos presentes no banco.
+        * A lista interna é limpa e recarregada a cada chamada.
+        *
+        * @return lista dos alunos cadastrados
+        */
 	public List<Aluno> getMinhaLista() {
 		MinhaLista.clear();
 		String sql = "SELECT id, nome, idade, curso, fase FROM tb_alunos";
@@ -124,6 +173,11 @@ public class AlunoDAO extends BaseDAO<Aluno> {
 		return MinhaLista;
 	}
 
+        /**
+        * Retorna o nome da tabela correspondente à entidade.
+        *
+        * @return nome da tabela de alunos
+            */
 	@Override
 	protected String getNomeTabela() {
 		return "tb_alunos";
