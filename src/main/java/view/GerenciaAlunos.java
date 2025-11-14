@@ -5,6 +5,7 @@ import model.Aluno;
 import utils.ValidadorInput;
 import utils.ViewUtils;
 import utils.Constantes;
+import utils.TableUtils;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -23,6 +24,8 @@ public class GerenciaAlunos extends javax.swing.JFrame {
         initComponents();
         this.alunoDAO = new AlunoDAO();
         this.carregaTabela();
+
+        TableUtils.addMouseClickListener(jTableAlunos, GerenciaAlunos.this::jTableAlunosMouseClicked);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated
@@ -94,16 +97,12 @@ public class GerenciaAlunos extends javax.swing.JFrame {
                 false, false, false, false, true
             };
 
+            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         jTableAlunos.setSelectionForeground(new java.awt.Color(239, 239, 239));
-        jTableAlunos.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTableAlunosMouseClicked(evt);
-            }
-        });
         jScrollPane2.setViewportView(jTableAlunos);
         if (jTableAlunos.getColumnModel().getColumnCount() > 0) {
             jTableAlunos.getColumnModel().getColumn(0).setMinWidth(40);
