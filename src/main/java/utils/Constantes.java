@@ -54,6 +54,9 @@ public final class Constantes {
         public static final String BTN_EXPORTAR = "Exportar";
         public static final String BTN_VOLTAR = "Voltar";
         public static final String BTN_SAIR = "Sair";
+        public static final String BTN_LOGIN = "LOGIN";
+        public static final String BTN_ALUNOS = "Alunos";
+        public static final String BTN_PROFESSORES = "Professores";
 
         // Labels
         public static final String NOME = "Nome:";
@@ -66,8 +69,12 @@ public final class Constantes {
         public static final String CONTATO = "Contato:";
         public static final String SALARIO = "Salário:";
         public static final String TITULO = "Título:";
+        public static final String LABEL_USUARIO = "DIGITE O USUÁRIO (MySQL)";
+        public static final String LABEL_SENHA = "DIGITE A SENHA (MySQL)";
 
         // Titulos
+        public static final String TITULO_SISTEMA = "SisUni - Sistema de Gerenciamento Universitário";
+
         public static final String TITULO_CAD_ALUNO = "Cadastro de Aluno";
         public static final String TITULO_EDITAR_ALUNO = "Editar Aluno";
         public static final String TITULO_GERENCIA_ALUNOS = "Cadastro de Alunos";
