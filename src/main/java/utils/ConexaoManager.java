@@ -9,29 +9,50 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Singleton simples para gerenciar a Connection do app. - init(user, pass):
- * abre e guarda a conexão - getConnection(): retorna a conexão (reabre se caiu)
- * - close(): fecha com segurança
+ * Classe utilitária para gerenciamento centralizado de conexões JDBC.
+ * Funciona como um singleton estático, mantendo uma única instância
+ * de {@link Connection} reutilizável ao longo do ciclo da aplicação.
+ * 
+ * <p>Responsabilidades principais:</p>
+ * <ul>
+ *   <li>Inicializar conexão com credenciais do usuário ({@link #init}).</li>
+ *   <li>Fornecer acesso seguro à conexão ativa ({@link #getConnection}).</li>
+ *   <li>Fechar a conexão de forma controlada ({@link #close}).</li>
+ *   <li>Reabrir a conexão automaticamente caso esteja fechada.</li>
+ * </ul>
+ *
+ * <p>A URL JDBC pode ser carregada de um arquivo <code>config.properties</code>,
+ * caso exista no classpath.</p>
  */
-
 public class ConexaoManager {
 	private static final Logger logger = Logger.getLogger(ConexaoManager.class.getName());
 
-	// URL pode vir do properties se quiser (deixa aqui por enquanto)
+	/** URL JDBC utilizada para conexão com o banco. */
 	private static String jdbcUrl = "jdbc:mysql://localhost:3306/db_alunos?useTimezone=true&serverTimezone=UTC";
 
+        /** Instância única da conexão mantida pelo sistema. */
 	private static Connection conn; // compartilhada
+        
+        /** Usuário utilizado para autenticação. */
 	private static String user; // último user usado
+        
+        /** Senha utilizada para autenticação. */
 	private static String password; // última senha usada
+        
+        /** Indica se o inicializador já foi chamado. */
 	private static boolean initialized = false; // se já chamamos init()
 
+        /** Construtor privado para impedir instanciação externa. */
 	private ConexaoManager() {
 	}
 
 	/**
-	 * Inicializa com credenciais do usuário (login). Pode ser chamado novamente
-	 * (ex: trocar user/ambiente).
-	 */
+        * Inicializa o gerenciador com credenciais de acesso ao banco de dados.
+        * Pode ser chamado novamente para trocar usuário, senha ou ambiente.
+        *
+        * @param userDB     Usuário do banco.
+        * @param passwordDB Senha do banco.
+        */
 	public static synchronized void init(String userDB, String passwordDB) {
 		user = userDB;
 		password = passwordDB;
@@ -48,9 +69,11 @@ public class ConexaoManager {
 	}
 
 	/**
-	 * Retorna a conexão ativa. Reabre se estiver nula/fechada (desde que já tenha
-	 * sido inicializado).
-	 */
+        * Retorna a conexão ativa. Caso a conexão esteja nula ou fechada,
+        * uma nova conexão será aberta automaticamente.
+        *
+        * @return Conexão ativa ou {@code null} caso não tenha sido inicializada.
+        */
 	public static synchronized Connection getConnection() {
 		try {
 			if (!initialized) {
@@ -68,15 +91,24 @@ public class ConexaoManager {
 	}
 
 	/**
-	 * Fecha a conexão atual.
-	 */
+        * Fecha a conexão atual e marca o gerenciador como não inicializado.
+        */
 	public static synchronized void close() {
 		fecharSilencioso();
 		initialized = false;
 	}
 
-	// ---------- privados utilitários ----------
+	// =============================================================
+        // Métodos privados utilitários
+        // =============================================================
 
+        /**
+        * Abre uma nova conexão JDBC utilizando usuário e senha informados.
+        *
+        * @param user     Usuário do banco.
+        * @param password Senha do banco.
+        * @return Nova instância de {@link Connection}, ou {@code null} em caso de erro.
+        */
 	private static Connection abrirNovaConexao(String user, String password) {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -91,6 +123,10 @@ public class ConexaoManager {
 		return null;
 	}
 
+        /**
+        * Tenta carregar a URL JDBC a partir de um arquivo <code>config.properties</code>.
+        * Caso o arquivo não exista ou ocorra erro, a URL padrão é mantida.
+        */
 	private static void carregarUrlDoProperties() {
 		try (InputStream in = ConexaoManager.class.getClassLoader().getResourceAsStream("config.properties")) {
 			if (in == null)
@@ -106,6 +142,9 @@ public class ConexaoManager {
 		}
 	}
 
+        /**
+        * Fecha a conexão atual sem lançar exceções.
+        */
 	private static void fecharSilencioso() {
 		if (conn != null) {
 			try {
@@ -117,6 +156,10 @@ public class ConexaoManager {
 		}
 	}
 
+        /**
+        * Registra um hook para garantir que a conexão seja fechada
+        * automaticamente ao encerrar a JVM.
+        */
 	private static void addShutdownHook() {
 		// registra apenas 1 vez
 		// (não é crítico registrar mais de uma, mas economiza)
