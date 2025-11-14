@@ -14,15 +14,31 @@ import javax.swing.JFormattedTextField;
 
 import java.util.logging.Level;
 
+/**
+ * Classe utilitária responsável por validações e formatação de campos usados
+ * no cadastro e edição de Alunos e Professores.
+ * <p>
+ * Contém métodos para validar nomes, seleções de combo box, CPF, contato,
+ * salário, datas e valores numéricos. Também aplica formatações padrão em
+ * campos formatados.
+ */
 public final class ValidadorInput {
 	private static final java.util.logging.Logger logger = java.util.logging.Logger
 			.getLogger(ValidadorInput.class.getName());
 
+        /**
+        * Construtor privado para impedir instanciação.
+        */
 	private ValidadorInput() {
 		throw new UnsupportedOperationException("Esta é uma classe utilitária e não pode ser instanciada.");
 	}
 
-	// Remove caracteres não-numéricos (máscara) de uma string
+	/**
+        * Remove todos os caracteres não numéricos de uma string (remove máscara).
+        *
+        * @param input valor de entrada possivelmente mascarado
+        * @return string contendo apenas dígitos
+        */
 	public static String removerMascara(String input) {
 		if (input == null) {
 			return "";
@@ -40,7 +56,12 @@ public final class ValidadorInput {
 		return sb.toString();
 	}
 
-	// Calcula a idade com base na data de nascimento
+	/**
+        * Calcula idade a partir da data de nascimento.
+        *
+        * @param dataNasc data de nascimento
+        * @return idade calculada
+        */
 	public static int calculaIdade(Date dataNasc) {
 		Calendar dataNascimento = new GregorianCalendar();
 		dataNascimento.setTime(dataNasc);
@@ -58,7 +79,14 @@ public final class ValidadorInput {
 		return age;
 	}
 
-	// Validação de Nome
+	/**
+        * Valida um nome com tamanho mínimo obrigatório.
+        *
+        * @param nome       nome informado
+        * @param minLength  mínimo de caracteres
+        * @return o nome válido
+        * @throws Mensagens caso o nome seja inválido
+        */
 	public static String validarNome(String nome, int minLength) throws Mensagens {
 		if (nome == null || nome.length() < minLength) {
 			throw new Mensagens("Nome deve conter ao menos " + minLength + " caracteres.");
@@ -66,7 +94,15 @@ public final class ValidadorInput {
 		return nome;
 	}
 
-	// Validação de Seleção de ComboBox
+	/**
+        * Valida se a opção selecionada de um ComboBox é válida.
+        *
+        * @param selectedIndex índice selecionado
+        * @param opcoes        lista de opções disponíveis
+        * @param campoMensagem nome do campo exibido na mensagem
+        * @return valor selecionado
+        * @throws Mensagens caso a seleção seja inválida
+        */
 	public static String validarSelecaoComboBox(int selectedIndex, List<String> opcoes, String campoMensagem)
 			throws Mensagens {
 		if (selectedIndex <= 0 || selectedIndex >= opcoes.size()) { // O índice 0 é sempre o valor padrão ("-" ou
@@ -76,7 +112,15 @@ public final class ValidadorInput {
 		return opcoes.get(selectedIndex);
 	}
 
-	// Validação de CPF/Contato (Tamanho Numérico Fixo)
+	/**
+        * Valida campos numéricos de tamanho fixo (CPF, contato, etc.).
+        *
+        * @param inputFormatado      valor formatado
+        * @param tamanhoObrigatorio  tamanho desejado (somente dígitos)
+        * @param campoMensagem       nome do campo
+        * @return valor formatado válido
+        * @throws Mensagens caso o tamanho seja inválido
+        */
 	public static String validarTamanhoNumericoFixo(String inputFormatado, int tamanhoObrigatorio, String campoMensagem)
 			throws Mensagens {
 		String inputLimpo = removerMascara(inputFormatado);
@@ -87,7 +131,14 @@ public final class ValidadorInput {
 		return inputFormatado; // Retorna o valor formatado (com máscara)
 	}
 
-	// Validação de Idade por Data de Nascimento
+	/**
+        * Valida idade mínima com base na data de nascimento.
+        *
+        * @param dataNasc    data informada
+        * @param idadeMinima valor mínimo permitido
+        * @return idade calculada
+        * @throws Mensagens caso a idade seja inferior ao mínimo
+        */
 	public static int validarIdadePorData(Date dataNasc, int idadeMinima) throws Mensagens {
 		if (dataNasc == null) {
 			throw new Mensagens("Data de Nascimento não pode ser vazia.");
@@ -99,7 +150,14 @@ public final class ValidadorInput {
 		return idade;
 	}
 
-	// Validação de Salário (Tamanho Numérico Mínimo e Conversão)
+	/**
+        * Valida um campo de salário, garantindo valor numérico e tamanho mínimo.
+        *
+        * @param campo         componente JFormattedTextField de entrada
+        * @param tamanhoMinimo quantidade mínima de dígitos numéricos
+        * @return salário convertido para double
+        * @throws Mensagens caso o salário seja inválido
+        */
 	public static double validarSalario(JFormattedTextField campo, int tamanhoMinimo) throws Mensagens {
 		Number valor = (Number) campo.getValue();
 		String mensagemErroSalarioInvalido = "Informe um salário válido";
@@ -129,7 +187,14 @@ public final class ValidadorInput {
 		return valor.doubleValue();
 	}
 
-	// Validação de Tamanho Mínimo Numérico (Para Campos como Idade/Fase)
+	/**
+        * Valida um valor numérico mínimo (usado para fase, idade, etc.).
+        *
+        * @param inputStr      string numérica
+        * @param tamanhoMinimo valor mínimo permitido
+        * @return valor convertido para int
+        * @throws Mensagens caso o valor seja menor que o mínimo
+        */
 	public static int validarTamanhoMinimoNumerico(String inputStr, int tamanhoMinimo)
 			throws Mensagens, NumberFormatException {
 		int valor = Integer.parseInt(inputStr);
@@ -139,7 +204,14 @@ public final class ValidadorInput {
 		return valor;
 	}
 
-	// Formatação de campos de Cadastro/Edição de Professor
+	/**
+        * Aplica formatação padrão aos campos de CPF, contato e salário do
+        * formulário de Professor.
+        *
+        * @param cpfFormatado     campo de CPF
+        * @param contatoFormatado campo de contato
+        * @param salarioFormatado campo de salário
+        */
 	public static void aplicarFormatacaoProfessor(javax.swing.JFormattedTextField cpfFormatado,
 			javax.swing.JFormattedTextField contatoFormatado, javax.swing.JFormattedTextField salarioFormatado)
 			throws java.text.ParseException {
