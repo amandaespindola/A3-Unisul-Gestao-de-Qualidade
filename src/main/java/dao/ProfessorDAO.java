@@ -1,6 +1,11 @@
 package dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import java.util.ArrayList;
 import java.util.logging.Level;
 
@@ -150,17 +155,14 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return "tb_professores";
 	}
 
-
 	// Verifica CPF para novo cadastro
 	public boolean existeCpf(String cpf) {
-	    return getMinhaLista().stream()
-	        .anyMatch(p -> p.getCpf().equals(cpf));
+		return getMinhaLista().stream().anyMatch(p -> p.getCpf().equals(cpf));
 	}
 
 	// Verifica CPF ignorando o ID atual (edição)
 	public boolean existeCpf(String cpf, int idIgnorado) {
-	    return getMinhaLista().stream()
-	        .anyMatch(p -> p.getCpf().equals(cpf) && p.getId() != idIgnorado);
+		return getMinhaLista().stream().anyMatch(p -> p.getCpf().equals(cpf) && p.getId() != idIgnorado);
 	}
 
 }
