@@ -55,6 +55,8 @@ public final class Constantes {
         public static final String BTN_VOLTAR = "Voltar";
         public static final String BTN_SAIR = "Sair";
         public static final String BTN_LOGIN = "LOGIN";
+        public static final String BTN_ALUNOS = "Alunos";
+        public static final String BTN_PROFESSORES = "Professores";
 
         // Labels
         public static final String NOME = "Nome:";
