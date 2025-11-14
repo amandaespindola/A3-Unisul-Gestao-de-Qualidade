@@ -13,12 +13,31 @@ import model.Professor;
 import utils.DaoUtils;
 import java.util.List;
 
+/**
+ * DAO responsável por realizar operações CRUD relacionadas à entidade
+ * {@link Professor}. Esta classe se comunica com a tabela
+ * <code>tb_professores</code> no banco de dados e utiliza a infraestrutura
+ * fornecida por {@link BaseDAO}.
+ */
 public class ProfessorDAO extends BaseDAO<Professor> {
 
+        /**
+        * Lista auxiliar utilizada para armazenar resultados de consultas.
+        */
 	private static final ArrayList<Professor> minhaLista = new ArrayList<>();
+        
+        /**
+        * Nome da entidade utilizado para logs e mensagens de erro.
+        */
 	private static final String ENTIDADE = "Professor";
 
-	// método auxiliar professorDTO
+        /**
+        * Mapeia um {@link ResultSet} para um objeto {@link model.ProfessorDTO}.
+        *
+        * @param res ResultSet contendo os dados do professor.
+        * @return Um objeto DTO preenchido com os dados do banco.
+        * @throws SQLException caso ocorra erro ao ler o ResultSet.
+        */
 	private model.ProfessorDTO mapResultSetToDTO(ResultSet res) throws SQLException {
 		model.ProfessorDTO dto = new model.ProfessorDTO();
 		dto.setCampus(res.getString("campus"));
@@ -32,13 +51,27 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return dto;
 	}
 
+        /**
+        * Construtor padrão.
+        */
 	public ProfessorDAO() {
 	}
 
+        /**
+        * Construtor que permite injetar uma conexão externa.
+        *
+        * @param conexao Conexão a ser utilizada pelo DAO.
+        */
 	public ProfessorDAO(Connection conexao) {
 		super(conexao);
 	}
 
+        /**
+        * Insere um novo professor na tabela <code>tb_professores</code>.
+        *
+        * @param objeto Objeto do tipo {@link Professor} a ser inserido.
+        * @return {@code true} se a inserção foi bem-sucedida, {@code false} caso contrário.
+        */
 	@Override
 	public boolean insert(Professor objeto) {
 		String sql = "INSERT INTO tb_professores (nome, idade, campus, cpf, contato, titulo, salario) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -66,6 +99,12 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return false;
 	}
 
+        /**
+        * Atualiza um professor existente na tabela <code>tb_professores</code>.
+        *
+        * @param objeto Objeto contendo os dados atualizados do professor.
+        * @return {@code true} se o registro foi atualizado, {@code false} caso nenhuma linha seja afetada.
+        */
 	@Override
 	public boolean update(Professor objeto) {
 		String sql = "UPDATE tb_professores SET nome=?, idade=?, campus=?, cpf=?, contato=?, titulo=?, salario=? WHERE id=?";
@@ -97,6 +136,12 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		}
 	}
 
+        /**
+        * Remove um professor pelo seu ID.
+        *
+        * @param id ID do professor a ser removido.
+        * @return {@code true} se o registro foi excluído, {@code false} caso contrário.
+        */
 	@Override
 	public boolean delete(int id) {
 		String sql = "DELETE FROM tb_professores WHERE id=?";
@@ -104,6 +149,12 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return DaoUtils.executarDelete(conn, sql, id, ENTIDADE, this::fecharConexaoSeInterna);
 	}
 
+        /**
+        * Busca um professor pelo ID.
+        *
+        * @param id ID do professor desejado.
+        * @return Instância de {@link Professor} caso encontrada, ou {@code null} caso não exista.
+        */
 	@Override
 	public Professor findById(int id) {
 		String sql = "SELECT id, nome, idade, campus, cpf, contato, titulo, salario FROM tb_professores WHERE id=?";
@@ -128,6 +179,11 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return null;
 	}
 
+        /**
+        * Retorna uma lista contendo todos os professores cadastrados.
+        *
+        * @return Lista de {@link Professor}.
+        */
 	public List<Professor> getMinhaLista() {
 		minhaLista.clear();
 		String sql = "SELECT id, nome, idade, campus, cpf, contato, titulo, salario FROM tb_professores";
@@ -150,17 +206,34 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return minhaLista;
 	}
 
+        /**
+        * Retorna o nome da tabela associada ao DAO.
+        *
+        * @return Nome da tabela <code>tb_professores</code>.
+        */
 	@Override
 	protected String getNomeTabela() {
 		return "tb_professores";
 	}
 
-	// Verifica CPF para novo cadastro
+        /**
+        * Verifica se existe um professor cadastrado com o CPF informado.
+        *
+        * @param cpf CPF a ser verificado.
+        * @return {@code true} se já existir um professor com esse CPF, {@code false} caso contrário.
+        */
 	public boolean existeCpf(String cpf) {
 		return getMinhaLista().stream().anyMatch(p -> p.getCpf().equals(cpf));
 	}
 
-	// Verifica CPF ignorando o ID atual (edição)
+        /**
+        * Verifica se existe um professor com o CPF informado, ignorando um ID específico
+        * (útil em operações de edição).
+        *
+        * @param cpf CPF a ser verificado.
+        * @param idIgnorado ID que deve ser desconsiderado na validação.
+        * @return {@code true} se existir outro professor com o mesmo CPF, {@code false} caso contrário.
+        */
 	public boolean existeCpf(String cpf, int idIgnorado) {
 		return getMinhaLista().stream().anyMatch(p -> p.getCpf().equals(cpf) && p.getId() != idIgnorado);
 	}
