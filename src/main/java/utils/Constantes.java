@@ -3,45 +3,84 @@ package utils;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Classe utilitária que centraliza constantes usadas na aplicação.
+ * 
+ * <p>Contém listas imutáveis de cursos, fases, campi e títulos acadêmicos,
+ * fornecendo acesso somente por métodos públicos que retornam cópias seguras.
+ *
+ * <p>Esta classe não deve ser instanciada.
+ */
 public final class Constantes {
 
     private Constantes() {
         throw new UnsupportedOperationException("Classe de constantes não pode ser instanciada");
     }
 
+    /** Lista fixa de cursos disponíveis no sistema. */
     protected static final String[] CURSOS = {"-", "Administração", "Análise e Desenvolvimento de Sistemas",
         "Arquitetura e Urbanismo", "Ciências Contábeis", "Ciências da Computação", "Design", "Design de Moda",
         "Relações Internacionais", "Sistemas de Informação"};
 
+    /** Lista fixa de fases acadêmicas permitidas (1 a 10). */
     protected static final int[] FASES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
+    /** Lista fixa de campi da instituição. */
     protected static final String[] CAMPUS = {"-", "Continente", "Dib Mussi", "Ilha", "Pedra Branca", "Trajano",
         "Tubarão"};
 
+    /** Lista de títulos acadêmicos aceitos para professores. */
     protected static final String[] TITULOS = {"-", "Graduação", "Especialização", "Mestrado", "Doutorado"};
 
+    /**
+     * Retorna a lista imutável de cursos.
+     *
+     * @return lista de cursos disponíveis
+     */
     public static List<String> getCursos() {
         return List.copyOf(Arrays.asList(CURSOS));
     }
 
+    /**
+     * Retorna a lista imutável de campi.
+     *
+     * @return lista de campi
+     */
     public static List<String> getCampus() {
         return List.copyOf(Arrays.asList(CAMPUS));
     }
 
+    /**
+     * Retorna a lista imutável de títulos acadêmicos.
+     *
+     * @return lista de títulos
+     */
     public static List<String> getTitulos() {
         return List.copyOf(Arrays.asList(TITULOS));
     }
 
+    /**
+     * Retorna a lista imutável de fases acadêmicas.
+     *
+     * @return lista de fases
+     */
     public static List<Integer> getFases() {
         return List.copyOf(Arrays.stream(FASES).boxed().toList());
     }
 
+    /**
+     * Conjunto de constantes relacionadas à interface gráfica da aplicação.
+     * Contém nomes de botões, labels e textos exibidos na UI.
+     *
+     * <p>Classe interna não instanciável.
+     */
     public class UIConstants {
 
         private UIConstants() {
             throw new UnsupportedOperationException("Classe de constantes UI não pode ser instanciada");
         }
 
+        /** Fonte padrão utilizada na interface. */
         public static final String DEFAULT_FONT = "Segoe UI";
 
         // Botões
