@@ -93,14 +93,16 @@ public class GerenciaAlunos extends javax.swing.JFrame {
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, true
             };
-
+            
+            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         jTableAlunos.setSelectionForeground(new java.awt.Color(239, 239, 239));
         jTableAlunos.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+            @Override
+        	public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTableAlunosMouseClicked(evt);
             }
         });
