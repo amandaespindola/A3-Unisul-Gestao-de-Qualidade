@@ -85,5 +85,16 @@ public final class Constantes {
         public static final String SOBRE = "Sobre";
         public static final String LEAVE = "Sair";
 
+        // Textos Sobre
+        public static final String SOBRE_INSTITUICAO = "UNIVERSIDADE DO SUL DE SANTA CATARINA";
+        public static final String SOBRE_UC = "PROGRAMAÇÃO DE SOLUÇÕES COMPUTACIONAIS";
+        public static final String SOBRE_CURSO = "SISTEMAS DE INFORMAÇÃO";
+        public static final String SOBRE_INTEGRANTE_1 = "• Camille Zimmermann";
+        public static final String SOBRE_INTEGRANTE_2 = "• Julia Schaden Exterkoetter";
+        public static final String SOBRE_INTEGRANTE_3 = "• Laura Maria Firta Foes";
+        public static final String SOBRE_INTEGRANTE_4 = "• Lucas Felipe Rogério";
+        public static final String SOBRE_INTEGRANTE_5 = "• Pablo Nevado";
+        public static final String SOBRE_INTEGRANTE_6 = "• Rade Gabriel Farah ";
+        public static final String SOBRE_DATA = "Florianópolis, 2022";
     }
 }
