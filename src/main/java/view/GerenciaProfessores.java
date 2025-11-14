@@ -18,7 +18,6 @@ import utils.ViewUtils;
 import utils.Constantes;
 import utils.TableUtils;
 import java.util.List;
-import utils.ViewUtils;
 
 public class GerenciaProfessores extends javax.swing.JFrame {
 
@@ -111,8 +110,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 		ViewUtils.configurarBotoesGerencia(bCadastro, bEditar, bDeletar);
 		ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
 
-		ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
-		setJMenuBar(jMenuBar1);
+
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);

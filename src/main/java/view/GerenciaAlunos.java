@@ -103,9 +103,6 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		ViewUtils.configurarBotoesGerencia(bCadastro, bEditar, bDeletar);
 		ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
 
-		ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
-		setJMenuBar(jMenuBar1);
-
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

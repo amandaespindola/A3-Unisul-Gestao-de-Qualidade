@@ -321,19 +321,4 @@ public class ViewUtils {
 		bar.add(menu);
 	}
 
-	public static void configurarTelaCadastroPadrao(JFrame tela, JLabel titulo, String tituloTexto, JButton cancelar,
-			JButton confirmar) {
-		tela.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		tela.setTitle(tituloTexto);
-		tela.setResizable(false);
-
-		titulo.setFont(new Font("Tahoma", Font.BOLD, 24));
-		titulo.setHorizontalAlignment(SwingConstants.CENTER);
-		titulo.setText(tituloTexto);
-
-		cancelar.setText("Cancelar");
-		confirmar.setText("Confirmar");
-		confirmar.setToolTipText("ENTER");
-	}
-
 }
