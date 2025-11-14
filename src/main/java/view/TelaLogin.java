@@ -67,14 +67,14 @@ public class TelaLogin extends javax.swing.JFrame {
         lblSistema.setText("SisUni - Sistema de Gerenciamento Universitário");
 
         password.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, 0, 24));
-        password.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        password.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         lblSenha.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, 0, 10));
         lblSenha.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblSenha.setText("DIGITE A SENHA (MySQL)");
 
         user.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, 0, 24));
-        user.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        user.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         lblUser.setFont(new java.awt.Font(Constantes.UIConstants.DEFAULT_FONT, 0, 10));
         lblUser.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
