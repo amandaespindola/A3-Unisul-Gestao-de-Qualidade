@@ -103,9 +103,6 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		ViewUtils.configurarBotoesGerencia(bCadastro, bEditar, bDeletar);
 		ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
 
-		ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
-		setJMenuBar(jMenuBar1);
-
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,6 +163,8 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	}// GEN-LAST:event_menuGerenciaProfessoresActionPerformed
 
 	private void menuLeaveActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuLeaveActionPerformed
+		java.util.Objects.requireNonNull(
+				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuLeaveActionPerformed);
 		System.exit(0);
 	}// GEN-LAST:event_menuLeaveActionPerformed
 
@@ -250,12 +249,14 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	}// GEN-LAST:event_refreshActionPerformed
 
 	private void menuRefreshActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuRefreshActionPerformed
-		assert evt != null || evt == null;
+		java.util.Objects.requireNonNull(
+				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuRefreshActionPerformed);
 		this.carregaTabela();
 	}// GEN-LAST:event_menuRefreshActionPerformed
 
 	private void menuExportActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuExportActionPerformed
-		assert evt != null || evt == null;
+		java.util.Objects.requireNonNull(
+				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuExportActionPerformed);
 		this.exportXls();
 
 	}// GEN-LAST:event_menuExportActionPerformed
@@ -268,6 +269,8 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	}// GEN-LAST:event_exportActionPerformed
 
 	private void menuSobreActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
+		java.util.Objects.requireNonNull(
+				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuSobreActionPerformed);
 		Sobre tela = new Sobre();
 		tela.setVisible(true);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed

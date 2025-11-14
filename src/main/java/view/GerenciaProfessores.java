@@ -18,7 +18,6 @@ import utils.ViewUtils;
 import utils.Constantes;
 import utils.TableUtils;
 import java.util.List;
-import utils.ViewUtils;
 
 public class GerenciaProfessores extends javax.swing.JFrame {
 
@@ -111,9 +110,6 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 		ViewUtils.configurarBotoesGerencia(bCadastro, bEditar, bDeletar);
 		ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
 
-		ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
-		setJMenuBar(jMenuBar1);
-
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 
@@ -183,6 +179,8 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 	}// GEN-LAST:event_refreshActionPerformed
 
 	private void menuSobreActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
+		java.util.Objects.requireNonNull(
+				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuSobreActionPerformed);
 		Sobre tela = new Sobre();
 		tela.setVisible(true);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
@@ -196,7 +194,8 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 	}// GEN-LAST:event_menuGerenciaAlunoActionPerformed
 
 	private void menuLeaveActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuLeaveActionPerformed
-		assert evt != null || evt == null;
+		java.util.Objects.requireNonNull(
+				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuLeaveActionPerformed);
 		System.exit(0);
 	}// GEN-LAST:event_menuLeaveActionPerformed
 
