@@ -33,12 +33,12 @@ public class GerenciaProfessores extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        bCadastro = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CADASTRAR, this::bCadastroActionPerformed);
+        javax.swing.JButton bCadastro = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CADASTRAR, this::bCadastroActionPerformed);
         javax.swing.JButton bEditar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_EDITAR, this::bEditarActionPerformed)
         ;
         javax.swing.JButton bDeletar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_DELETAR, this::bDeletarActionPerformed)
         ;
-        jScrollPane2 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTableProfessores = new javax.swing.JTable();
         javax.swing.JLabel jLabel1 = ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_GERENCIA_PROFESSORES);
         javax.swing.JButton refresh = ViewUtils.criarBotao(Constantes.UIConstants.BTN_ATUALIZAR, this::menuRefreshActionPerformed);
@@ -100,16 +100,13 @@ public class GerenciaProfessores extends javax.swing.JFrame {
                 false, false, false, false, false, false, false, false
             };
 
-            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         jTableProfessores.setSelectionForeground(new java.awt.Color(239, 239, 239));
         jTableProfessores.addMouseListener(new java.awt.event.MouseAdapter() {
-           
-        	@Override
-        	public void mouseClicked(java.awt.event.MouseEvent evt) {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTableProfessoresMouseClicked(evt);
             }
         });
@@ -356,8 +353,6 @@ public class GerenciaProfessores extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bCadastro;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTableProfessores;
     // End of variables declaration//GEN-END:variables
 }
