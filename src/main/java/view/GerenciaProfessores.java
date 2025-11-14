@@ -16,6 +16,7 @@ import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
 import utils.Constantes;
+import utils.TableUtils;
 import java.util.List;
 
 public class GerenciaProfessores extends javax.swing.JFrame {
@@ -27,6 +28,8 @@ public class GerenciaProfessores extends javax.swing.JFrame {
         initComponents();
         this.professorDAO = new ProfessorDAO();
         this.carregaTabela();
+
+        TableUtils.addMouseClickListener(jTableProfessores, GerenciaProfessores.this::jTableProfessoresMouseClicked);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated
@@ -100,16 +103,12 @@ public class GerenciaProfessores extends javax.swing.JFrame {
                 false, false, false, false, false, false, false, false
             };
 
+            @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         jTableProfessores.setSelectionForeground(new java.awt.Color(239, 239, 239));
-        jTableProfessores.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTableProfessoresMouseClicked(evt);
-            }
-        });
         jScrollPane2.setViewportView(jTableProfessores);
         if (jTableProfessores.getColumnModel().getColumnCount() > 0) {
             jTableProfessores.getColumnModel().getColumn(0).setMinWidth(40);
