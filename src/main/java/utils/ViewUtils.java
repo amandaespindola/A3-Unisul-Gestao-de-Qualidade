@@ -27,6 +27,8 @@ public class ViewUtils {
 		// Construtor privado para evitar instanciação
 	}
 
+	private static final String DEFAULT_FONT = "Tahoma";
+
 	// Cria componentes de Menu
 	public static JMenu criarMenu(String texto, String name) {
 		JMenu menu = new JMenu(texto);
@@ -52,7 +54,7 @@ public class ViewUtils {
 	}
 
 	public static void configurarTitulo(JLabel label, String texto) {
-		label.setFont(new Font("Tahoma", Font.BOLD, 24));
+		label.setFont(new Font(DEFAULT_FONT, Font.BOLD, 24));
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setText(texto);
 	}
@@ -89,7 +91,7 @@ public class ViewUtils {
 
 	public static JLabel criarLabelTitulo(String texto) {
 		JLabel label = new JLabel(texto);
-		label.setFont(new Font("Tahoma", Font.BOLD, 24));
+		label.setFont(new Font(DEFAULT_FONT, Font.BOLD, 24));
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		return label;
 	}
@@ -319,6 +321,21 @@ public class ViewUtils {
 		menu.add(menuLeave);
 
 		bar.add(menu);
+	}
+
+	public static void configurarTelaCadastroPadrao(JFrame tela, JLabel titulo, String tituloTexto, JButton cancelar,
+			JButton confirmar) {
+		tela.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		tela.setTitle(tituloTexto);
+		tela.setResizable(false);
+
+		titulo.setFont(new Font(DEFAULT_FONT, Font.BOLD, 24));
+		titulo.setHorizontalAlignment(SwingConstants.CENTER);
+		titulo.setText(tituloTexto);
+
+		cancelar.setText("Cancelar");
+		confirmar.setText("Confirmar");
+		confirmar.setToolTipText("ENTER");
 	}
 
 }
