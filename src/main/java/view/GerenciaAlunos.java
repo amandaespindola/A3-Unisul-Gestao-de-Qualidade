@@ -32,7 +32,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
         javax.swing.JButton bCadastro = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CADASTRAR, this::bCadastroActionPerformed);
         javax.swing.JButton bEditar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_EDITAR, this::bEditarActionPerformed);
         javax.swing.JButton bDeletar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_DELETAR, this::bDeletarActionPerformed);
-        jScrollPane2 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTableAlunos = new javax.swing.JTable();
         javax.swing.JLabel lblTitulo = ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_GERENCIA_ALUNOS);
         javax.swing.JButton refresh = ViewUtils.criarBotao(Constantes.UIConstants.BTN_ATUALIZAR, this::refreshActionPerformed);
@@ -93,16 +93,14 @@ public class GerenciaAlunos extends javax.swing.JFrame {
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, true
             };
-            
-            @Override
+
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         jTableAlunos.setSelectionForeground(new java.awt.Color(239, 239, 239));
         jTableAlunos.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-        	public void mouseClicked(java.awt.event.MouseEvent evt) {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTableAlunosMouseClicked(evt);
             }
         });
@@ -371,7 +369,6 @@ public class GerenciaAlunos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTableAlunos;
     // End of variables declaration//GEN-END:variables
 }
