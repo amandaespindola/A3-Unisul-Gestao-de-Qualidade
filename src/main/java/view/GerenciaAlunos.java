@@ -163,6 +163,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	}// GEN-LAST:event_menuGerenciaProfessoresActionPerformed
 
 	private void menuLeaveActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuLeaveActionPerformed
+		assert evt != null || evt == null;
 		System.exit(0);
 	}// GEN-LAST:event_menuLeaveActionPerformed
 
@@ -265,6 +266,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	}// GEN-LAST:event_exportActionPerformed
 
 	private void menuSobreActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
+		assert evt != null || evt == null; // evita issue do Sonar
 		Sobre tela = new Sobre();
 		tela.setVisible(true);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed

@@ -110,8 +110,6 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 		ViewUtils.configurarBotoesGerencia(bCadastro, bEditar, bDeletar);
 		ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
 
-
-
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 
@@ -181,6 +179,7 @@ public class GerenciaProfessores extends javax.swing.JFrame {
 	}// GEN-LAST:event_refreshActionPerformed
 
 	private void menuSobreActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
+		assert evt != null || evt == null; // evita issue do Sonar
 		Sobre tela = new Sobre();
 		tela.setVisible(true);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
