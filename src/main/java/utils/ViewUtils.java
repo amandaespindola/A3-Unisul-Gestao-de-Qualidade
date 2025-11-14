@@ -13,9 +13,12 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.function.Consumer;
 
 public class ViewUtils {
@@ -278,6 +281,59 @@ public class ViewUtils {
 	public static void configurarTelaEdicao(TelaCadastroConfig cfg) {
 		configurarTelaBase(cfg);
 	}
-        
+
+	public static void configurarJanelaGerencia(JFrame tela, String titulo) {
+		tela.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		tela.setTitle(titulo);
+		tela.setBackground(new Color(80, 80, 80));
+		tela.setResizable(false);
+	}
+
+	public static void configurarBotoesGerencia(JButton cadastrar, JButton editar, JButton deletar) {
+
+		cadastrar.setText("Cadastrar novo");
+		cadastrar.setToolTipText("");
+
+		editar.setText("Editar");
+		editar.setToolTipText("");
+
+		deletar.setText("Deletar");
+		deletar.setToolTipText("");
+	}
+
+	public static void configurarMenuPadrao(JMenu menu, JMenuBar bar, JMenuItem menuExport, JMenuItem menuRefresh,
+			JMenuItem menuSobre, JMenuItem menuLeave) {
+		menuExport.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
+		menuExport.setText("Exportar para Excel");
+		menu.add(menuExport);
+
+		menuRefresh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
+		menuRefresh.setText("Atualizar tabela");
+		menu.add(menuRefresh);
+
+		menuSobre.setText("Sobre");
+		menu.add(menuSobre);
+
+		menuLeave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+		menuLeave.setText("Sair");
+		menu.add(menuLeave);
+
+		bar.add(menu);
+	}
+
+	public static void configurarTelaCadastroPadrao(JFrame tela, JLabel titulo, String tituloTexto, JButton cancelar,
+			JButton confirmar) {
+		tela.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		tela.setTitle(tituloTexto);
+		tela.setResizable(false);
+
+		titulo.setFont(new Font("Tahoma", Font.BOLD, 24));
+		titulo.setHorizontalAlignment(SwingConstants.CENTER);
+		titulo.setText(tituloTexto);
+
+		cancelar.setText("Cancelar");
+		confirmar.setText("Confirmar");
+		confirmar.setToolTipText("ENTER");
+	}
 
 }
