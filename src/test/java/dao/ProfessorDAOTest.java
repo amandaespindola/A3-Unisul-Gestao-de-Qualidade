@@ -72,7 +72,7 @@ class ProfessorDAOTest {
 
 	// testar insert SQLException
 	@Test
-	void testInsertSQLException() throws Exception {
+	void testInsertSQLException() {
 
 		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
 			@Override
@@ -92,6 +92,16 @@ class ProfessorDAOTest {
 		boolean resultado = daoErro.insert(p);
 
 		assertFalse(resultado); // cai no catch
+	}
+
+	@Test
+	void testInsertConexaoNula() {
+		ProfessorDAO daoNulo = new ProfessorDAO(null);
+		Professor p = criarProfessorFake("Jorge", 20, "Ilha", "33333333333", "45677894562", "Graduação", 1000);
+
+		boolean resultado = daoNulo.insert(p);
+
+		assertTrue(resultado);
 	}
 
 	// findById
@@ -115,6 +125,15 @@ class ProfessorDAOTest {
 	void testFindByIdNaoExistente() {
 		Professor inexistente = dao.findById(999);
 		assertNull(inexistente);
+	}
+
+	@Test
+	void testFindByIdConexaoNula() {
+		ProfessorDAO daoNulo = new ProfessorDAO(null);
+
+		Professor resultado = daoNulo.findById(1);
+
+		assertNull(resultado);
 	}
 
 	// update
@@ -166,6 +185,25 @@ class ProfessorDAOTest {
 	}
 
 	@Test
+	void testUpdateSQLExceptionReal() {
+
+		// Conexao válida, mas tabela ERRADA
+		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
+			@Override
+			protected String getNomeTabela() {
+				return "tabela_inexistente"; // força SQLException
+			}
+		};
+
+		Professor p = criarProfessorFake("Erro", 35, "Ilha", "22222222222", "123", "Mestrado", 1000);
+		p.setId(1);
+
+		boolean atualizado = daoErro.update(p);
+
+		assertFalse(atualizado); // cai no catch REAL do ProfessorDAO
+	}
+
+	@Test
 	void testUpdateConexaoNula() {
 		ProfessorDAO daoConexaoNula = new ProfessorDAO(null);
 
@@ -200,6 +238,16 @@ class ProfessorDAOTest {
 		assertEquals(3, lista.size());
 	}
 
+	@Test
+	void testGetMinhaListaConexaoNula() {
+		ProfessorDAO daoNulo = new ProfessorDAO(null);
+
+		List<Professor> lista = daoNulo.getMinhaLista();
+
+		assertNotNull(lista);
+		assertTrue(lista.isEmpty());
+	}
+
 	// existeCpf
 	@Test
 	void testExisteCpf() {
@@ -224,4 +272,16 @@ class ProfessorDAOTest {
 
 		assertTrue(dao.existeCpf("00011122233", p1.getId()));
 	}
+
+	@Test
+	void testExisteCpfIgnorandoIdListaVazia() {
+		assertFalse(dao.existeCpf("qualquer", 1));
+	}
+
+	// nome da tabela
+	@Test
+	void testGetNomeTabela() {
+		assertEquals("tb_professores", dao.getNomeTabela());
+	}
+
 }
