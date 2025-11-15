@@ -1,26 +1,21 @@
 package utils;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.util.function.Consumer;
+
 import javax.swing.JTable;
 
 public class TableUtils {
 
-    private TableUtils() {
-    }
+	private TableUtils() {
+	}
 
-    /**
-     * Adiciona um MouseListener a uma JTable para tratar o evento mouseClicked.
-     *
-     * @param table A JTable a ser configurada.
-     * @param clickAction A ação a ser executada quando a tabela for clicada.
-     */
-    public static void addMouseClickListener(JTable table, java.util.function.Consumer<MouseEvent> action) {
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                action.accept(evt);
-            }
-        });
-    }
+	public static void addMouseClickListener(JTable table, Consumer<java.awt.event.MouseEvent> action) {
+
+		table.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				action.accept(evt);
+			}
+		});
+	}
 }
