@@ -1,27 +1,28 @@
 package view;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
 
 import utils.ConexaoManager;
-import utils.Constantes;
 import utils.LookAndFeelHelper;
-import utils.ViewUtils;
 
 public class TelaLogin extends JFrame {
 
@@ -52,85 +53,141 @@ public class TelaLogin extends JFrame {
 		}
 	}
 
-
 	private void initComponents() {
 
-		  setTitle("Login");
-	        setDefaultCloseOperation(EXIT_ON_CLOSE);
-	        setSize(380, 300);
-	        setLocationRelativeTo(null);
-	        setResizable(false);
-	        setLayout(new BorderLayout(10, 10));
+		setTitle("Login");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
 
-	        // ===========================
-	        // TÍTULO
-	        // ===========================
-	        JLabel lblTitulo = new JLabel(Constantes.UIConstants.TITULO_SISTEMA, JLabel.CENTER);
-	        lblTitulo.setFont(new Font(Constantes.UIConstants.DEFAULT_FONT, Font.BOLD, 15));
-	        add(lblTitulo, BorderLayout.NORTH);
+		// Fundo somente para modo claro.
+		// (No modo escuro o FlatDarkLaf cuida de tudo)
+		if (!UIManager.getLookAndFeel().getName().toLowerCase().contains("dark")) {
+			getContentPane().setBackground(new Color(245, 245, 245));
+		}
 
-	        // ===========================
-	        // PAINEL CENTRAL COM CAMPOS
-	        // ===========================
-	        JPanel painelCampos = new JPanel(new GridLayout(6, 1, 5, 5));
+		// Borda azul igual ao vídeo
+		Color blueBorder = new Color(120, 155, 255);
+		Border border = BorderFactory.createLineBorder(blueBorder, 2);
 
-	        JLabel lblUser = new JLabel(Constantes.UIConstants.LABEL_USUARIO, JLabel.CENTER);
-	        lblUser.setFont(new Font(Constantes.UIConstants.DEFAULT_FONT, Font.PLAIN, 11));
+		// ======================
+		// TÍTULO
+		// ======================
+		JLabel lblSistema = new JLabel("SisUni - Sistema de Gerenciamento Universitário", JLabel.CENTER);
+		lblSistema.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		lblSistema.setForeground(UIManager.getColor("Label.foreground"));
 
-	        campoUsuario = new JTextField();
-	        campoUsuario.setHorizontalAlignment(JTextField.CENTER);
-	        campoUsuario.setFont(new Font(Constantes.UIConstants.DEFAULT_FONT, Font.PLAIN, 20));
+		// ======================
+		// LABEL USUÁRIO
+		// ======================
+		JLabel lblUser = new JLabel("DIGITE O USUÁRIO (MySQL)", JLabel.CENTER);
+		lblUser.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 
-	        JLabel lblSenha = new JLabel(Constantes.UIConstants.LABEL_SENHA, JLabel.CENTER);
-	        lblSenha.setFont(new Font(Constantes.UIConstants.DEFAULT_FONT, Font.PLAIN, 11));
+		// ======================
+		// CAMPO USUÁRIO
+		// ======================
+		campoUsuario = new JTextField();
+		campoUsuario.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+		campoUsuario.setHorizontalAlignment(JTextField.CENTER);
+		campoUsuario.setPreferredSize(new Dimension(320, 50));
+		campoUsuario.setBorder(border);
 
-	        campoSenha = new JPasswordField();
-	        campoSenha.setHorizontalAlignment(JPasswordField.CENTER);
-	        campoSenha.setFont(new Font(Constantes.UIConstants.DEFAULT_FONT, Font.PLAIN, 20));
+		// NÃO definir background/foreground → deixa o tema cuidar
 
-	        painelCampos.add(lblUser);
-	        painelCampos.add(campoUsuario);
-	        painelCampos.add(lblSenha);
-	        painelCampos.add(campoSenha);
+		// ======================
+		// LABEL SENHA
+		// ======================
+		JLabel lblSenha = new JLabel("DIGITE A SENHA (MySQL)", JLabel.CENTER);
+		lblSenha.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 
-	        add(painelCampos, BorderLayout.CENTER);
+		// ======================
+		// CAMPO SENHA
+		// ======================
+		campoSenha = new JPasswordField();
+		campoSenha.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+		campoSenha.setHorizontalAlignment(JTextField.CENTER);
+		campoSenha.setPreferredSize(new Dimension(320, 50));
+		campoSenha.setBorder(border);
 
-	        // ===========================
-	        // BOTÃO LOGIN
-	        // ===========================
-	        JButton bLogin = ViewUtils.criarBotao(Constantes.UIConstants.BTN_LOGIN, e -> login());
-	        bLogin.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-	        add(bLogin, BorderLayout.SOUTH);
+		// NÃO definir background/foreground → deixa o tema cuidar
 
-	        getRootPane().setDefaultButton(bLogin);
-	    }
+		// ======================
+		// BOTÃO LOGIN
+		// ======================
+		JButton btnLogin = new JButton("LOGIN");
+		btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		btnLogin.setPreferredSize(new Dimension(320, 55));
+		btnLogin.setBorder(border);
+		btnLogin.setFocusPainted(false);
+		btnLogin.addActionListener(e -> login());
 
-	    private void login() {
+		getRootPane().setDefaultButton(btnLogin);
 
-	        String usuarioDigitado = campoUsuario.getText();
-	        String senhaDigitada = String.valueOf(campoSenha.getPassword());
+		// ======================
+		// GROUPLAYOUT (centralizado verticalmente)
+		// ======================
+		GroupLayout layout = new GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
 
-	        if (!usuarioDigitado.isBlank()) userDB = usuarioDigitado;
-	        if (!senhaDigitada.isBlank()) passwordDB = senhaDigitada;
+		layout.setAutoCreateContainerGaps(true);
 
-	        // Inicializa conexão global
-	        ConexaoManager.init(userDB, passwordDB);
+		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+				.addComponent(lblSistema, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+				.addComponent(lblUser)
+				.addComponent(campoUsuario, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.PREFERRED_SIZE)
+				.addComponent(lblSenha)
+				.addComponent(campoSenha, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.PREFERRED_SIZE)
+				.addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.PREFERRED_SIZE));
 
-	        if (ConexaoManager.getConnection() != null) {
-	            JOptionPane.showMessageDialog(this, "Conexão efetuada com sucesso!");
+		layout.setVerticalGroup(layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE) // Centraliza verticalmente
+				.addComponent(lblSistema).addGap(25).addComponent(lblUser)
+				.addComponent(campoUsuario, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.PREFERRED_SIZE)
+				.addGap(20).addComponent(lblSenha)
+				.addComponent(campoSenha, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.PREFERRED_SIZE)
+				.addGap(25).addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.PREFERRED_SIZE)
+				.addGap(0, 0, Short.MAX_VALUE));
 
-	            TelaPrincipal tela = new TelaPrincipal();
-	            tela.setVisible(true);
+		// ======================
+		// TAMANHO DA JANELA
+		// ======================
+		setSize(520, 500);
+		setMinimumSize(new Dimension(520, 500));
+		setLocationRelativeTo(null);
+	}
 
-	            dispose();
-	        } else {
-	            JOptionPane.showMessageDialog(this, "Conexão falhou!");
-	        }
-	    }
+	private void login() {
 
-	    // MAIN
-	    public static void main(String[] args) {
-	        LookAndFeelHelper.aplicarNimbus();
-	        EventQueue.invokeLater(() -> new TelaLogin().setVisible(true));
-	    }
+		String usuarioDigitado = campoUsuario.getText();
+		String senhaDigitada = String.valueOf(campoSenha.getPassword());
+
+		if (!usuarioDigitado.isBlank())
+			userDB = usuarioDigitado;
+		if (!senhaDigitada.isBlank())
+			passwordDB = senhaDigitada;
+
+		// Inicializa conexão global
+		ConexaoManager.init(userDB, passwordDB);
+
+		if (ConexaoManager.getConnection() != null) {
+			JOptionPane.showMessageDialog(this, "Conexão efetuada com sucesso!");
+
+			TelaPrincipal tela = new TelaPrincipal();
+			tela.setVisible(true);
+
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(this, "Conexão falhou!");
+		}
+	}
+
+	// MAIN
+	public static void main(String[] args) {
+		LookAndFeelHelper.aplicarNimbus();
+		EventQueue.invokeLater(() -> new TelaLogin().setVisible(true));
+	}
 }
