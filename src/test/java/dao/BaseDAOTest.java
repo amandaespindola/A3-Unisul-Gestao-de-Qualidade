@@ -24,9 +24,7 @@ class BaseDAOTest {
 		ConexaoManager.setJdbcUrl("jdbc:sqlite::memory:");
 		ConexaoManager.setDriverClass("org.sqlite.JDBC");
 
-		// remover qualquer conexão já existente
 		ConexaoManager.close();
-		// inicializar conexao (user e password ignorados pelo SQLite)
 		ConexaoManager.init("", "");
 
 		Connection conn = ConexaoManager.getConnection();
