@@ -10,12 +10,31 @@ import utils.ViewUtils;
 import utils.ConexaoManager;
 import utils.Constantes;
 
+/**
+ * Classe que representa a tela de login do sistema.
+ * <p>
+ * Permite que o usuário informe suas credenciais (usuário e senha do MySQL)
+ * e realiza a conexão com o banco de dados.
+ * </p>
+ */
 public class TelaLogin extends javax.swing.JFrame {
 
+    /** Logger da classe para registro de eventos. */
     private static final Logger logger = Logger.getLogger(TelaLogin.class.getName());
+
+    /** Senha do banco de dados. */
     private String passwordDB;
+
+    /** Usuário do banco de dados. */
     private String userDB;
 
+    /**
+     * Construtor da classe TelaLogin.
+     * <p>
+     * Inicializa os componentes da interface e carrega as credenciais do arquivo
+     * config.properties.
+     * </p>
+     */
     public TelaLogin() {
         initComponents();
         carregarCredenciais();
@@ -24,6 +43,14 @@ public class TelaLogin extends javax.swing.JFrame {
         getRootPane().setDefaultButton(login);
     }
 
+    /**
+     * Carrega as credenciais do banco de dados a partir do arquivo
+     * config.properties.
+     * <p>
+     * Caso o arquivo não seja encontrado, o usuário deverá inserir as credenciais
+     * manualmente.
+     * </p>
+     */
     private void carregarCredenciais() {
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input != null) {
@@ -39,7 +66,13 @@ public class TelaLogin extends javax.swing.JFrame {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated
+    /**
+     * Inicializa os componentes gráficos da interface.
+     * <p>
+     * Método gerado automaticamente pelo editor de formulários. Não deve ser
+     * modificado manualmente.
+     * </p>
+     */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -128,6 +161,15 @@ public class TelaLogin extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Método chamado quando o botão de login é pressionado.
+     * <p>
+     * Verifica as credenciais digitadas, inicializa a conexão com o banco de dados
+     * e, caso a conexão seja bem sucedida, abre a TelaPrincipal.
+     * </p>
+     *
+     * @param evt Evento de ação do botão login
+     */
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {
         String senhaDigitada = String.copyValueOf(this.password.getPassword());
         String usuarioDigitado = this.user.getText();
@@ -155,14 +197,19 @@ public class TelaLogin extends javax.swing.JFrame {
     // GEN-LAST:event_loginActionPerformed
 
     /**
-     * @param args the command line arguments
+     * Método principal para execução da aplicação.
+     *
+     * @param args argumentos de linha de comando (não utilizados)
      */
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(() -> new TelaLogin().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    /** Campo de senha para o login. */
     private javax.swing.JPasswordField password;
+
+    /** Campo de usuário para o login. */
     private javax.swing.JTextField user;
     // End of variables declaration//GEN-END:variables
 }
