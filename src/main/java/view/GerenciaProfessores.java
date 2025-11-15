@@ -60,7 +60,6 @@ public class GerenciaProfessores extends JFrame {
 		// ======================================================
 		// PAINEL SUPERIOR (TÍTULO + BOTÕES)
 		// ======================================================
-		JPanel painelSuperior = ViewUtils.criarPainelSuperiorTitulo("Cadastro de Professores");
 
 		// ---- Botões ----
 		JButton bAtualizar = ViewUtils.criarBotao("Atualizar tabela", e -> carregarTabela());
@@ -80,9 +79,9 @@ public class GerenciaProfessores extends JFrame {
 			LOGGER.log(Level.WARNING, "Ícone não encontrado", e);
 		}
 
-		JPanel painelBotoes = ViewUtils.criarPainelBotoesGerencia(bAtualizar, bCadastrar, bEditar, bDeletar, bExportar);
+		JPanel painelSuperior = ViewUtils.criarPainelGerenciaTopo("Cadastro de Alunos", bAtualizar, bCadastrar, bEditar,
+				bDeletar, bExportar);
 
-		painelSuperior.add(painelBotoes);
 		painel.add(painelSuperior, BorderLayout.NORTH);
 
 		// ======================================================

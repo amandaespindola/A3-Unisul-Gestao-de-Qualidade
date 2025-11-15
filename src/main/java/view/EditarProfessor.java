@@ -2,15 +2,12 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.text.ParseException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -107,30 +104,17 @@ public class EditarProfessor extends JFrame {
 
 		painel.add(form, BorderLayout.CENTER);
 
-		// Botões
-		JButton bConfirmar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CONFIRMAR, e -> confirmar());
-		JButton bCancelar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CANCELAR, e -> cancelar());
-
-		JPanel botoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-		botoes.add(bConfirmar);
-		botoes.add(bCancelar);
-
-		painel.add(botoes, BorderLayout.SOUTH);
-
-		getRootPane().setDefaultButton(bConfirmar);
+		ViewUtils.adicionarBotoesConfirmarCancelar(painel, this::confirmar, this::cancelar, getRootPane());
 
 		add(painel);
 		pack();
 		setLocationRelativeTo(null);
+
 	}
 
 	// Formatador de CPF, Salário, Contato
 	private void formatarCampos() {
-		try {
-			ValidadorInput.aplicarFormatacaoProfessor(cpfFormatado, contatoFormatado, salarioFormatado);
-		} catch (ParseException e) {
-			JOptionPane.showMessageDialog(this, "Erro ao formatar campos.", "Erro", JOptionPane.ERROR_MESSAGE);
-		}
+		ViewUtils.aplicarFormatacaoProfessorComAlerta(this, cpfFormatado, contatoFormatado, salarioFormatado);
 	}
 
 	// Preenche campos com dados já existentes

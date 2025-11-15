@@ -1,27 +1,25 @@
 package view;
 
-import dao.AlunoDAO;
-import model.Aluno;
-import utils.ValidadorInput;
-import utils.ViewUtils;
-import utils.Constantes;
-import utils.LookAndFeelHelper;
-
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import dao.AlunoDAO;
+import model.Aluno;
+import utils.Constantes;
+import utils.LookAndFeelHelper;
+import utils.ValidadorInput;
+import utils.ViewUtils;
 
 public class EditarAluno extends JFrame {
 
@@ -84,17 +82,7 @@ public class EditarAluno extends JFrame {
 
 		painel.add(form, BorderLayout.CENTER);
 
-		// Botões
-		JButton bConfirmar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CONFIRMAR, e -> confirmar());
-		JButton bCancelar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CANCELAR, e -> cancelar());
-
-		JPanel botoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-		botoes.add(bConfirmar);
-		botoes.add(bCancelar);
-
-		painel.add(botoes, BorderLayout.SOUTH);
-
-		getRootPane().setDefaultButton(bConfirmar);
+		ViewUtils.adicionarBotoesConfirmarCancelar(painel, this::confirmar, this::cancelar, getRootPane());
 
 		add(painel);
 		pack();

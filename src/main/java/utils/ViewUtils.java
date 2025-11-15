@@ -1,18 +1,22 @@
 package utils;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.text.ParseException;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -20,6 +24,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
@@ -187,6 +192,39 @@ public class ViewUtils {
 
 		menuBar.add(menuArquivo);
 		return menuBar;
+	}
+
+	public static void adicionarBotoesConfirmarCancelar(JPanel painel, Runnable acaoConfirmar, Runnable acaoCancelar,
+			JRootPane rootPane) {
+		JButton bConfirmar = criarBotao(Constantes.UIConstants.BTN_CONFIRMAR, e -> acaoConfirmar.run());
+		JButton bCancelar = criarBotao(Constantes.UIConstants.BTN_CANCELAR, e -> acaoCancelar.run());
+
+		JPanel botoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+		botoes.add(bConfirmar);
+		botoes.add(bCancelar);
+
+		painel.add(botoes, BorderLayout.SOUTH);
+		rootPane.setDefaultButton(bConfirmar);
+	}
+
+	public static void aplicarFormatacaoProfessorComAlerta(Component parent, JFormattedTextField cpf,
+			JFormattedTextField contato, JFormattedTextField salario) {
+		try {
+			ValidadorInput.aplicarFormatacaoProfessor(cpf, contato, salario);
+		} catch (ParseException e) {
+			JOptionPane.showMessageDialog(parent, "Erro ao formatar campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public static JPanel criarPainelGerenciaTopo(String titulo, JButton bAtualizar, JButton bCadastrar, JButton bEditar,
+			JButton bDeletar, JButton bExportar) {
+
+		JPanel painelSuperior = criarPainelSuperiorTitulo(titulo);
+
+		JPanel painelBotoes = criarPainelBotoesGerencia(bAtualizar, bCadastrar, bEditar, bDeletar, bExportar);
+
+		painelSuperior.add(painelBotoes);
+		return painelSuperior;
 	}
 
 }
