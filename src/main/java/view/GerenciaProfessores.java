@@ -1,18 +1,22 @@
 package view;
 
-import dao.ProfessorDAO;
-import model.Professor;
-
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.text.ParseException;
+import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,14 +27,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+
+import dao.ProfessorDAO;
+import model.Professor;
 import utils.ExcelExporter;
 import utils.LookAndFeelHelper;
+import utils.TableUtils;
 import utils.ValidadorInput;
 import utils.ViewUtils;
-import utils.Constantes;
-import utils.TableUtils;
-import java.util.List;
 
 public class GerenciaProfessores extends JFrame {
 
@@ -48,42 +54,117 @@ public class GerenciaProfessores extends JFrame {
 	private void initComponents() {
 
 		setTitle("Gerência de Professores");
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(900, 500);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setSize(1000, 520);
 		setLocationRelativeTo(null);
-		setLayout(new BorderLayout(10, 10));
 
-		// ====== Título ======
-		JLabel lblTitulo = ViewUtils.criarLabelTitulo("Gerência de Professores");
-		lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 32));
-		add(lblTitulo, BorderLayout.NORTH);
+		JPanel painel = new JPanel(new BorderLayout(10, 0));
+		painel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
+		add(painel, BorderLayout.CENTER);
 
-		// ====== Tabela ======
+		// ======================================================
+		// PAINEL SUPERIOR (TÍTULO + BOTÕES)
+		// ======================================================
+		JPanel painelSuperior = new JPanel();
+		painelSuperior.setLayout(new BoxLayout(painelSuperior, BoxLayout.Y_AXIS));
+		painelSuperior.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+
+		// ====== TÍTULO ======
+		JLabel lblTitulo = new JLabel("Cadastro de Professores", SwingConstants.CENTER);
+		lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 36));
+		lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblTitulo.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+		painelSuperior.add(lblTitulo);
+
+		// ======================================================
+		// BOTÕES — ALINHADOS COMO NO VÍDEO
+		// ======================================================
+		JPanel painelBotoes = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.insets = new Insets(0, 10, 0, 10);
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.NONE;
+
+		// Larguras
+		Dimension btnLateral = new Dimension(160, 30); // Atualizar / Exportar
+		Dimension btnCentral = new Dimension(160, 30); // Cadastrar / Editar / Deletar
+
+		// Botões
+		ImageIcon refreshIcon = new ImageIcon(getClass().getResource("/View/refresh.png"));
+		Image img = refreshIcon.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH);
+		refreshIcon = new ImageIcon(img);
+
+		JButton bAtualizar = ViewUtils.criarBotao("Atualizar tabela", e -> carregarTabela());
+		bAtualizar.setIcon(refreshIcon);
+		bAtualizar.setHorizontalTextPosition(SwingConstants.RIGHT);
+
+		JButton bCadastrar = ViewUtils.criarBotao("Cadastrar novo", e -> abrirCadastro());
+		bCadastrar.setPreferredSize(btnCentral);
+
+		JButton bEditar = ViewUtils.criarBotao("Editar", e -> editar());
+		bEditar.setPreferredSize(btnCentral);
+
+		JButton bDeletar = ViewUtils.criarBotao("Deletar", e -> deletar());
+		bDeletar.setPreferredSize(btnCentral);
+
+		JButton bExportar = ViewUtils.criarBotao("Exportar para Excel", e -> exportarExcel());
+		bExportar.setPreferredSize(btnLateral);
+
+		// ====== POSIÇÕES ======
+
+		// --- Botão Atualizar (ESQUERDA)
+		gbc.insets = new Insets(0, 15, 0, 15);
+		gbc.gridx = 0;
+		gbc.weightx = 1;
+		gbc.anchor = GridBagConstraints.LINE_START;
+		painelBotoes.add(bAtualizar, gbc);
+
+		// Botões centrais — juntos (insets menores)
+		gbc.insets = new Insets(0, 5, 0, 5); 
+
+		gbc.weightx = 0;
+		gbc.anchor = GridBagConstraints.CENTER;
+
+		gbc.gridx = 1;
+		painelBotoes.add(bCadastrar, gbc);
+
+		gbc.gridx = 2;
+		painelBotoes.add(bEditar, gbc);
+
+		gbc.gridx = 3;
+		painelBotoes.add(bDeletar, gbc);
+
+		// --- Botão Exportar (DIREITA) — margem maior
+		gbc.insets = new Insets(0, 15, 0, 15);
+		gbc.gridx = 4;
+		gbc.weightx = 1;
+		gbc.anchor = GridBagConstraints.LINE_END;
+		painelBotoes.add(bExportar, gbc);
+
+		painelSuperior.add(painelBotoes);
+		painel.add(painelSuperior, BorderLayout.NORTH);
+
+		// ======================================================
+		// TABELA
+		// ======================================================
 		tabelaProf = new JTable();
+		tabelaProf.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		tabelaProf.setRowHeight(28);
+
 		tabelaProf.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "ID", "Nome", "Idade", "Campus", "CPF", "Contato", "Título", "Salário" }));
 
 		JScrollPane scroll = new JScrollPane(tabelaProf);
-		add(scroll, BorderLayout.CENTER);
+		scroll.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
 
-		// ====== Painel de Botões ======
-		JPanel botoes = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 15, 10));
+		scroll.setPreferredSize(new Dimension(getWidth(), getHeight() - 170 // reduz o espaçamento para subir a tabela
+		));
+		painel.add(scroll, BorderLayout.CENTER);
 
-		JButton bCadastrar = ViewUtils.criarBotao("Cadastrar", e -> abrirCadastro());
-		JButton bEditar = ViewUtils.criarBotao("Editar", e -> editar());
-		JButton bDeletar = ViewUtils.criarBotao("Deletar", e -> deletar());
-		JButton bRefresh = ViewUtils.criarBotao("Atualizar", e -> carregarTabela());
-		JButton bExportar = ViewUtils.criarBotao("Exportar Excel", e -> exportarExcel());
-
-		botoes.add(bCadastrar);
-		botoes.add(bEditar);
-		botoes.add(bDeletar);
-		botoes.add(bRefresh);
-		botoes.add(bExportar);
-
-		add(botoes, BorderLayout.SOUTH);
-
-		// ====== Menu ======
+		// ======================================================
+		// MENU SUPERIOR
+		// ======================================================
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menuArquivo = new JMenu("Arquivo");
 

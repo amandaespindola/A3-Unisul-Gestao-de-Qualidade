@@ -1,19 +1,20 @@
 package view;
 
-import dao.AlunoDAO;
-import model.Aluno;
-import utils.ValidadorInput;
-import utils.ViewUtils;
-import utils.TableUtils;
-
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.io.IOException;
+import java.util.List;
 
-import utils.ExcelExporter;
-import utils.LookAndFeelHelper;
-
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,9 +25,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
-import java.util.List;
-import java.awt.FlowLayout;
+
+import dao.AlunoDAO;
+import model.Aluno;
+import utils.ExcelExporter;
+import utils.LookAndFeelHelper;
+import utils.TableUtils;
+import utils.ValidadorInput;
+import utils.ViewUtils;
 
 public class GerenciaAlunos extends JFrame {
 
@@ -44,41 +52,123 @@ public class GerenciaAlunos extends JFrame {
 	private void initComponents() {
 
 		setTitle("Gerência de Alunos");
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(900, 500);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setSize(1000, 520);
 		setLocationRelativeTo(null);
-		setLayout(new BorderLayout(10, 10));
 
-		// Título
-		JLabel lblTitulo = ViewUtils.criarLabelTitulo("Gerência de Alunos");
-		lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 32));
-		add(lblTitulo, BorderLayout.NORTH);
+		JPanel painel = new JPanel(new BorderLayout(10, 0));
+		painel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
+		add(painel, BorderLayout.CENTER);
 
-		// Tabela
-		jTableAlunos = new JTable();
-		jTableAlunos.setModel(
-				new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Nome", "Idade", "Curso", "Fase" }));
-		JScrollPane scroll = new JScrollPane(jTableAlunos);
-		add(scroll, BorderLayout.CENTER);
+		// ======================================================
+		// PAINEL SUPERIOR (TÍTULO + BOTÕES)
+		// ======================================================
+		JPanel painelSuperior = new JPanel();
+		painelSuperior.setLayout(new BoxLayout(painelSuperior, BoxLayout.Y_AXIS));
+		painelSuperior.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 
-		// Painel de botões
-		JPanel botoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+		// ====== TÍTULO ======
+		JLabel lblTitulo = new JLabel("Cadastro de Alunos", SwingConstants.CENTER);
+		lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 36));
+		lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblTitulo.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+		painelSuperior.add(lblTitulo);
 
-		JButton bCadastrar = ViewUtils.criarBotao("Cadastrar", e -> abrirCadastro());
+		// ======================================================
+		// BOTÕES — EXATAMENTE COMO EM PROFESSORES
+		// ======================================================
+		JPanel painelBotoes = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.insets = new Insets(0, 10, 0, 10);
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.NONE;
+
+		// Mesmos tamanhos usados no GerenciaProfessores
+		Dimension btnLateral = new Dimension(160, 30);
+		Dimension btnCentral = new Dimension(160, 30);
+
+		// Botões
+		JButton bAtualizar = ViewUtils.criarBotao("Atualizar tabela", e -> carregarTabela());
+		JButton bCadastrar = ViewUtils.criarBotao("Cadastrar novo", e -> abrirCadastro());
 		JButton bEditar = ViewUtils.criarBotao("Editar", e -> editar());
 		JButton bDeletar = ViewUtils.criarBotao("Deletar", e -> deletar());
-		JButton bRefresh = ViewUtils.criarBotao("Atualizar", e -> carregarTabela());
-		JButton bExportar = ViewUtils.criarBotao("Exportar Excel", e -> exportarExcel());
+		JButton bExportar = ViewUtils.criarBotao("Exportar para Excel", e -> exportarExcel());
 
-		botoes.add(bCadastrar);
-		botoes.add(bEditar);
-		botoes.add(bDeletar);
-		botoes.add(bRefresh);
-		botoes.add(bExportar);
+		// Ícone Atualizar — mesmo código do GerenciaProfessores
+		try {
+			ImageIcon refreshIcon = new ImageIcon(getClass().getResource("/View/refresh.png"));
+			Image img = refreshIcon.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH);
+			refreshIcon = new ImageIcon(img);
 
-		add(botoes, BorderLayout.SOUTH);
+			bAtualizar.setIcon(refreshIcon);
+			bAtualizar.setHorizontalTextPosition(SwingConstants.RIGHT);
+		} catch (Exception e) {
+			System.err.println("Ícone não encontrado: " + e.getMessage());
+		}
 
-		// Menu
+		// Tamanhos EXATAMENTE iguais
+		bAtualizar.setPreferredSize(btnLateral);
+		bExportar.setPreferredSize(btnLateral);
+
+		bCadastrar.setPreferredSize(btnCentral);
+		bEditar.setPreferredSize(btnCentral);
+		bDeletar.setPreferredSize(btnCentral);
+
+		// ====== POSICIONAMENTO DOS BOTÕES ======
+
+		// --- Botão Atualizar (ESQUERDA)
+		gbc.insets = new Insets(0, 15, 0, 15);
+		gbc.gridx = 0;
+		gbc.weightx = 1;
+		gbc.anchor = GridBagConstraints.LINE_START;
+		painelBotoes.add(bAtualizar, gbc);
+
+		// --- Botões centrais (juntos)
+		gbc.insets = new Insets(0, 5, 0, 5);
+		gbc.weightx = 0;
+		gbc.anchor = GridBagConstraints.CENTER;
+
+		gbc.gridx = 1;
+		painelBotoes.add(bCadastrar, gbc);
+
+		gbc.gridx = 2;
+		painelBotoes.add(bEditar, gbc);
+
+		gbc.gridx = 3;
+		painelBotoes.add(bDeletar, gbc);
+
+		// --- Botão Exportar (DIREITA)
+		gbc.insets = new Insets(0, 15, 0, 15);
+		gbc.gridx = 4;
+		gbc.weightx = 1;
+		gbc.anchor = GridBagConstraints.LINE_END;
+		painelBotoes.add(bExportar, gbc);
+
+		painelSuperior.add(painelBotoes);
+		painel.add(painelSuperior, BorderLayout.NORTH);
+
+		// ======================================================
+		// TABELA — MESMO LAYOUT DO GERENCIA PROFESSORES
+		// ======================================================
+		jTableAlunos = new JTable();
+		jTableAlunos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		jTableAlunos.setRowHeight(28);
+
+		jTableAlunos.setModel(
+				new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Nome", "Idade", "Curso", "Fase" }));
+
+		JScrollPane scroll = new JScrollPane(jTableAlunos);
+		scroll.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
+
+		// Mesma altura da tabela do GerenciaProfessores
+		scroll.setPreferredSize(new Dimension(getWidth(), getHeight() - 170));
+
+		painel.add(scroll, BorderLayout.CENTER);
+
+		// ======================================================
+		// MENU SUPERIOR
+		// ======================================================
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menuArquivo = new JMenu("Arquivo");
 
@@ -94,8 +184,8 @@ public class GerenciaAlunos extends JFrame {
 		menuArquivo.add(menuProfessores);
 		menuArquivo.add(menuSobre);
 		menuArquivo.add(menuSair);
-		menuBar.add(menuArquivo);
 
+		menuBar.add(menuArquivo);
 		setJMenuBar(menuBar);
 	}
 
