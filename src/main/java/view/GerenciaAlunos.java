@@ -4,21 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Image;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import dao.AlunoDAO;
@@ -51,61 +47,26 @@ public class GerenciaAlunos extends JFrame {
 		setSize(1000, 520);
 		setLocationRelativeTo(null);
 
-		JPanel painel = new JPanel(new BorderLayout(10, 0));
-		painel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
-		add(painel, BorderLayout.CENTER);
+		JPanel painel = ViewUtils.criarPainelBase(this);
 
-		// ======================================================
-		// PAINEL SUPERIOR (TÍTULO + BOTÕES)
-		// ======================================================
-
-		// ======================================================
-		// BOTÕES — EXATAMENTE COMO EM PROFESSORES
-		// ======================================================
-		JButton bAtualizar = ViewUtils.criarBotao("Atualizar tabela", e -> carregarTabela());
-		JButton bCadastrar = ViewUtils.criarBotao("Cadastrar novo", e -> abrirCadastro());
-		JButton bEditar = ViewUtils.criarBotao("Editar", e -> editar());
-		JButton bDeletar = ViewUtils.criarBotao("Deletar", e -> deletar());
-		JButton bExportar = ViewUtils.criarBotao("Exportar para Excel", e -> exportarExcel());
-
-		// Ícone Atualizar — mesmo código do GerenciaProfessores
-		try {
-			ImageIcon refreshIcon = new ImageIcon(getClass().getResource("/View/refresh.png"));
-			Image img = refreshIcon.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH);
-			refreshIcon = new ImageIcon(img);
-
-			bAtualizar.setIcon(refreshIcon);
-			bAtualizar.setHorizontalTextPosition(SwingConstants.RIGHT);
-		} catch (Exception e) {
-			LOGGER.log(Level.WARNING, "Ícone não encontrado", e);
-		}
-
-		JPanel painelSuperior = ViewUtils.criarPainelGerenciaTopo("Cadastro de Alunos", bAtualizar, bCadastrar, bEditar,
-				bDeletar, bExportar);
-
+		JButton[] btns = ViewUtils.criarBotoesGerencia(this::carregarTabela, this::abrirCadastro, this::editar,
+				this::deletar, this::exportarExcel, LOGGER);
+		JPanel painelSuperior = ViewUtils.criarPainelGerenciaTopo("Cadastro de Alunos", btns[0], btns[1], btns[2],
+				btns[3], btns[4]);
 		painel.add(painelSuperior, BorderLayout.NORTH);
 
-		// ======================================================
-		// TABELA — MESMO LAYOUT DO GERENCIA PROFESSORES
-		// ======================================================
 		jTableAlunos = new JTable();
 		jTableAlunos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		jTableAlunos.setRowHeight(28);
-
 		jTableAlunos.setModel(
 				new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Nome", "Idade", "Curso", "Fase" }));
 
 		JScrollPane scroll = new JScrollPane(jTableAlunos);
 		scroll.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
-
-		// Mesma altura da tabela do GerenciaProfessores
 		scroll.setPreferredSize(new Dimension(getWidth(), getHeight() - 170));
 
 		painel.add(scroll, BorderLayout.CENTER);
 
-		// ======================================================
-		// MENU SUPERIOR
-		// ======================================================
 		setJMenuBar(ViewUtils.criarMenuGerencia("Gerência de Professores", this::abrirProfessores,
 				() -> new Sobre().setVisible(true)));
 

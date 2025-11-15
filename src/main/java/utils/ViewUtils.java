@@ -7,13 +7,16 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.text.ParseException;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -225,6 +228,34 @@ public class ViewUtils {
 
 		painelSuperior.add(painelBotoes);
 		return painelSuperior;
+	}
+
+	public static JPanel criarPainelBase(JFrame frame) {
+		JPanel painel = new JPanel(new BorderLayout(10, 0));
+		painel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
+		frame.add(painel, BorderLayout.CENTER);
+		return painel;
+	}
+
+	public static JButton[] criarBotoesGerencia(Runnable atualizar, Runnable cadastrar, Runnable editar,
+			Runnable deletar, Runnable exportar, Logger logger) {
+
+		JButton bAtualizar = criarBotao("Atualizar tabela", e -> atualizar.run());
+		JButton bCadastrar = criarBotao("Cadastrar novo", e -> cadastrar.run());
+		JButton bEditar = criarBotao("Editar", e -> editar.run());
+		JButton bDeletar = criarBotao("Deletar", e -> deletar.run());
+		JButton bExportar = criarBotao("Exportar para Excel", e -> exportar.run());
+
+		try {
+			ImageIcon refreshIcon = new ImageIcon(ViewUtils.class.getResource("/View/refresh.png"));
+			Image img = refreshIcon.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH);
+			bAtualizar.setIcon(new ImageIcon(img));
+			bAtualizar.setHorizontalTextPosition(SwingConstants.RIGHT);
+		} catch (Exception e) {
+			logger.warning("Ícone não encontrado: " + e.getMessage());
+		}
+
+		return new JButton[] { bAtualizar, bCadastrar, bEditar, bDeletar, bExportar };
 	}
 
 }
