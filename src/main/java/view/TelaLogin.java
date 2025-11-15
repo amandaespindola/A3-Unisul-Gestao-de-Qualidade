@@ -20,6 +20,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.WindowConstants;
+import javax.swing.SwingConstants;
 
 import utils.Constantes;
 import utils.ConexaoManager;
@@ -59,7 +61,7 @@ public class TelaLogin extends JFrame {
 	private void initComponents() {
 
 		setTitle("Login");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setResizable(false);
 
 		// Fundo somente para modo claro.
@@ -75,7 +77,7 @@ public class TelaLogin extends JFrame {
 		// ======================
 		// TÍTULO
 		// ======================
-		JLabel lblSistema = new JLabel("SisUni - Sistema de Gerenciamento Universitário", JLabel.CENTER);
+		JLabel lblSistema = new JLabel("SisUni - Sistema de Gerenciamento Universitário", SwingConstants.CENTER);
 		lblSistema.setFont(new Font(defaultFont, Font.BOLD, 18));
 		lblSistema.setForeground(UIManager.getColor("Label.foreground"));
 
