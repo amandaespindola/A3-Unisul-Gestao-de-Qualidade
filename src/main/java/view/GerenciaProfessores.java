@@ -19,297 +19,369 @@ import utils.Constantes;
 import utils.TableUtils;
 import java.util.List;
 
+/**
+ * Tela responsável pela gestão de professores, permitindo cadastrar,
+ * editar, excluir, listar e exportar dados de professores para Excel.
+ * Esta classe serve como interface principal para operações relacionadas
+ * ao gerenciamento de professores.
+ */
 public class GerenciaProfessores extends javax.swing.JFrame {
 
-	private final transient ProfessorDAO professorDAO;
-	private int linhaSelecionada = -1;
+    private final transient ProfessorDAO professorDAO;
+    private int linhaSelecionada = -1;
 
-	public GerenciaProfessores() {
-		initComponents();
-		this.professorDAO = new ProfessorDAO();
-		this.carregaTabela();
+    /**
+     * Construtor da tela de gerenciamento de professores.
+     * Inicializa os componentes da interface, configura eventos e carrega a tabela.
+     */
+    public GerenciaProfessores() {
+        initComponents();
+        this.professorDAO = new ProfessorDAO();
+        this.carregaTabela();
 
-		TableUtils.addMouseClickListener(jTableProfessores, GerenciaProfessores.this::jTableProfessoresMouseClicked);
-	}
+        TableUtils.addMouseClickListener(jTableProfessores, GerenciaProfessores.this::jTableProfessoresMouseClicked);
+    }
 
-	// <editor-fold defaultstate="collapsed" desc="Generated
-	// <editor-fold defaultstate="collapsed" desc="Generated
-	// Code">//GEN-BEGIN:initComponents
-	private void initComponents() {
+    /**
+     * Método gerado automaticamente pelo editor visual.
+     * Responsável pela construção e configuração dos elementos da interface.
+     * Não deve ser modificado manualmente.
+     */
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-		javax.swing.JButton bCadastro = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CADASTRAR,
-				this::bCadastroActionPerformed);
-		javax.swing.JButton bEditar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_EDITAR,
-				this::bEditarActionPerformed);
-		javax.swing.JButton bDeletar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_DELETAR,
-				this::bDeletarActionPerformed);
-		javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
-		jTableProfessores = new javax.swing.JTable();
-		javax.swing.JLabel jLabel1 = ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_GERENCIA_PROFESSORES);
-		javax.swing.JButton refresh = ViewUtils.criarBotao(Constantes.UIConstants.BTN_ATUALIZAR,
-				this::menuRefreshActionPerformed);
-		javax.swing.JButton export = ViewUtils.criarBotao(Constantes.UIConstants.BTN_EXPORTAR,
-				this::menuExportActionPerformed);
-		javax.swing.JMenuBar jMenuBar1 = ViewUtils.criarMenuBar();
-		javax.swing.JMenu menu = ViewUtils.criarMenu("Menu", "menu");
-		javax.swing.JMenuItem menuGerenciaAluno = ViewUtils.criarMenuItem("Gerenciar Alunos",
-				this::menuGerenciaAlunosActionPerformed, "menuGerenciaAluno");
+        javax.swing.JButton bCadastro = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CADASTRAR,
+                this::bCadastroActionPerformed);
+        javax.swing.JButton bEditar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_EDITAR,
+                this::bEditarActionPerformed);
+        javax.swing.JButton bDeletar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_DELETAR,
+                this::bDeletarActionPerformed);
+        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
+        jTableProfessores = new javax.swing.JTable();
+        javax.swing.JLabel jLabel1 = ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_GERENCIA_PROFESSORES);
+        javax.swing.JButton refresh = ViewUtils.criarBotao(Constantes.UIConstants.BTN_ATUALIZAR,
+                this::menuRefreshActionPerformed);
+        javax.swing.JButton export = ViewUtils.criarBotao(Constantes.UIConstants.BTN_EXPORTAR,
+                this::menuExportActionPerformed);
+        javax.swing.JMenuBar jMenuBar1 = ViewUtils.criarMenuBar();
+        javax.swing.JMenu menu = ViewUtils.criarMenu("Menu", "menu");
+        javax.swing.JMenuItem menuGerenciaAluno = ViewUtils.criarMenuItem("Gerenciar Alunos",
+                this::menuGerenciaAlunosActionPerformed, "menuGerenciaAluno");
 
-		jTableProfessores.setModel(new javax.swing.table.DefaultTableModel(
-				new Object[][] { { null, null, null, null, null, null, null, null },
-						{ null, null, null, null, null, null, null, null },
-						{ null, null, null, null, null, null, null, null },
-						{ null, null, null, null, null, null, null, null } },
-				new String[] { "ID", "Nome", "Idade", "Campus", "CPF", "Contato", "Título", "Salário" }) {
-			boolean[] canEdit = new boolean[] { false, false, false, false, false, false, false, false };
+        jTableProfessores.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{{null, null, null, null, null, null, null, null},
+                        {null, null, null, null, null, null, null, null},
+                        {null, null, null, null, null, null, null, null},
+                        {null, null, null, null, null, null, null, null}},
+                new String[]{"ID", "Nome", "Idade", "Campus", "CPF", "Contato", "Título", "Salário"}) {
+            boolean[] canEdit = new boolean[]{false, false, false, false, false, false, false, false};
 
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				return canEdit[columnIndex];
-			}
-		});
-		jTableProfessores.setSelectionForeground(new java.awt.Color(239, 239, 239));
-		jScrollPane2.setViewportView(jTableProfessores);
-		if (jTableProfessores.getColumnModel().getColumnCount() > 0) {
-			jTableProfessores.getColumnModel().getColumn(0).setMinWidth(40);
-			jTableProfessores.getColumnModel().getColumn(0).setMaxWidth(40);
-			jTableProfessores.getColumnModel().getColumn(2).setMinWidth(40);
-			jTableProfessores.getColumnModel().getColumn(2).setMaxWidth(40);
-			jTableProfessores.getColumnModel().getColumn(7).setMinWidth(75);
-			jTableProfessores.getColumnModel().getColumn(7).setMaxWidth(75);
-		}
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        });
+        jTableProfessores.setSelectionForeground(new java.awt.Color(239, 239, 239));
+        jScrollPane2.setViewportView(jTableProfessores);
+        if (jTableProfessores.getColumnModel().getColumnCount() > 0) {
+            jTableProfessores.getColumnModel().getColumn(0).setMinWidth(40);
+            jTableProfessores.getColumnModel().getColumn(0).setMaxWidth(40);
+            jTableProfessores.getColumnModel().getColumn(2).setMinWidth(40);
+            jTableProfessores.getColumnModel().getColumn(2).setMaxWidth(40);
+            jTableProfessores.getColumnModel().getColumn(7).setMinWidth(75);
+            jTableProfessores.getColumnModel().getColumn(7).setMaxWidth(75);
+        }
 
-		jLabel1.setFont(new java.awt.Font("Tahoma", 1, 40)); // NOI18N
-		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		jLabel1.setText("Cadastro de Professores");
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 40));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Cadastro de Professores");
 
-		refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/refresh.png"))); // NOI18N
-		refresh.setText("  Atualizar tabela");
-		refresh.setToolTipText("CTRL+R");
+        refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/refresh.png")));
+        refresh.setText("  Atualizar tabela");
+        refresh.setToolTipText("CTRL+R");
 
-		export.setText("Exportar para Excel");
-		export.setToolTipText("CTRL+E");
-		export.setMaximumSize(new java.awt.Dimension(103, 22));
-		export.setMinimumSize(new java.awt.Dimension(103, 22));
-		export.setPreferredSize(new java.awt.Dimension(103, 22));
+        export.setText("Exportar para Excel");
+        export.setToolTipText("CTRL+E");
 
-		menu.setForeground(new java.awt.Color(239, 239, 239));
-		menu.setText("Arquivo");
+        menu.setText("Arquivo");
 
-		menuGerenciaAluno.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A,
-				java.awt.event.InputEvent.CTRL_DOWN_MASK));
-		menuGerenciaAluno.setText("Gerência de Alunos");
-		menu.add(menuGerenciaAluno);
+        menuGerenciaAluno.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A,
+                java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menuGerenciaAluno.setText("Gerência de Alunos");
+        menu.add(menuGerenciaAluno);
 
-		javax.swing.JMenuItem menuExport = new javax.swing.JMenuItem();
-		javax.swing.JMenuItem menuRefresh = new javax.swing.JMenuItem();
-		javax.swing.JMenuItem menuSobre = new javax.swing.JMenuItem();
-		javax.swing.JMenuItem menuLeave = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem menuExport = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem menuRefresh = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem menuSobre = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem menuLeave = new javax.swing.JMenuItem();
 
-		ViewUtils.configurarJanelaGerencia(this, "Gerência de Professores");
-		ViewUtils.configurarBotoesGerencia(bCadastro, bEditar, bDeletar);
-		ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
+        ViewUtils.configurarJanelaGerencia(this, "Gerência de Professores");
+        ViewUtils.configurarBotoesGerencia(bCadastro, bEditar, bDeletar);
+        ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
 
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 859, Short.MAX_VALUE)
-								.addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE)
-								.addGroup(layout.createSequentialGroup()
-										.addComponent(refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 143,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addGap(65, 65, 65)
-										.addComponent(bCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 144,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(bEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 144,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(bDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 144,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(export, javax.swing.GroupLayout.PREFERRED_SIZE, 143,
-												javax.swing.GroupLayout.PREFERRED_SIZE)))
-						.addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap()
-						.addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 99,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-										.addComponent(bCadastro).addComponent(bEditar).addComponent(bDeletar)
-										.addComponent(export, javax.swing.GroupLayout.PREFERRED_SIZE, 22,
-												javax.swing.GroupLayout.PREFERRED_SIZE))
-								.addComponent(refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 22,
-										javax.swing.GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-						.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
-						.addContainerGap()));
+        layout.setHorizontalGroup(layout
+                .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout
+                                .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 859, Short.MAX_VALUE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        Short.MAX_VALUE)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 143,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(65, 65, 65)
+                                        .addComponent(bCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 144,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(bEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 144,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(bDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 144,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(export, javax.swing.GroupLayout.PREFERRED_SIZE, 143,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap()));
+        layout.setVerticalGroup(layout
+                .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 99,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout
+                                .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(bCadastro)
+                                        .addComponent(bEditar)
+                                        .addComponent(bDeletar)
+                                        .addComponent(export, javax.swing.GroupLayout.PREFERRED_SIZE, 22,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 22,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                        .addContainerGap()));
 
-		pack();
-		setLocationRelativeTo(null);
-	}// </editor-fold>//GEN-END:initComponents
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
 
-	private void exportXls() {
-		try {
-			ExcelExporter.exportTableToExcel(jTableProfessores);
-			JOptionPane.showMessageDialog(this, "Arquivo exportado com sucesso!");
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this, "Erro ao exportar arquivo: " + e.getMessage(), "Erro de Exportação",
-					JOptionPane.ERROR_MESSAGE);
-		}
-	}
+    /**
+     * Exporta os dados da tabela de professores para um arquivo Excel (.xls).
+     * Exibe mensagens de sucesso ou erro conforme o resultado.
+     */
+    private void exportXls() {
+        try {
+            ExcelExporter.exportTableToExcel(jTableProfessores);
+            JOptionPane.showMessageDialog(this, "Arquivo exportado com sucesso!");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao exportar arquivo: " + e.getMessage(),
+                    "Erro de Exportação", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-	private void menuExportActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuExportActionPerformed
-		assert evt != null || evt == null;
-		this.exportXls();
+    /**
+     * Ação de exportar ao clicar no menu correspondente.
+     *
+     * @param evt evento de clique
+     */
+    private void menuExportActionPerformed(java.awt.event.ActionEvent evt) {
+        assert evt != null || evt == null;
+        this.exportXls();
+    }
 
-	}// GEN-LAST:event_menuExportActionPerformed
+    /**
+     * Atualiza a tabela quando o botão/menu de refresh é acionado.
+     *
+     * @param evt evento de clique
+     */
+    private void menuRefreshActionPerformed(java.awt.event.ActionEvent evt) {
+        assert evt != null || evt == null;
+        this.carregaTabela();
+    }
 
-	private void menuRefreshActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_refreshActionPerformed
-		assert evt != null || evt == null;
-		this.carregaTabela();
-	}// GEN-LAST:event_refreshActionPerformed
+    /**
+     * Exibe a janela "Sobre" da aplicação.
+     *
+     * @param evt clique do menu
+     */
+    private void menuSobreActionPerformed(java.awt.event.ActionEvent evt) {
+        Sobre tela = new Sobre();
+        tela.setVisible(true);
+    }
 
-	private void menuSobreActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
-		java.util.Objects.requireNonNull(
-				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuSobreActionPerformed);
-		Sobre tela = new Sobre();
-		tela.setVisible(true);
-	}// GEN-LAST:event_jMenuItem1ActionPerformed
+    /**
+     * Abre a janela de Gerência de Alunos.
+     *
+     * @param evt clique do menu
+     */
+    private void menuGerenciaAlunosActionPerformed(java.awt.event.ActionEvent evt) {
+        GerenciaAlunos tela = new GerenciaAlunos();
+        tela.setVisible(true);
+        this.dispose();
+    }
 
-	private void menuGerenciaAlunosActionPerformed(java.awt.event.ActionEvent evt) {
-		assert evt != null || evt == null;
+    /**
+     * Sai da aplicação.
+     *
+     * @param evt clique no menu "Sair"
+     */
+    private void menuLeaveActionPerformed(java.awt.event.ActionEvent evt) {
+        System.exit(0);
+    }
 
-		GerenciaAlunos tela = new GerenciaAlunos();
-		tela.setVisible(true);
-		this.dispose();
-	}// GEN-LAST:event_menuGerenciaAlunoActionPerformed
+    /**
+     * Abre a tela de cadastro de professor.
+     *
+     * @param evt clique no botão "Cadastrar"
+     */
+    private void bCadastroActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            CadastroProfessor tela = new CadastroProfessor();
+            tela.setVisible(true);
+        } catch (ParseException ex) {
+            Logger.getLogger(GerenciaProfessores.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
-	private void menuLeaveActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuLeaveActionPerformed
-		java.util.Objects.requireNonNull(
-				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuLeaveActionPerformed);
-		System.exit(0);
-	}// GEN-LAST:event_menuLeaveActionPerformed
+    /**
+     * Abre a tela de edição do professor selecionado.
+     *
+     * @param evt clique no botão "Editar"
+     */
+    private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {
+        if (this.linhaSelecionada != -1) {
 
-	private void bCadastroActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bCadastroActionPerformed
-		assert evt != null || evt == null;
+            String[] dadosParaEdicao = new String[8];
 
-		try {
-			CadastroProfessor tela = new CadastroProfessor();
-			tela.setVisible(true);
-		} catch (ParseException ex) {
-			Logger.getLogger(GerenciaProfessores.class.getName()).log(Level.SEVERE, null, ex);
-		}
+            String id = this.jTableProfessores.getValueAt(this.linhaSelecionada, 0).toString();
+            String nome = this.jTableProfessores.getValueAt(this.linhaSelecionada, 1).toString();
+            String idade = this.jTableProfessores.getValueAt(this.linhaSelecionada, 2).toString();
+            String campus = this.jTableProfessores.getValueAt(this.linhaSelecionada, 3).toString();
+            String cpf = this.jTableProfessores.getValueAt(this.linhaSelecionada, 4).toString();
+            String contato = this.jTableProfessores.getValueAt(this.linhaSelecionada, 5).toString();
+            String titulo = this.jTableProfessores.getValueAt(this.linhaSelecionada, 6).toString();
+            String salario = this.jTableProfessores.getValueAt(this.linhaSelecionada, 7).toString();
 
-	}// GEN-LAST:event_bCadastroActionPerformed
+            String salarioLimpo = ValidadorInput.removerMascara(salario);
 
-	private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bEditarActionPerformed
-		if (this.linhaSelecionada != -1) {
+            dadosParaEdicao[0] = nome;
+            dadosParaEdicao[1] = idade;
+            dadosParaEdicao[2] = campus;
+            dadosParaEdicao[3] = cpf;
+            dadosParaEdicao[4] = contato;
+            dadosParaEdicao[5] = titulo;
+            dadosParaEdicao[6] = salarioLimpo;
+            dadosParaEdicao[7] = id;
 
-			String[] dadosParaEdicao = new String[8];
+            try {
+                EditarProfessor editar = new EditarProfessor(dadosParaEdicao);
+                editar.setVisible(true);
+            } catch (ParseException ex) {
+                Logger.getLogger(GerenciaProfessores.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
-			String id = this.jTableProfessores.getValueAt(this.linhaSelecionada, 0).toString();
-			String nome = this.jTableProfessores.getValueAt(this.linhaSelecionada, 1).toString();
-			String idade = this.jTableProfessores.getValueAt(this.linhaSelecionada, 2).toString();
-			String campus = this.jTableProfessores.getValueAt(this.linhaSelecionada, 3).toString();
-			String cpf = this.jTableProfessores.getValueAt(this.linhaSelecionada, 4).toString();
-			String contato = this.jTableProfessores.getValueAt(this.linhaSelecionada, 5).toString();
-			String titulo = this.jTableProfessores.getValueAt(this.linhaSelecionada, 6).toString();
-			String salario = this.jTableProfessores.getValueAt(this.linhaSelecionada, 7).toString();
+            this.linhaSelecionada = -1;
 
-			// Remove máscara do salário usando ValidadorInput
-			String salarioLimpo = ValidadorInput.removerMascara(salario);
+        } else {
+            JOptionPane.showMessageDialog(null, "Selecione um professor na tabela para editar.");
+        }
+    }
 
-			dadosParaEdicao[0] = nome;
-			dadosParaEdicao[1] = idade;
-			dadosParaEdicao[2] = campus;
-			dadosParaEdicao[3] = cpf;
-			dadosParaEdicao[4] = contato;
-			dadosParaEdicao[5] = titulo;
-			dadosParaEdicao[6] = salarioLimpo;
-			dadosParaEdicao[7] = id;
+    /**
+     * Registra a linha da tabela selecionada pelo usuário.
+     *
+     * @param evt evento de clique na tabela
+     */
+    private void jTableProfessoresMouseClicked(java.awt.event.MouseEvent evt) {
+        if (evt.getClickCount() >= 1 && this.jTableProfessores.getSelectedRow() != -1) {
+            this.linhaSelecionada = this.jTableProfessores.getSelectedRow();
+        }
+    }
 
-			try {
-				EditarProfessor editar = new EditarProfessor(dadosParaEdicao);
-				editar.setVisible(true);
-			} catch (ParseException ex) {
-				Logger.getLogger(GerenciaProfessores.class.getName()).log(Level.SEVERE, null, ex);
-			}
+    /**
+     * Deleta o cadastro do professor selecionado.
+     * Confirma com o usuário antes de excluir.
+     *
+     * @param evt clique no botão "Deletar"
+     */
+    private void bDeletarActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            int id = 0;
 
-			this.linhaSelecionada = -1;
+            if (this.jTableProfessores.getSelectedRow() == -1) {
+                throw new Mensagens("Selecione um cadastro para deletar");
+            } else {
+                id = Integer.parseInt(
+                        this.jTableProfessores.getValueAt(this.jTableProfessores.getSelectedRow(), 0)
+                                .toString());
+            }
 
-		} else {
-			JOptionPane.showMessageDialog(null, "Selecione um professor na tabela para editar.");
-		}
-	}// GEN-LAST:event_bEditarActionPerformed
+            String[] options = {"Sim", "Não"};
+            int respostaUsuario = JOptionPane.showOptionDialog(null,
+                    "Tem certeza que deseja apagar este cadastro?",
+                    "Confirmar exclusão",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE,
+                    null, options, options[1]);
 
-	private void jTableProfessoresMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jTableProfessoresMouseClicked
-		if (evt.getClickCount() >= 1 && this.jTableProfessores.getSelectedRow() != -1) {
-			this.linhaSelecionada = this.jTableProfessores.getSelectedRow();
-		}
-	}// GEN-LAST:event_jTableProfessoresMouseClicked
+            if (respostaUsuario == 0) {
+                if (this.professorDAO.delete(id)) {
+                    JOptionPane.showMessageDialog(rootPane, "Cadastro apagado com sucesso!");
+                } else {
+                    JOptionPane.showMessageDialog(rootPane, "Erro ao apagar o cadastro no banco de dados.");
+                }
+            }
+        } catch (Mensagens erro) {
+            JOptionPane.showMessageDialog(rootPane, erro.getMessage());
+        } finally {
+            carregaTabela();
+        }
+    }
 
-	private void bDeletarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bDeletarActionPerformed
-		try {
-			int id = 0;
+    /**
+     * Carrega os dados dos professores para a tabela.
+     * Aplica formatação monetária ao salário.
+     */
+    public void carregaTabela() {
+        DefaultTableModel modelo = (DefaultTableModel) this.jTableProfessores.getModel();
+        modelo.setNumRows(0);
 
-			if (this.jTableProfessores.getSelectedRow() == -1) {
-				throw new Mensagens("Selecione um cadastro para deletar");
-			} else {
-				id = Integer.parseInt(
-						this.jTableProfessores.getValueAt(this.jTableProfessores.getSelectedRow(), 0).toString());
-			}
+        List<Professor> minhalista = professorDAO.getMinhaLista();
 
-			String[] options = { "Sim", "Não" };
-			int respostaUsuario = JOptionPane.showOptionDialog(null, "Tem certeza que deseja apagar este cadastro?",
-					"Confirmar exclusão", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options,
-					options[1]);
+        NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 
-			if (respostaUsuario == 0) {
-				if (this.professorDAO.delete(id)) {
-					JOptionPane.showMessageDialog(rootPane, "Cadastro apagado com sucesso!");
-				} else {
-					JOptionPane.showMessageDialog(rootPane, "Erro ao apagar o cadastro no banco de dados.");
-				}
-			}
-		} catch (Mensagens erro) {
-			JOptionPane.showMessageDialog(rootPane, erro.getMessage());
-		} finally {
-			carregaTabela();
-		}
-	}// GEN-LAST:event_bDeletarActionPerformed
+        for (Professor a : minhalista) {
+            modelo.addRow(new Object[]{
+                    a.getId(),
+                    a.getNome(),
+                    a.getIdade(),
+                    a.getCampus(),
+                    a.getCpf(),
+                    a.getContato(),
+                    a.getTitulo(),
+                    nf.format(a.getSalario())
+            });
+        }
+    }
 
-	public void carregaTabela() {
-		DefaultTableModel modelo = (DefaultTableModel) this.jTableProfessores.getModel();
-		modelo.setNumRows(0);
+    /**
+     * Inicia a aplicação e exibe a tela de Gerência de Professores.
+     */
+    public static void main(String[] args) {
+        LookAndFeelHelper.aplicarNimbus();
+        java.awt.EventQueue.invokeLater(() -> new GerenciaProfessores().setVisible(true));
+    }
 
-		List<Professor> minhalista = professorDAO.getMinhaLista();
-
-		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-
-		for (Professor a : minhalista) {
-			modelo.addRow(new Object[] { a.getId(), a.getNome(), a.getIdade(), a.getCampus(), a.getCpf(),
-					a.getContato(), a.getTitulo(), nf.format(a.getSalario()) });
-		}
-	}
-
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String[] args) {
-		LookAndFeelHelper.aplicarNimbus();
-		java.awt.EventQueue.invokeLater(() -> new GerenciaProfessores().setVisible(true));
-	}
-
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JTable jTableProfessores;
-	// End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable jTableProfessores;
+    // End of variables declaration//GEN-END:variables
 }
