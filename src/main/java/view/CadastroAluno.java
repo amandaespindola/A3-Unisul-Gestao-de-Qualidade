@@ -57,38 +57,24 @@ public class CadastroAluno extends JFrame {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
 		// Campo Nome
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		form.add(ViewUtils.criarLabel(Constantes.UIConstants.NOME, "lblNome"), gbc);
-
-		gbc.gridx = 1;
+		ViewUtils.addLabel(form, gbc, 0, 0, "Nome:", "lblNome");
 		nome = new JTextField(20);
-		form.add(nome, gbc);
+		ViewUtils.addCampo(form, gbc, 1, 0, 3, nome);
 
 		// Campo Curso
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		form.add(ViewUtils.criarLabel(Constantes.UIConstants.CURSO, "lblCurso"), gbc);
-
-		gbc.gridx = 1;
+		ViewUtils.addLabel(form, gbc, 0, 1, Constantes.UIConstants.CURSO, "lblCurso");
 		curso = new JComboBox<>(Constantes.getCursos().toArray(new String[0]));
-		form.add(curso, gbc);
+		ViewUtils.addCampo(form, gbc, 1, 1, 3, curso);
 
-		// Idade e fase
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		form.add(ViewUtils.criarLabel(Constantes.UIConstants.NASCIMENTO, "lblNascimento"), gbc);
-
-		gbc.gridx = 1;
+		// Idade
+		ViewUtils.addLabel(form, gbc, 0, 2, Constantes.UIConstants.NASCIMENTO, "lblNascimento");
 		idade = new com.toedter.calendar.JDateChooser();
-		form.add(idade, gbc);
+		ViewUtils.addCampo(form, gbc, 1, 2, 1, idade);
 
-		gbc.gridx = 2;
-		form.add(ViewUtils.criarLabel(Constantes.UIConstants.FASE, "lblFase"), gbc);
-
-		gbc.gridx = 3;
+		// Fase
+		ViewUtils.addLabel(form, gbc, 2, 2, Constantes.UIConstants.FASE, "lblFase");
 		fase = new JComboBox<>(Constantes.getFases().toArray(new Integer[0]));
-		form.add(fase, gbc);
+		ViewUtils.addCampo(form, gbc, 3, 2, 1, fase);
 
 		painel.add(form, BorderLayout.CENTER);
 

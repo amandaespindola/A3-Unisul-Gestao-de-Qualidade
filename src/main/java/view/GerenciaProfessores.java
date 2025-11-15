@@ -1,28 +1,21 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -43,6 +36,8 @@ public class GerenciaProfessores extends JFrame {
 	private JTable tabelaProf;
 	private final transient ProfessorDAO professorDAO = new ProfessorDAO();
 	private int linhaSelecionada = -1;
+
+	private static final Logger LOGGER = Logger.getLogger(GerenciaProfessores.class.getName());
 
 	public GerenciaProfessores() {
 		initComponents();
@@ -65,82 +60,27 @@ public class GerenciaProfessores extends JFrame {
 		// ======================================================
 		// PAINEL SUPERIOR (TÍTULO + BOTÕES)
 		// ======================================================
-		JPanel painelSuperior = new JPanel();
-		painelSuperior.setLayout(new BoxLayout(painelSuperior, BoxLayout.Y_AXIS));
-		painelSuperior.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+		JPanel painelSuperior = ViewUtils.criarPainelSuperiorTitulo("Cadastro de Professores");
 
-		// ====== TÍTULO ======
-		JLabel lblTitulo = new JLabel("Cadastro de Professores", SwingConstants.CENTER);
-		lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 36));
-		lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-		lblTitulo.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
-		painelSuperior.add(lblTitulo);
-
-		// ======================================================
-		// BOTÕES — ALINHADOS COMO NO VÍDEO
-		// ======================================================
-		JPanel painelBotoes = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-
-		gbc.insets = new Insets(0, 10, 0, 10);
-		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.NONE;
-
-		// Larguras
-		Dimension btnLateral = new Dimension(160, 30); // Atualizar / Exportar
-		Dimension btnCentral = new Dimension(160, 30); // Cadastrar / Editar / Deletar
-
-		// Botões
-		ImageIcon refreshIcon = new ImageIcon(getClass().getResource("/View/refresh.png"));
-		Image img = refreshIcon.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH);
-		refreshIcon = new ImageIcon(img);
-
+		// ---- Botões ----
 		JButton bAtualizar = ViewUtils.criarBotao("Atualizar tabela", e -> carregarTabela());
-		bAtualizar.setIcon(refreshIcon);
-		bAtualizar.setHorizontalTextPosition(SwingConstants.RIGHT);
-
 		JButton bCadastrar = ViewUtils.criarBotao("Cadastrar novo", e -> abrirCadastro());
-		bCadastrar.setPreferredSize(btnCentral);
-
 		JButton bEditar = ViewUtils.criarBotao("Editar", e -> editar());
-		bEditar.setPreferredSize(btnCentral);
-
 		JButton bDeletar = ViewUtils.criarBotao("Deletar", e -> deletar());
-		bDeletar.setPreferredSize(btnCentral);
-
 		JButton bExportar = ViewUtils.criarBotao("Exportar para Excel", e -> exportarExcel());
-		bExportar.setPreferredSize(btnLateral);
 
-		// ====== POSIÇÕES ======
+		// Ícone atualizar (igual ao original)
+		try {
+			ImageIcon refreshIcon = new ImageIcon(getClass().getResource("/View/refresh.png"));
+			Image img = refreshIcon.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH);
+			refreshIcon = new ImageIcon(img);
+			bAtualizar.setIcon(refreshIcon);
+			bAtualizar.setHorizontalTextPosition(SwingConstants.RIGHT);
+		} catch (Exception e) {
+			LOGGER.log(Level.WARNING, "Ícone não encontrado", e);
+		}
 
-		// --- Botão Atualizar (ESQUERDA)
-		gbc.insets = new Insets(0, 15, 0, 15);
-		gbc.gridx = 0;
-		gbc.weightx = 1;
-		gbc.anchor = GridBagConstraints.LINE_START;
-		painelBotoes.add(bAtualizar, gbc);
-
-		// Botões centrais — juntos (insets menores)
-		gbc.insets = new Insets(0, 5, 0, 5); 
-
-		gbc.weightx = 0;
-		gbc.anchor = GridBagConstraints.CENTER;
-
-		gbc.gridx = 1;
-		painelBotoes.add(bCadastrar, gbc);
-
-		gbc.gridx = 2;
-		painelBotoes.add(bEditar, gbc);
-
-		gbc.gridx = 3;
-		painelBotoes.add(bDeletar, gbc);
-
-		// --- Botão Exportar (DIREITA) — margem maior
-		gbc.insets = new Insets(0, 15, 0, 15);
-		gbc.gridx = 4;
-		gbc.weightx = 1;
-		gbc.anchor = GridBagConstraints.LINE_END;
-		painelBotoes.add(bExportar, gbc);
+		JPanel painelBotoes = ViewUtils.criarPainelBotoesGerencia(bAtualizar, bCadastrar, bEditar, bDeletar, bExportar);
 
 		painelSuperior.add(painelBotoes);
 		painel.add(painelSuperior, BorderLayout.NORTH);
@@ -165,24 +105,8 @@ public class GerenciaProfessores extends JFrame {
 		// ======================================================
 		// MENU SUPERIOR
 		// ======================================================
-		JMenuBar menuBar = new JMenuBar();
-		JMenu menuArquivo = new JMenu("Arquivo");
-
-		JMenuItem menuAlunos = new JMenuItem("Gerência de Alunos");
-		menuAlunos.addActionListener(e -> abrirAlunos());
-
-		JMenuItem menuSobre = new JMenuItem("Sobre");
-		menuSobre.addActionListener(e -> new Sobre().setVisible(true));
-
-		JMenuItem menuSair = new JMenuItem("Sair");
-		menuSair.addActionListener(e -> System.exit(0));
-
-		menuArquivo.add(menuAlunos);
-		menuArquivo.add(menuSobre);
-		menuArquivo.add(menuSair);
-
-		menuBar.add(menuArquivo);
-		setJMenuBar(menuBar);
+		setJMenuBar(ViewUtils.criarMenuGerencia("Gerência de Alunos", this::abrirAlunos,
+				() -> new Sobre().setVisible(true)));
 	}
 
 	// ============================================================
