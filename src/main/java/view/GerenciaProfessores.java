@@ -53,37 +53,18 @@ public class GerenciaProfessores extends JFrame {
 		setSize(1000, 520);
 		setLocationRelativeTo(null);
 
-		JPanel painel = new JPanel(new BorderLayout(10, 0));
-		painel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
-		add(painel, BorderLayout.CENTER);
+		// Painel base
+		JPanel painel = ViewUtils.criarPainelBase(this);
 
-		// ======================================================
-		// PAINEL SUPERIOR (TÍTULO + BOTÕES)
-		// ======================================================
+		// Botões
+		JButton[] btns = ViewUtils.criarBotoesGerencia(this::carregarTabela, this::abrirCadastro, this::editar,
+				this::deletar, this::exportarExcel, LOGGER);
 
-		// ---- Botões ----
-		JButton bAtualizar = ViewUtils.criarBotao("Atualizar tabela", e -> carregarTabela());
-		JButton bCadastrar = ViewUtils.criarBotao("Cadastrar novo", e -> abrirCadastro());
-		JButton bEditar = ViewUtils.criarBotao("Editar", e -> editar());
-		JButton bDeletar = ViewUtils.criarBotao("Deletar", e -> deletar());
-		JButton bExportar = ViewUtils.criarBotao("Exportar para Excel", e -> exportarExcel());
-
-		// Ícone atualizar (igual ao original)
-		try {
-			ImageIcon refreshIcon = new ImageIcon(getClass().getResource("/View/refresh.png"));
-			Image img = refreshIcon.getImage().getScaledInstance(18, 18, Image.SCALE_SMOOTH);
-			refreshIcon = new ImageIcon(img);
-			bAtualizar.setIcon(refreshIcon);
-			bAtualizar.setHorizontalTextPosition(SwingConstants.RIGHT);
-		} catch (Exception e) {
-			LOGGER.log(Level.WARNING, "Ícone não encontrado", e);
-		}
-
-		JPanel painelSuperior = ViewUtils.criarPainelGerenciaTopo("Cadastro de Alunos", bAtualizar, bCadastrar, bEditar,
-				bDeletar, bExportar);
+		// Painel superior (título + botões)
+		JPanel painelSuperior = ViewUtils.criarPainelGerenciaTopo("Cadastro de Professores", btns[0], btns[1], btns[2],
+				btns[3], btns[4]);
 
 		painel.add(painelSuperior, BorderLayout.NORTH);
-
 		// ======================================================
 		// TABELA
 		// ======================================================
@@ -97,7 +78,8 @@ public class GerenciaProfessores extends JFrame {
 		JScrollPane scroll = new JScrollPane(tabelaProf);
 		scroll.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 5));
 
-		scroll.setPreferredSize(new Dimension(getWidth(), getHeight() - 170 // reduz o espaçamento para subir a tabela
+		scroll.setPreferredSize(new Dimension(getWidth(), getHeight() - 170
+
 		));
 		painel.add(scroll, BorderLayout.CENTER);
 
