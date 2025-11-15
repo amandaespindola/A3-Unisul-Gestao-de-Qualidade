@@ -1,5 +1,8 @@
 package view;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+    
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -38,6 +41,9 @@ import utils.ViewUtils;
 
 public class GerenciaAlunos extends JFrame {
 
+        private static final Logger LOGGER = Logger.getLogger(GerenciaAlunos.class.getName());
+
+        
 	private JTable jTableAlunos;
 	private final transient AlunoDAO alunoDAO = new AlunoDAO();
 	private int linhaSelecionada = -1;
@@ -104,7 +110,7 @@ public class GerenciaAlunos extends JFrame {
 			bAtualizar.setIcon(refreshIcon);
 			bAtualizar.setHorizontalTextPosition(SwingConstants.RIGHT);
 		} catch (Exception e) {
-			System.err.println("Ícone não encontrado: " + e.getMessage());
+			LOGGER.log(Level.WARNING, "Ícone não encontrado", e);
 		}
 
 		// Tamanhos EXATAMENTE iguais
