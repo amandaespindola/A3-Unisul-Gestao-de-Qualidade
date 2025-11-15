@@ -10,6 +10,7 @@ import javax.swing.JTable;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 class TableUtilsTest {
 
@@ -45,14 +46,16 @@ class TableUtilsTest {
     @Test
     @DisplayName("TableUtils deve possuir construtor privado para impedir instanciação direta")
     void testConstructorIsPrivate() throws Exception {
-
         var constructor = TableUtils.class.getDeclaredConstructor();
 
         assertTrue(Modifier.isPrivate(constructor.getModifiers()));
 
         constructor.setAccessible(true);
 
-        assertDoesNotThrow(() -> constructor.newInstance(),
-                "Construtor privado pode ser acessado via reflexão sem erro");
+        assertDoesNotThrow(
+                (Executable) constructor::newInstance,
+                "Construtor privado deve permitir instanciação via reflexão sem erro"
+        );
+
     }
 }
