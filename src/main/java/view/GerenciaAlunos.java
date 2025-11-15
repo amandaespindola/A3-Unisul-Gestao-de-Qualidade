@@ -1,31 +1,34 @@
 package view;
 
-import dao.AlunoDAO;
 import model.Aluno;
-import utils.ValidadorInput;
-import utils.ViewUtils;
-import utils.Constantes;
-import utils.TableUtils;
-
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.logging.Logger;
-
-import utils.ExcelExporter;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import dao.AlunoDAO;
 
 public class GerenciaAlunos extends javax.swing.JFrame {
 
-	private final transient AlunoDAO alunoDAO;
+	private AlunoDAO alunoDAO;
 	private int linhaSelecionada = -1;
 
 	public GerenciaAlunos() {
 		initComponents();
 		this.alunoDAO = new AlunoDAO();
 		this.carregaTabela();
-
-		TableUtils.addMouseClickListener(jTableAlunos, GerenciaAlunos.this::jTableAlunosMouseClicked);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -225,13 +228,61 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		setLocationRelativeTo(null);
 	}// </editor-fold>//GEN-END:initComponents
 
-	private void exportXls() {
-		try {
-			ExcelExporter.exportTableToExcel(jTableAlunos);
-			JOptionPane.showMessageDialog(this, "Arquivo exportado com sucesso!");
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this, "Erro ao exportar arquivo: " + e.getMessage(), "Erro de Exportação",
-					JOptionPane.ERROR_MESSAGE);
+	private void exportXls() throws IOException {
+		JFileChooser chooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Arquivos Excel", "xls");
+
+		chooser.setFileFilter(filter);
+		chooser.setDialogTitle("Salvar arquivo");
+		chooser.setAcceptAllFileFilterUsed(false);
+
+		if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+			String path = chooser.getSelectedFile().toString().concat(".xls");
+			try {
+				File fileXLS = new File(path);
+				if (fileXLS.exists()) {
+					fileXLS.delete();
+				}
+				fileXLS.createNewFile();
+				Workbook book = new HSSFWorkbook();
+				FileOutputStream file = new FileOutputStream(fileXLS);
+				Sheet sheet = book.createSheet("Minha folha de trabalho 1");
+				sheet.setDisplayGridlines(true);
+
+				for (int i = 0; i < this.jTableAlunos.getRowCount(); i++) {
+					Row row = sheet.createRow(i);
+					for (int j = 0; j < this.jTableAlunos.getColumnCount(); j++) {
+						Cell cell = row.createCell(j);
+						if (i == 0) {
+							cell.setCellValue(this.jTableAlunos.getColumnName(j));
+						}
+					}
+				}
+
+				int firstRow = 1;
+
+				for (int linha = 0; linha < this.jTableAlunos.getRowCount(); linha++) {
+					Row row2 = sheet.createRow(firstRow);
+					firstRow++;
+					for (int coluna = 0; coluna < this.jTableAlunos.getColumnCount(); coluna++) {
+						Cell cell2 = row2.createCell(coluna);
+						Object valor = this.jTableAlunos.getValueAt(linha, coluna);
+						if (valor instanceof Double) {
+							cell2.setCellValue(Double.parseDouble(valor.toString()));
+						} else if (valor instanceof Float) {
+							cell2.setCellValue(Float.parseFloat(valor.toString()));
+						} else if (valor instanceof Integer) {
+							cell2.setCellValue(Integer.parseInt(valor.toString()));
+						} else {
+							cell2.setCellValue(String.valueOf(valor));
+						}
+					}
+				}
+				book.write(file);
+				file.close();
+			} catch (IOException | NumberFormatException e) {
+				throw e;
+			}
 		}
 	}
 
@@ -242,129 +293,110 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	}// GEN-LAST:event_menuGerenciaProfessoresActionPerformed
 
 	private void menuLeaveActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuLeaveActionPerformed
-		java.util.Objects.requireNonNull(
-				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuLeaveActionPerformed);
 		System.exit(0);
 	}// GEN-LAST:event_menuLeaveActionPerformed
 
 	private void bCadastroActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bCadastroActionPerformed
 		CadastroAluno tela = new CadastroAluno();
 		tela.setVisible(true);
-
 	}// GEN-LAST:event_bCadastroActionPerformed
 
 	private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bEditarActionPerformed
-		if (this.linhaSelecionada != -1) {
+		int linha = this.jTableAlunos.getSelectedRow();
+
+		if (linha != -1) {
+
+			String id = this.jTableAlunos.getValueAt(linha, 0).toString();
+			String nome = this.jTableAlunos.getValueAt(linha, 1).toString();
+			String idade = this.jTableAlunos.getValueAt(linha, 2).toString();
+			String curso = this.jTableAlunos.getValueAt(linha, 3).toString();
+			String fase = this.jTableAlunos.getValueAt(linha, 4).toString();
+
+			// mantém a lógica original: só o primeiro caractere (ex: "3ª" → "3")
+			fase = String.valueOf(fase.charAt(0));
 
 			String[] dadosParaEdicao = new String[5];
-
-			String id = this.jTableAlunos.getValueAt(this.linhaSelecionada, 0).toString();
-			String nome = this.jTableAlunos.getValueAt(this.linhaSelecionada, 1).toString();
-			String idade = this.jTableAlunos.getValueAt(this.linhaSelecionada, 2).toString();
-			String curso = this.jTableAlunos.getValueAt(this.linhaSelecionada, 3).toString();
-			String fase = this.jTableAlunos.getValueAt(this.linhaSelecionada, 4).toString();
-
-			String faseLimpa = ValidadorInput.removerMascara(fase);
-
 			dadosParaEdicao[0] = id;
 			dadosParaEdicao[1] = nome;
 			dadosParaEdicao[2] = idade;
 			dadosParaEdicao[3] = curso;
-			dadosParaEdicao[4] = faseLimpa;
+			dadosParaEdicao[4] = fase;
 
-			EditarAluno editar = new EditarAluno(dadosParaEdicao);
-			editar.setVisible(true);
-
-			this.linhaSelecionada = -1;
+			EditarAluno tela = new EditarAluno(dadosParaEdicao);
+			tela.setVisible(true);
 
 		} else {
-			JOptionPane.showMessageDialog(null, "Selecione um aluno na tabela para editar.");
+			JOptionPane.showMessageDialog(null, "Selecione um cadastro para alterar");
 		}
 	}// GEN-LAST:event_bEditarActionPerformed
 
 	private void jTableAlunosMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jTableAlunosMouseClicked
-		if (evt.getClickCount() >= 1 && this.jTableAlunos.getSelectedRow() != -1) {
-			this.linhaSelecionada = this.jTableAlunos.getSelectedRow();
-		}
+		// Mantido vazio apenas para o GUI Builder (caso queira usar no futuro)
 	}// GEN-LAST:event_jTableAlunosMouseClicked
 
-	private void bDeletarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bDeletarActionPerformed
+	private void bDeletarActionPerformed(java.awt.event.ActionEvent evt) {
 		try {
-			// validando dados da interface gráfica.
-			int id = 0;
-
 			if (this.jTableAlunos.getSelectedRow() == -1) {
 				throw new Mensagens("Selecione um cadastro para deletar");
-			} else {
-				id = Integer.parseInt(this.jTableAlunos.getValueAt(this.jTableAlunos.getSelectedRow(), 0).toString());
 			}
 
+			int id = Integer.parseInt(this.jTableAlunos.getValueAt(this.jTableAlunos.getSelectedRow(), 0).toString());
+
 			String[] options = { "Sim", "Não" };
-			int respostaUsuario = JOptionPane.showOptionDialog(null, "Tem certeza que deseja apagar este cadastro?",
+			int resp = JOptionPane.showOptionDialog(null, "Tem certeza que deseja apagar este cadastro?",
 					"Confirmar exclusão", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options,
 					options[1]);
 
-			if (respostaUsuario == 0) {
-
-				// envia os dados para o AlunoDAO processar e trata a resposta
+			if (resp == 0) { // SIM
 				if (this.alunoDAO.delete(id)) {
 					JOptionPane.showMessageDialog(rootPane, "Cadastro apagado com sucesso!");
 				} else {
-					JOptionPane.showMessageDialog(rootPane, "Erro ao apagar o cadastro no banco de dados.");
+					JOptionPane.showMessageDialog(rootPane, "Erro ao apagar cadastro no banco!");
 				}
 			}
-		} catch (Mensagens erro) {
-			JOptionPane.showMessageDialog(null, erro.getMessage());
+
+		} catch (Mensagens e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		} finally {
-			// atualiza a tabela.
 			carregaTabela();
 		}
-	}// GEN-LAST:event_bDeletarActionPerformed
+	}
 
 	private void refreshActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_refreshActionPerformed
-		assert evt != null || evt == null;
-		Logger.getLogger(getClass().getName()).fine("Menu refresh triggered");
 		this.carregaTabela();
 	}// GEN-LAST:event_refreshActionPerformed
 
 	private void menuRefreshActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuRefreshActionPerformed
-		java.util.Objects.requireNonNull(
-				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuRefreshActionPerformed);
 		this.carregaTabela();
 	}// GEN-LAST:event_menuRefreshActionPerformed
 
 	private void menuExportActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menuExportActionPerformed
-		java.util.Objects.requireNonNull(
-				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuExportActionPerformed);
-		this.exportXls();
-
+		try {
+			this.exportXls();
+		} catch (IOException ex) {
+			Logger.getLogger(GerenciaAlunos.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}// GEN-LAST:event_menuExportActionPerformed
 
 	private void exportActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exportActionPerformed
-		assert evt != null || evt == null;
-		Logger.getLogger(getClass().getName()).fine("Menu export triggered");
-		this.exportXls();
-
+		try {
+			this.exportXls();
+		} catch (IOException ex) {
+			Logger.getLogger(GerenciaAlunos.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}// GEN-LAST:event_exportActionPerformed
-
-	private void menuSobreActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
-		java.util.Objects.requireNonNull(
-				(java.util.function.Consumer<java.awt.event.ActionEvent>) this::menuSobreActionPerformed);
-		Sobre tela = new Sobre();
-		tela.setVisible(true);
-	}// GEN-LAST:event_jMenuItem1ActionPerformed
 
 	private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
 		Sobre tela = new Sobre();
 		tela.setVisible(true);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
 
+	@SuppressWarnings("unchecked")
 	public void carregaTabela() {
 		DefaultTableModel modelo = (DefaultTableModel) this.jTableAlunos.getModel();
 		modelo.setNumRows(0);
 
-		List<Aluno> minhalista;
-		minhalista = this.alunoDAO.getMinhaLista();
+		List<Aluno> minhalista = alunoDAO.getMinhaLista();
 
 		for (Aluno a : minhalista) {
 			modelo.addRow(new Object[] { a.getId(), a.getNome(), a.getIdade(), a.getCurso(), a.getFase() + "ª", });
@@ -374,7 +406,7 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	/**
 	 * @param args the command line arguments
 	 */
-	public static void main(String[] args) {
+	public static void main(String args[]) {
 		/* Set the Nimbus look and feel */
 		// <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
 		// (optional) ">
@@ -390,23 +422,27 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 					break;
 				}
 			}
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| javax.swing.UnsupportedLookAndFeelException ex) {
+		} catch (ClassNotFoundException ex) {
+			java.util.logging.Logger.getLogger(GerenciaAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null,
+					ex);
+		} catch (InstantiationException ex) {
+			java.util.logging.Logger.getLogger(GerenciaAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null,
+					ex);
+		} catch (IllegalAccessException ex) {
+			java.util.logging.Logger.getLogger(GerenciaAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null,
+					ex);
+		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
 			java.util.logging.Logger.getLogger(GerenciaAlunos.class.getName()).log(java.util.logging.Level.SEVERE, null,
 					ex);
 		}
 		// </editor-fold>
-		// </editor-fold>
-		// </editor-fold>
-		// </editor-fold>
-		// </editor-fold>
-		// </editor-fold>
-		// </editor-fold>
-		// </editor-fold>
 
 		/* Create and display the form */
-		java.awt.EventQueue.invokeLater(() -> new GerenciaAlunos().setVisible(true));
-
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				new GerenciaAlunos().setVisible(true);
+			}
+		});
 	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables

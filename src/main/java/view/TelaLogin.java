@@ -1,27 +1,24 @@
 package view;
 
+import utils.ConexaoManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import utils.ViewUtils;
-import utils.ConexaoManager;
-import utils.Constantes;
 
 public class TelaLogin extends javax.swing.JFrame {
 
+	public static String passwordDB = "";
+	public static String userDB = "";
+
 	private static final Logger logger = Logger.getLogger(TelaLogin.class.getName());
-	private String passwordDB;
-	private String userDB;
 
 	public TelaLogin() {
 		initComponents();
-		carregarCredenciais();
-
-		javax.swing.JButton login = ViewUtils.criarBotao(Constantes.UIConstants.BTN_LOGIN, this::loginActionPerformed);
-		getRootPane().setDefaultButton(login);
+		carregarCredenciais(); // permitido
+		getRootPane().setDefaultButton(login); // permitido
 	}
 
 	private void carregarCredenciais() {
@@ -32,16 +29,15 @@ public class TelaLogin extends javax.swing.JFrame {
 				userDB = props.getProperty("db.user");
 				passwordDB = props.getProperty("db.password");
 			} else {
-				logger.warning("Arquivo config.properties não encontrado. O usuário deverá inserir manualmente");
+				System.out.println("config.properties não encontrado.");
 			}
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "Erro ao carregar arquivo de configuração (config.properties)", e);
+			logger.log(Level.SEVERE, "Erro carregando config.properties", e);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	// <editor-fold defaultstate="collapsed" desc="Generated
-	// Code">//GEN-BEGIN:initComponents
+	// <editor-fold defaultstate="collapsed" desc="Generated Code">
 	private void initComponents() {
 
 		login = new javax.swing.JButton();
@@ -55,34 +51,32 @@ public class TelaLogin extends javax.swing.JFrame {
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Login");
 		setAlwaysOnTop(true);
-		setBackground(new java.awt.Color(51, 255, 51));
 		setResizable(false);
 
-		login.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+		login.setFont(new java.awt.Font("Segoe UI", 0, 18));
 		login.setText("LOGIN");
 		login.setToolTipText("ENTER");
-		login.setAlignmentX(0.5F);
 		login.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				loginActionPerformed(evt);
 			}
 		});
 
-		jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+		jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14));
 		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel1.setText("SisUni - Sistema de Gerenciamento Universitário");
 
-		password.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+		password.setFont(new java.awt.Font("Segoe UI", 0, 24));
 		password.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-		jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+		jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 10));
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel2.setText("DIGITE A SENHA (MySQL)");
 
-		user.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+		user.setFont(new java.awt.Font("Segoe UI", 0, 24));
 		user.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-		jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+		jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 10));
 		jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		jLabel3.setText("DIGITE O USUÁRIO (MySQL)");
 		setJMenuBar(jMenuBar1);
@@ -96,73 +90,57 @@ public class TelaLogin extends javax.swing.JFrame {
 				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-										.addComponent(login, javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(password).addComponent(user,
-												javax.swing.GroupLayout.PREFERRED_SIZE, 208,
-												javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addComponent(login, javax.swing.GroupLayout.PREFERRED_SIZE, 208,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 208,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addComponent(user, javax.swing.GroupLayout.PREFERRED_SIZE, 208,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
 								.addGroup(layout.createSequentialGroup().addGap(39, 39, 39).addComponent(jLabel3))
 								.addGroup(layout.createSequentialGroup().addGap(46, 46, 46).addComponent(jLabel2)))
 						.addGap(92, 92, 92)));
 		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
-				.createSequentialGroup().addContainerGap(26, Short.MAX_VALUE)
+				.createSequentialGroup().addGap(26, 26, 26)
 				.addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37,
 						javax.swing.GroupLayout.PREFERRED_SIZE)
 				.addGap(18, 18, 18).addComponent(jLabel3)
 				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 				.addComponent(user, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 						javax.swing.GroupLayout.PREFERRED_SIZE)
-				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-				.addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 14,
-						javax.swing.GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel2)
 				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 				.addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 						javax.swing.GroupLayout.PREFERRED_SIZE)
 				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
 				.addComponent(login, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-				.addGap(29, 29, 29)));
-
-		login.getAccessibleContext().setAccessibleDescription("Cadastro de Professores");
+				.addContainerGap(29, Short.MAX_VALUE)));
 
 		pack();
 		setLocationRelativeTo(null);
-	}// </editor-fold>//GEN-END:initComponents
+	}// </editor-fold>
 
 	private void loginActionPerformed(java.awt.event.ActionEvent evt) {
-		String senhaDigitada = String.copyValueOf(this.password.getPassword());
-		String usuarioDigitado = this.user.getText();
+		String senha = String.copyValueOf(this.password.getPassword());
+		String usuario = this.user.getText();
 
-		if (!senhaDigitada.isBlank()) {
-			this.passwordDB = senhaDigitada; // se manteve campos de instância
-		}
-		if (!usuarioDigitado.isBlank()) {
-			this.userDB = usuarioDigitado;
-		}
+		passwordDB = senha;
+		userDB = usuario;
 
-		// 1) Inicializa a conexão global
-		ConexaoManager.init(this.userDB, this.passwordDB);
+		ConexaoManager.init(userDB, passwordDB);
 
-		// 2) Testa conexão global
 		if (ConexaoManager.getConnection() != null) {
 			JOptionPane.showMessageDialog(rootPane, "Conexão efetuada com sucesso!");
-			TelaPrincipal tela = new TelaPrincipal(); // não precisa mais passar Connection
-			tela.setVisible(true);
+			new TelaPrincipal().setVisible(true);
 			this.dispose();
 		} else {
 			JOptionPane.showMessageDialog(rootPane, "Conexão falhou!");
 		}
 	}
-	// GEN-LAST:event_loginActionPerformed
 
-	/**
-	 * @param args the command line arguments
-	 */
-	public static void main(String[] args) {
+	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(() -> new TelaLogin().setVisible(true));
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabel2;
 	private javax.swing.JLabel jLabel3;
@@ -170,5 +148,4 @@ public class TelaLogin extends javax.swing.JFrame {
 	private javax.swing.JButton login;
 	private javax.swing.JPasswordField password;
 	private javax.swing.JTextField user;
-	// End of variables declaration//GEN-END:variables
 }

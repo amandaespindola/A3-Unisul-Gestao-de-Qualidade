@@ -4,7 +4,7 @@ import javax.swing.JOptionPane;
 
 import dao.ProfessorDAO;
 import model.Professor;
-
+import model.ProfessorDTO;
 import utils.Constantes;
 import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
@@ -15,11 +15,10 @@ public class CadastroProfessor extends javax.swing.JFrame {
 	private final transient ProfessorDAO professorDAO;
 
 	public CadastroProfessor() throws java.text.ParseException {
-		initComponents();
-		formatarCampos();
-		javax.swing.JButton bConfirmar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CONFIRMAR,
-				this::bConfirmarActionPerformed);
+		initComponents(); // NetBeans precisa disso intacto
+		formatarCampos(); // sua lógica nova
 		getRootPane().setDefaultButton(bConfirmar);
+
 		this.professorDAO = new ProfessorDAO();
 	}
 
@@ -208,10 +207,12 @@ public class CadastroProfessor extends javax.swing.JFrame {
 		setLocationRelativeTo(null);
 	}// </editor-fold>//GEN-END:initComponents
 
-	private void formatarCampos() throws java.text.ParseException {
+	// ==================== SUA LÓGICA FORA DO FORM EDITOR ====================
+
+	private void formatarCampos() {
 		try {
 			ValidadorInput.aplicarFormatacaoProfessor(cpfFormatado, contatoFormatado, salarioFormatado);
-		} catch (java.text.ParseException ex) {
+		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(rootPane, "Erro ao formatar campos", "ERRO", JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -226,9 +227,7 @@ public class CadastroProfessor extends javax.swing.JFrame {
 	}
 
 	private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bConfirmarActionPerformed
-
 		try {
-
 			String nomeProfessor = ValidadorInput.validarNome(this.nome.getText(), 2);
 			String campusProfessor = ValidadorInput.validarSelecaoComboBox(this.campus.getSelectedIndex(),
 					Constantes.getCampus(), "Campus");
@@ -240,7 +239,7 @@ public class CadastroProfessor extends javax.swing.JFrame {
 			String tituloProfessor = ValidadorInput.validarSelecaoComboBox(this.titulo.getSelectedIndex(),
 					Constantes.getTitulos(), "Título");
 
-			model.ProfessorDTO dto = new model.ProfessorDTO();
+			ProfessorDTO dto = new ProfessorDTO();
 			dto.setCampus(campusProfessor);
 			dto.setCpf(cpfProfessor);
 			dto.setContato(contatoProfessor);
@@ -249,23 +248,20 @@ public class CadastroProfessor extends javax.swing.JFrame {
 			dto.setNome(nomeProfessor);
 			dto.setIdade(idadeProfessor);
 			dto.setId(0);
+
 			Professor novoProfessor = new Professor(dto);
 
-			// Adicionando dados validados no database usando o DAO
 			if (this.professorDAO.insert(novoProfessor)) {
 				JOptionPane.showMessageDialog(rootPane,
 						"Professor cadastrado com sucesso! ID: " + novoProfessor.getId());
-
 				this.dispose();
 			} else {
 				JOptionPane.showMessageDialog(rootPane, "Erro ao cadastrar professor no banco de dados.");
 			}
 
-			// Capturando exceções    
 		} catch (Exception ex) {
 			ViewUtils.tratarErroCadastro(ex);
 		}
-
 	}// GEN-LAST:event_bConfirmarActionPerformed
 
 	/**
@@ -275,12 +271,8 @@ public class CadastroProfessor extends javax.swing.JFrame {
 	 */
 	private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bCancelarActionPerformed
 		ViewUtils.fecharJanelaAoCancelar(evt.getSource(), this);
-
 	}// GEN-LAST:event_bCancelarActionPerformed
 
-	/**
-	 * @param args the command line arguments
-	 */
 	public static void main(String[] args) {
 		LookAndFeelHelper.aplicarNimbus();
 		java.awt.EventQueue.invokeLater(() -> {

@@ -1,15 +1,18 @@
 package view;
 
-import java.util.List;
-
-import javax.swing.JOptionPane;
-
 import dao.ProfessorDAO;
 import model.Professor;
+import model.ProfessorDTO;
 import utils.Constantes;
 import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
+
+import java.text.ParseException;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+import javax.swing.text.MaskFormatter;
 
 public class EditarProfessor extends javax.swing.JFrame {
 
@@ -19,27 +22,23 @@ public class EditarProfessor extends javax.swing.JFrame {
 	private static final List<String> LISTA_CAMPUS = Constantes.getCampus();
 	private static final List<String> LISTA_TITULOS = Constantes.getTitulos();
 
-	public EditarProfessor() throws java.text.ParseException {
+	public EditarProfessor() throws ParseException {
 		initComponents();
-		formatarCampos();
+		aplicarMascaras();
 		this.professorDAO = new ProfessorDAO();
 		this.dadosProfessor = null;
 
-		javax.swing.JButton bConfirmar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CONFIRMAR,
-				this::bConfirmarActionPerformed);
 		getRootPane().setDefaultButton(bConfirmar);
+
 	}
 
-	public EditarProfessor(String[] dadosParaEdicao) throws java.text.ParseException {
-		this.dadosProfessor = dadosParaEdicao;
-		this.professorDAO = new ProfessorDAO();
-
+	public EditarProfessor(String[] dadosParaEdicao) throws ParseException {
 		initComponents();
-		formatarCampos();
-		preencheCampos();
+		aplicarMascaras();
+		this.professorDAO = new ProfessorDAO();
+		this.dadosProfessor = dadosParaEdicao;
 
-		javax.swing.JButton bConfirmar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CONFIRMAR,
-				this::bConfirmarActionPerformed);
+		preencheCampos();
 		getRootPane().setDefaultButton(bConfirmar);
 	}
 
@@ -226,94 +225,51 @@ public class EditarProfessor extends javax.swing.JFrame {
 		setLocationRelativeTo(null);
 	}// </editor-fold>//GEN-END:initComponents
 
-	private void formatarCampos() throws java.text.ParseException {
-		try {
-			ValidadorInput.aplicarFormatacaoProfessor(cpfFormatado, contatoFormatado, salarioFormatado);
-		} catch (java.text.ParseException ex) {
-			JOptionPane.showMessageDialog(rootPane, "Erro ao formatar campos", "ERRO", JOptionPane.ERROR_MESSAGE);
-		}
+	// --- FORMATAÇÃO DOS CAMPOS (MÁSCARAS IGUAL AO ORIGINAL) ---
+	private void aplicarMascaras() throws ParseException {
+		MaskFormatter cpf = new MaskFormatter("###.###.###-##");
+		cpf.install(cpfFormatado);
+
+		MaskFormatter contato = new MaskFormatter("(##) # ####-####");
+		contato.install(contatoFormatado);
+
+		// máscara idêntica ao original
+		MaskFormatter salario = new MaskFormatter("R$#####");
+		salario.install(salarioFormatado);
 	}
 
+	// --- PREENCHE CAMPOS COMO NO ORIGINAL ---
 	private void preencheCampos() {
-		int indexCampus = 0;
-		int indexTitulo = 0;
-
-		for (int i = 0; i < LISTA_CAMPUS.size(); i++) {
-			if (dadosProfessor[2].equalsIgnoreCase(LISTA_CAMPUS.get(i))) {
-				indexCampus = i;
-			}
-		}
-
-		for (int i = 0; i < LISTA_TITULOS.size(); i++) {
-			if (dadosProfessor[5].equalsIgnoreCase(LISTA_TITULOS.get(i))) {
-				indexTitulo = i;
-			}
-		}
-
 		this.nome.setText(dadosProfessor[0]);
 		this.idade.setText(dadosProfessor[1]);
-		this.campus.setSelectedIndex(indexCampus);
+
+		int idxCampus = LISTA_CAMPUS.indexOf(dadosProfessor[2]);
+		if (idxCampus < 0)
+			idxCampus = 0;
+		this.campus.setSelectedIndex(idxCampus);
+
 		this.cpfFormatado.setText(dadosProfessor[3]);
 		this.contatoFormatado.setText(dadosProfessor[4]);
-		this.titulo.setSelectedIndex(indexTitulo);
 
-		try {
-			double salario = Double.parseDouble(dadosProfessor[6]);
-			this.salarioFormatado.setValue(salario);
-		} catch (NumberFormatException e) {
-			this.salarioFormatado.setValue(0.0);
-		}
+		int idxTitulo = LISTA_TITULOS.indexOf(dadosProfessor[5]);
+		if (idxTitulo < 0)
+			idxTitulo = 0;
+		this.titulo.setSelectedIndex(idxTitulo);
+
+		// salário vem como texto do tipo 12345
+		String salarioOriginal = dadosProfessor[6].replace("R$", "");
+		this.salarioFormatado.setText("R$" + salarioOriginal);
 	}
 
-	private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bConfirmarActionPerformed
-		try {
-			int id = Integer.parseInt(dadosProfessor[7]);
+	// ===================================================================================
+	// =========================== VALIDAÇÕES INDIVIDUAIS
+	// ================================
+	// ===================================================================================
 
-			String campusSelecionado = validarCampus();
-			String nomeDigitado = validarNome();
-			String cpfValidado = validarCpf();
-			String contatoValidado = validarContato();
-			int idadeValidada = validarIdade();
-			double salario = ValidadorInput.validarSalario(this.salarioFormatado, 4);
-			String tituloSelecionado = validarTitulo();
+	private String validarNome() throws Mensagens {
+		return ValidadorInput.validarNome(this.nome.getText(), 2);
+	}
 
-			model.ProfessorDTO dto = new model.ProfessorDTO();
-			dto.setCampus(campusSelecionado);
-			dto.setCpf(cpfValidado);
-			dto.setContato(contatoValidado);
-			dto.setTitulo(tituloSelecionado);
-			dto.setSalario(salario);
-			dto.setId(id);
-			dto.setNome(nomeDigitado);
-			dto.setIdade(idadeValidada);
-
-			Professor professorAtualizado = new Professor(dto);
-
-			if (this.professorDAO.update(professorAtualizado)) {
-				JOptionPane.showMessageDialog(rootPane, "Professor alterado com sucesso");
-				this.dispose();
-			} else {
-				JOptionPane.showMessageDialog(rootPane, "Erro ao alterar professor no banco de dados");
-			}
-		} catch (Mensagens erro) {
-			JOptionPane.showMessageDialog(rootPane, erro.getMessage());
-		} catch (NumberFormatException erro2) {
-			JOptionPane.showMessageDialog(rootPane, "Informe um número");
-		}
-	}// GEN-LAST:event_bConfirmarActionPerformed
-
-	/**
-	 * Método vinculado automaticamente ao evento ActionListener do botão bCancelar.
-	 * O vínculo é definido no arquivo .form através do atributo:
-	 * handler="bCancelarActionPerformed". Este método é executado em tempo de
-	 * execução pelo Swing e não deve ser removido.
-	 */
-	private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bCancelarActionPerformed
-		ViewUtils.fecharJanelaAoCancelar(evt.getSource(), this);
-
-	}// GEN-LAST:event_bCancelarActionPerformed
-
-	// Métodos Auxiliares
 	private String validarCampus() throws Mensagens {
 		return ValidadorInput.validarSelecaoComboBox(this.campus.getSelectedIndex(), LISTA_CAMPUS, "Campus");
 	}
@@ -322,19 +278,14 @@ public class EditarProfessor extends javax.swing.JFrame {
 		return ValidadorInput.validarSelecaoComboBox(this.titulo.getSelectedIndex(), LISTA_TITULOS, "Título");
 	}
 
-	private String validarNome() throws Mensagens {
-		return ValidadorInput.validarNome(this.nome.getText(), 2);
-	}
-
 	private String validarCpf() throws Mensagens {
-		String cpfLimpo = ValidadorInput.validarTamanhoNumericoFixo(this.cpfFormatado.getText(), 11, "CPF");
+		String cpf = ValidadorInput.validarTamanhoNumericoFixo(this.cpfFormatado.getText(), 11, "CPF");
 
 		int idAtual = Integer.parseInt(dadosProfessor[7]);
-		if (professorDAO.existeCpf(cpfLimpo, idAtual)) {
+		if (professorDAO.existeCpf(cpf, idAtual)) {
 			throw new Mensagens("CPF já cadastrado no sistema");
 		}
-
-		return cpfLimpo;
+		return cpf;
 	}
 
 	private String validarContato() throws Mensagens {
@@ -342,26 +293,85 @@ public class EditarProfessor extends javax.swing.JFrame {
 	}
 
 	private int validarIdade() throws Mensagens {
-		String inputIdade = this.idade.getText();
+		String texto = idade.getText();
 
-		if (inputIdade.isEmpty()) {
+		if (texto.isEmpty())
 			throw new Mensagens("Idade não pode ser vazia");
-		}
 
-		return ValidadorInput.validarTamanhoMinimoNumerico(inputIdade, 11);
+		int idadeInt = Integer.parseInt(texto);
+
+		// regra do original:
+		if (idadeInt < 11)
+			throw new Mensagens("Idade inválida");
+
+		return idadeInt;
 	}
 
-	/**
-	 * @param args the command line arguments
-	 */
+	private double validarSalario() throws Mensagens {
+		// remove TUDO que não é número (R$, espaço, máscara)
+		String limpo = salarioFormatado.getText().replaceAll("[^0-9]", "");
+
+		if (limpo.length() < 4) {
+			throw new Mensagens("O salário deve ter pelo menos 4 dígitos");
+		}
+
+		return Double.parseDouble(limpo);
+	}
+
+	// ===================================================================================
+	// ================================ AÇÃO DO BOTÃO
+	// ====================================
+	// ===================================================================================
+
+	private void bConfirmarActionPerformed(java.awt.event.ActionEvent evt) {
+		try {
+			int id = Integer.parseInt(dadosProfessor[7]);
+
+			String nomeValidado = validarNome();
+			String campusVal = validarCampus();
+			String cpfVal = validarCpf();
+			String contatoVal = validarContato();
+			int idadeVal = validarIdade();
+			double salarioVal = validarSalario();
+			String tituloVal = validarTitulo();
+
+			// cria DTO
+			ProfessorDTO dto = new ProfessorDTO();
+			dto.setId(id);
+			dto.setNome(nomeValidado);
+			dto.setIdade(idadeVal);
+			dto.setCpf(cpfVal);
+			dto.setContato(contatoVal);
+			dto.setCampus(campusVal);
+			dto.setTitulo(tituloVal);
+			dto.setSalario(salarioVal);
+
+			Professor atualizado = new Professor(dto);
+
+			if (this.professorDAO.update(atualizado)) {
+				JOptionPane.showMessageDialog(rootPane, "Professor alterado com sucesso!");
+				this.dispose();
+			} else {
+				JOptionPane.showMessageDialog(rootPane, "Erro ao atualizar professor no banco!");
+			}
+
+		} catch (Mensagens e) {
+			JOptionPane.showMessageDialog(rootPane, e.getMessage());
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(rootPane, "Erro inesperado: " + e.getMessage());
+		}
+	}
+
+	private void bCancelarActionPerformed(java.awt.event.ActionEvent evt) {
+		ViewUtils.fecharJanelaAoCancelar(evt.getSource(), this);
+	}
+
 	public static void main(String[] args) {
 		LookAndFeelHelper.aplicarNimbus();
 		java.awt.EventQueue.invokeLater(() -> {
 			try {
 				new EditarProfessor().setVisible(true);
-			} catch (java.text.ParseException ex) {
-				java.util.logging.Logger.getLogger(EditarProfessor.class.getName()).log(java.util.logging.Level.SEVERE,
-						null, ex);
+			} catch (Exception e) {
 			}
 		});
 	}
