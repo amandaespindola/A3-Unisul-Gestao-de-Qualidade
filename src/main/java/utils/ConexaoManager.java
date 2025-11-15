@@ -19,6 +19,7 @@ public class ConexaoManager {
 
 	// URL pode vir do properties se quiser (deixa aqui por enquanto)
 	private static String jdbcUrl = "jdbc:mysql://localhost:3306/db_alunos?useTimezone=true&serverTimezone=UTC";
+	private static String driverClass = "com.mysql.cj.jdbc.Driver";
 
 	private static Connection conn; // compartilhada
 	private static String user; // último user usado
@@ -26,6 +27,14 @@ public class ConexaoManager {
 	private static boolean initialized = false; // se já chamamos init()
 
 	private ConexaoManager() {
+	}
+
+	public static void setJdbcUrl(String url) {
+		jdbcUrl = url;
+	}
+
+	public static void setDriverClass(String driver) {
+		driverClass = driver;
 	}
 
 	/**
@@ -79,9 +88,9 @@ public class ConexaoManager {
 
 	private static Connection abrirNovaConexao(String user, String password) {
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName(driverClass);
 			Connection c = DriverManager.getConnection(jdbcUrl, user, password);
-			logger.info("Conexão MySQL aberta via ConexaoManager.");
+			logger.info("Conexão aberta via ConexaoManager.");
 			return c;
 		} catch (ClassNotFoundException e) {
 			logger.log(Level.SEVERE, "Driver JDBC não encontrado.", e);
