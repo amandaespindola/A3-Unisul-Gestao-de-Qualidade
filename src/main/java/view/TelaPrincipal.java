@@ -14,12 +14,18 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.WindowConstants;
+import javax.swing.SwingConstants;
+
+import utils.Constantes;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 
 public class TelaPrincipal extends javax.swing.JFrame {
 
 	private static final Logger logger = Logger.getLogger(TelaPrincipal.class.getName());
+
+                private static final String DEFAULT_FONT = Constantes.UIConstants.DEFAULT_FONT;
 
 	public TelaPrincipal() {
 		initComponents();
@@ -28,7 +34,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 	private void initComponents() {
 
 		setTitle("SisUni - Principal");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setResizable(false);
 
 		// Borda azul igual ao vídeo
@@ -38,20 +44,20 @@ public class TelaPrincipal extends javax.swing.JFrame {
 		// ============================
 		// TÍTULO
 		// ============================
-		JLabel lblTitulo = new JLabel("SisUni - Sistema de Gerenciamento Universitário", JLabel.CENTER);
-		lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		JLabel lblTitulo = new JLabel("SisUni - Sistema de Gerenciamento Universitário", SwingConstants.CENTER);
+		lblTitulo.setFont(new Font(DEFAULT_FONT, Font.BOLD, 18));
 
 		// ============================
 		// BOTÕES (sem destaque)
 		// ============================
 		JButton btnAlunos = new JButton("Alunos");
-		btnAlunos.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnAlunos.setFont(new Font(DEFAULT_FONT, Font.PLAIN, 20));
 		btnAlunos.setPreferredSize(new Dimension(360, 70));
 		btnAlunos.setBorder(border);
 		btnAlunos.setFocusPainted(false);
 
 		JButton btnProfessores = new JButton("Professores");
-		btnProfessores.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnProfessores.setFont(new Font(DEFAULT_FONT, Font.PLAIN, 20));
 		btnProfessores.setPreferredSize(new Dimension(360, 70));
 		btnProfessores.setBorder(border);
 		btnProfessores.setFocusPainted(false);
