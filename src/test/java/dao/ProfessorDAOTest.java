@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -45,15 +46,16 @@ class ProfessorDAOTest {
 		}
 	}
 
-	private Professor criarProfessorFake(String nome, String cpf) {
+	private Professor criarProfessorFake(String nome, int idade, String campus, String cpf, String contato,
+			String titulo, double salario) {
 		ProfessorDTO dto = new ProfessorDTO();
 		dto.setNome(nome);
-		dto.setIdade(40);
-		dto.setCampus("Campus A");
+		dto.setIdade(idade);
+		dto.setCampus(campus);
 		dto.setCpf(cpf);
-		dto.setContato("9999-9999");
-		dto.setTitulo("Doutor");
-		dto.setSalario(8000.0);
+		dto.setContato(contato);
+		dto.setTitulo(titulo);
+		dto.setSalario(salario);
 
 		return new Professor(dto);
 	}
@@ -61,23 +63,52 @@ class ProfessorDAOTest {
 	// insert
 	@Test
 	void testInsert() {
-		Professor p = criarProfessorFake("Ana", "11111111111");
+		Professor p = criarProfessorFake("Ana", 40, "Ilha", "11111111111", "48123456789", "Graduação", 10000);
 		boolean inserido = dao.insert(p);
 
 		assertTrue(inserido);
 		assertTrue(p.getId() > 0);
 	}
 
+	// testar insert SQLException
+	@Test
+	void testInsertSQLException() throws Exception {
+
+		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
+			@Override
+			public boolean insert(Professor objeto) {
+				// força um insert inválido para cair no catch
+				try (PreparedStatement stmt = getConexao().prepareStatement("INSERT INVALIDO")) {
+					stmt.executeUpdate();
+				} catch (SQLException ex) {
+					return false;
+				}
+				return false;
+			}
+		};
+
+		Professor p = criarProfessorFake("Erro", 35, "Continente", "22222222222", "48987654321", "Especialização",
+				12000);
+		boolean resultado = daoErro.insert(p);
+
+		assertFalse(resultado); // cai no catch
+	}
+
 	// findById
 	@Test
 	void testFindById() {
-		Professor p = criarProfessorFake("Carlos", "22222222222");
+		Professor p = criarProfessorFake("Carlos", 26, "Dib Mussi", "33333333333", "48321456789", "Mestrado", 20000);
 		dao.insert(p);
 
 		Professor encontrado = dao.findById(p.getId());
 		assertNotNull(encontrado);
 		assertEquals("Carlos", encontrado.getNome());
-		assertEquals("22222222222", encontrado.getCpf());
+		assertEquals(26, encontrado.getIdade());
+		assertEquals("Dib Mussi", encontrado.getCampus());
+		assertEquals("33333333333", encontrado.getCpf());
+		assertEquals("48321456789", encontrado.getContato());
+		assertEquals("Mestrado", encontrado.getTitulo());
+		assertEquals(20000, encontrado.getSalario());
 	}
 
 	@Test
@@ -89,7 +120,7 @@ class ProfessorDAOTest {
 	// update
 	@Test
 	void testUpdate() {
-		Professor p = criarProfessorFake("João", "33333333333");
+		Professor p = criarProfessorFake("João", 40, "Ilha", "11111111111", "48322145678", "Doutorado", 30000);
 		dao.insert(p);
 
 		p.setNome("João Modificado");
@@ -103,10 +134,52 @@ class ProfessorDAOTest {
 		assertEquals(9000.0, novo.getSalario());
 	}
 
+	@Test
+	void testUpdateNenhumaLinhaAfetada() {
+		Professor p = criarProfessorFake("José", 50, "Continente", "12312312300", "11546781567", "Mestrado", 50000);
+		p.setId(9999);
+		boolean atualizado = dao.update(p);
+		assertFalse(atualizado);
+	}
+
+	@Test
+	void testUpdateSQLException() {
+		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
+			@Override
+			public boolean update(Professor objeto) {
+				try {
+					// SQL inválido
+					PreparedStatement stmt = getConexao().prepareStatement("UPDATE INVALIDO");
+					stmt.executeUpdate();
+					return true;
+				} catch (SQLException ex) {
+					return false; // cai no catch
+				}
+			}
+		};
+
+		Professor p = criarProfessorFake("Carlos", 33, "Ilha", "78978978900", "9999-0000", "Mestrado", 40000);
+
+		boolean atualizado = daoErro.update(p);
+
+		assertFalse(atualizado); // caiu no catch
+	}
+
+	@Test
+	void testUpdateConexaoNula() {
+		ProfessorDAO daoConexaoNula = new ProfessorDAO(null);
+
+		Professor p = criarProfessorFake("João", 40, "Centro", "00000000000", "9999-0000", "Graduação", 5000);
+
+		boolean resultado = daoConexaoNula.update(p);
+
+		assertFalse(resultado);
+	}
+
 	// delete
 	@Test
 	void testDelete() {
-		Professor p = criarProfessorFake("Maria", "44444444444");
+		Professor p = criarProfessorFake("Maria", 21, "Tubarão", "11111111111", "48111222345", "Graduação", 10000);
 		dao.insert(p);
 
 		boolean deletado = dao.delete(p.getId());
@@ -118,9 +191,10 @@ class ProfessorDAOTest {
 	// getMinhaLista
 	@Test
 	void testGetMinhaLista() {
-		dao.insert(criarProfessorFake("Ana", "55555555555"));
-		dao.insert(criarProfessorFake("Beatriz", "66666666666"));
-		dao.insert(criarProfessorFake("Carla", "77777777777"));
+		dao.insert(criarProfessorFake("Ana", 45, "Ilha", "11111111111", "44123456789", "Graduação", 10000));
+		dao.insert(
+				criarProfessorFake("Beatriz", 50, "Dib Mussi", "22222222222", "45123456789", "Especialização", 20000));
+		dao.insert(criarProfessorFake("Carla", 60, "Trajano", "33333333333", "46123456789", "Doutorado", 30000));
 
 		List<Professor> lista = dao.getMinhaLista();
 		assertEquals(3, lista.size());
@@ -129,7 +203,7 @@ class ProfessorDAOTest {
 	// existeCpf
 	@Test
 	void testExisteCpf() {
-		dao.insert(criarProfessorFake("Marcos", "88888888888"));
+		dao.insert(criarProfessorFake("Marcos", 36, "Ilha", "88888888888", "36123456789", "Graduação", 10000));
 
 		assertTrue(dao.existeCpf("88888888888"));
 		assertFalse(dao.existeCpf("99999999999"));
@@ -137,14 +211,15 @@ class ProfessorDAOTest {
 
 	@Test
 	void testExisteCpfIgnorandoId() {
-		Professor p1 = criarProfessorFake("Otávio", "00011122233");
+		Professor p1 = criarProfessorFake("Otávio", 40, "Ilha", "00011122233", "21123456789", "Especialização", 15000);
 		dao.insert(p1);
 
 		// mesmo cpf, mas ignorando o próprio id -> NÃO deve acusar duplicidade
 		assertFalse(dao.existeCpf("00011122233", p1.getId()));
 
 		// outro professor com mesmo CPF -> deve acusar duplicidade
-		Professor p2 = criarProfessorFake("Pedro", "00011122233");
+		Professor p2 = criarProfessorFake("Pedro", 41, "Tubarão", "00011122233", "22123456789", "Especialização",
+				20000);
 		dao.insert(p2);
 
 		assertTrue(dao.existeCpf("00011122233", p1.getId()));
