@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
+import utils.Constantes;
 import utils.ConexaoManager;
 import utils.LookAndFeelHelper;
 
@@ -32,6 +33,8 @@ public class TelaLogin extends JFrame {
 
 	private JTextField campoUsuario;
 	private JPasswordField campoSenha;
+        
+        private String defaultFont = Constantes.UIConstants.DEFAULT_FONT;
 
 	public TelaLogin() {
 		initComponents();
@@ -73,20 +76,20 @@ public class TelaLogin extends JFrame {
 		// TÍTULO
 		// ======================
 		JLabel lblSistema = new JLabel("SisUni - Sistema de Gerenciamento Universitário", JLabel.CENTER);
-		lblSistema.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		lblSistema.setFont(new Font(defaultFont, Font.BOLD, 18));
 		lblSistema.setForeground(UIManager.getColor("Label.foreground"));
 
 		// ======================
 		// LABEL USUÁRIO
 		// ======================
 		JLabel lblUser = new JLabel("DIGITE O USUÁRIO (MySQL)", JLabel.CENTER);
-		lblUser.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		lblUser.setFont(new Font(defaultFont, Font.PLAIN, 15));
 
 		// ======================
 		// CAMPO USUÁRIO
 		// ======================
 		campoUsuario = new JTextField();
-		campoUsuario.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+		campoUsuario.setFont(new Font(defaultFont, Font.PLAIN, 25));
 		campoUsuario.setHorizontalAlignment(JTextField.CENTER);
 		campoUsuario.setPreferredSize(new Dimension(320, 50));
 		campoUsuario.setBorder(border);
@@ -97,13 +100,13 @@ public class TelaLogin extends JFrame {
 		// LABEL SENHA
 		// ======================
 		JLabel lblSenha = new JLabel("DIGITE A SENHA (MySQL)", JLabel.CENTER);
-		lblSenha.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		lblSenha.setFont(new Font(defaultFont, Font.PLAIN, 15));
 
 		// ======================
 		// CAMPO SENHA
 		// ======================
 		campoSenha = new JPasswordField();
-		campoSenha.setFont(new Font("Segoe UI", Font.PLAIN, 25));
+		campoSenha.setFont(new Font(defaultFont, Font.PLAIN, 25));
 		campoSenha.setHorizontalAlignment(JTextField.CENTER);
 		campoSenha.setPreferredSize(new Dimension(320, 50));
 		campoSenha.setBorder(border);
@@ -114,7 +117,7 @@ public class TelaLogin extends JFrame {
 		// BOTÃO LOGIN
 		// ======================
 		JButton btnLogin = new JButton("LOGIN");
-		btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		btnLogin.setFont(new Font(defaultFont, Font.BOLD, 20));
 		btnLogin.setPreferredSize(new Dimension(320, 55));
 		btnLogin.setBorder(border);
 		btnLogin.setFocusPainted(false);
