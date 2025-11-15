@@ -64,38 +64,23 @@ public class EditarAluno extends JFrame {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
 		// Nome
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		form.add(ViewUtils.criarLabel("Nome:", "lblNome"), gbc);
-
-		gbc.gridx = 1;
+		ViewUtils.addLabel(form, gbc, 0, 0, "Nome:", "lblNome");
 		nome = new JTextField(20);
-		form.add(nome, gbc);
+		ViewUtils.addCampo(form, gbc, 1, 0, 3, nome);
 
 		// Curso
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		form.add(ViewUtils.criarLabel("Curso:", "lblCurso"), gbc);
-
-		gbc.gridx = 1;
+		ViewUtils.addLabel(form, gbc, 0, 1, "Curso:", "lblCurso");
 		curso = new JComboBox<>(Constantes.getCursos().toArray(new String[0]));
-		form.add(curso, gbc);
+		ViewUtils.addCampo(form, gbc, 1, 1, 3, curso);
 
 		// Idade + Fase
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		form.add(ViewUtils.criarLabel("Idade:", "lblIdade"), gbc);
-
-		gbc.gridx = 1;
+		ViewUtils.addLabel(form, gbc, 0, 2, "Idade:", "lblIdade");
 		idade = new JTextField(10);
-		form.add(idade, gbc);
+		ViewUtils.addCampo(form, gbc, 1, 2, 1, idade);
 
-		gbc.gridx = 2;
-		form.add(ViewUtils.criarLabel("Fase:", "lblFase"), gbc);
-
-		gbc.gridx = 3;
+		ViewUtils.addLabel(form, gbc, 2, 2, "Fase:", "lblFase");
 		fase = new JComboBox<>(Constantes.getFases().toArray(new Integer[0]));
-		form.add(fase, gbc);
+		ViewUtils.addCampo(form, gbc, 3, 2, 1, fase);
 
 		painel.add(form, BorderLayout.CENTER);
 

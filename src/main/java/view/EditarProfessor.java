@@ -43,7 +43,7 @@ public class EditarProfessor extends JFrame {
 	private static final List<String> LISTA_CAMPUS = Constantes.getCampus();
 	private static final List<String> LISTA_TITULOS = Constantes.getTitulos();
 
-	public EditarProfessor(){
+	public EditarProfessor() {
 		this.dadosProfessor = null;
 		initComponents();
 		formatarCampos();
@@ -75,72 +75,35 @@ public class EditarProfessor extends JFrame {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
 		// Nome
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		form.add(ViewUtils.criarLabel("Nome:", "lblNome"), gbc);
-
-		gbc.gridx = 1;
-		gbc.gridwidth = 3;
+		ViewUtils.addLabel(form, gbc, 0, 0, "Nome:", "lblNome");
 		nome = new JTextField(20);
-		form.add(nome, gbc);
-		gbc.gridwidth = 1;
+		ViewUtils.addCampo(form, gbc, 1, 0, 3, nome);
 
 		// Campus
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		form.add(ViewUtils.criarLabel("Campus:", "lblCampus"), gbc);
-
-		gbc.gridx = 1;
-		gbc.gridwidth = 3;
+		ViewUtils.addLabel(form, gbc, 0, 1, "Campus:", "lblCampus");
 		campus = new JComboBox<>(LISTA_CAMPUS.toArray(new String[0]));
-		form.add(campus, gbc);
-		gbc.gridwidth = 1;
+		ViewUtils.addCampo(form, gbc, 1, 1, 3, campus);
 
 		// CPF + Contato
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		form.add(ViewUtils.criarLabel("CPF:", "lblCPF"), gbc);
-
-		gbc.gridx = 1;
+		ViewUtils.addLabel(form, gbc, 0, 2, "CPF:", "lblCPF");
 		cpfFormatado = new JFormattedTextField();
 		cpfFormatado.setColumns(10);
-		form.add(cpfFormatado, gbc);
-
-		gbc.gridx = 2;
-		form.add(ViewUtils.criarLabel("Contato:", "lblContato"), gbc);
-
-		gbc.gridx = 3;
-		contatoFormatado = new JFormattedTextField();
-		contatoFormatado.setColumns(10);
-		form.add(contatoFormatado, gbc);
+		ViewUtils.addCampo(form, gbc, 1, 2, 1, cpfFormatado);
 
 		// Idade + Salário
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		form.add(ViewUtils.criarLabel("Idade:", "lblIdade"), gbc);
-
-		gbc.gridx = 1;
+		ViewUtils.addLabel(form, gbc, 0, 3, "Idade:", "lblIdade");
 		idade = new JTextField(10);
-		form.add(idade, gbc);
+		ViewUtils.addCampo(form, gbc, 1, 3, 1, idade);
 
-		gbc.gridx = 2;
-		form.add(ViewUtils.criarLabel("Salário:", "lblSalario"), gbc);
-
-		gbc.gridx = 3;
+		ViewUtils.addLabel(form, gbc, 2, 3, "Salário:", "lblSalario");
 		salarioFormatado = new JFormattedTextField();
 		salarioFormatado.setColumns(10);
-		form.add(salarioFormatado, gbc);
+		ViewUtils.addCampo(form, gbc, 3, 3, 1, salarioFormatado);
 
 		// Título acadêmico
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		form.add(ViewUtils.criarLabel("Título:", "lblTituloProfessor"), gbc);
-
-		gbc.gridx = 1;
-		gbc.gridwidth = 3;
+		ViewUtils.addLabel(form, gbc, 0, 4, "Título:", "lblTituloProfessor");
 		titulo = new JComboBox<>(LISTA_TITULOS.toArray(new String[0]));
-		form.add(titulo, gbc);
-		gbc.gridwidth = 1;
+		ViewUtils.addCampo(form, gbc, 1, 4, 3, titulo);
 
 		painel.add(form, BorderLayout.CENTER);
 
