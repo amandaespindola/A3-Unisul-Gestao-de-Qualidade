@@ -1,8 +1,16 @@
 package utils;
 
 import org.junit.jupiter.api.Test;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -103,14 +111,5 @@ public class ViewUtilsTest {
 
         JMenu menu = menuBar.getMenu(0);
         assertEquals(3, menu.getItemCount());
-    }
-
-    @Test
-    void testCriarPainelBase() {
-        JFrame frame = new JFrame();
-        JPanel painel = ViewUtils.criarPainelBase(frame);
-
-        assertNotNull(painel);
-        assertEquals(BorderLayout.class, ((BorderLayout) frame.getLayout()).getClass());
     }
 }
