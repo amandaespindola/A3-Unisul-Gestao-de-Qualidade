@@ -14,7 +14,7 @@ import java.awt.GridBagLayout;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ViewUtilsTest {
+class ViewUtilsTest {
 
     @Test
     void testCriarLabel() {
