@@ -1,6 +1,5 @@
 package dao;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,7 +12,7 @@ import utils.ConexaoManager;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class BaseDAOTest {
 
@@ -22,17 +21,22 @@ class BaseDAOTest {
 	@BeforeEach
 	void setUp() throws Exception {
 
-		Field driverField = ConexaoManager.class.getDeclaredField("jdbcUrl");
-		driverField.setAccessible(true);
-		driverField.set(null, "jdbc:sqlite::memory:");
+		ConexaoManager.setJdbcUrl("jdbc:sqlite::memory:");
+		ConexaoManager.setDriverClass("org.sqlite.JDBC");
 
 		// remover qualquer conexão já existente
 		ConexaoManager.close();
 		// inicializar conexao (user e password ignorados pelo SQLite)
 		ConexaoManager.init("", "");
 
+		Connection conn = ConexaoManager.getConnection();
+		System.out.println("URL BaseDAO: " + conn.getMetaData().getURL());
+		System.out.println("Driver BaseDAO: " + conn.getMetaData().getDriverName());
+		System.out.println("Conexão hash: " + conn.hashCode()); // para ver se é a mesma conexão
+		criarTabelasSQLite(conn);
+
 		// criando implementação concreta mínima
-		dao = new BaseDAO<Object>() {
+		dao = new BaseDAO<Object>(conn) {
 			@Override
 			protected String getNomeTabela() {
 				return "tb_aluno";
@@ -58,7 +62,6 @@ class BaseDAOTest {
 				return null;
 			}
 		};
-		criarTabelasSQLite(ConexaoManager.getConnection());
 	}
 
 	private void criarTabelasSQLite(Connection conn) throws SQLException {
@@ -83,7 +86,7 @@ class BaseDAOTest {
 	void testFecharConexaoSeInterna() throws SQLException {
 		Connection conn = dao.getConexao();
 		dao.fecharConexaoSeInterna(conn);
-		assertTrue(conn.isClosed());
+		assertFalse(conn.isClosed()); //conexao externa
 	}
 
 	// testar método obterMaiorId
