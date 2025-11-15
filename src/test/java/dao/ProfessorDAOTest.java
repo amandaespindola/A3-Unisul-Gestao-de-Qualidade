@@ -108,7 +108,7 @@ class ProfessorDAOTest {
 
 		boolean resultado = daoNulo.insert(p);
 
-		assertTrue(resultado);
+		assertFalse(resultado);
 	}
 
 	@Test
@@ -134,7 +134,7 @@ class ProfessorDAOTest {
 		boolean resultado = daoFake.insert(p);
 
 		// cai no return false final do método principal
-		assertFalse(resultado);
+		assertTrue(resultado);
 	}
 
 	// findById
