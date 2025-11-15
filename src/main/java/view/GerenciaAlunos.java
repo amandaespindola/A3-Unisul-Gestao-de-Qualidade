@@ -28,28 +28,55 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		TableUtils.addMouseClickListener(jTableAlunos, GerenciaAlunos.this::jTableAlunosMouseClicked);
 	}
 
-	// <editor-fold defaultstate="collapsed" desc="Generated
+	@SuppressWarnings("unchecked")
 	// <editor-fold defaultstate="collapsed" desc="Generated
 	// Code">//GEN-BEGIN:initComponents
 	private void initComponents() {
 
-		javax.swing.JButton bCadastro = ViewUtils.criarBotao(Constantes.UIConstants.BTN_CADASTRAR,
-				this::bCadastroActionPerformed);
-		javax.swing.JButton bEditar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_EDITAR,
-				this::bEditarActionPerformed);
-		javax.swing.JButton bDeletar = ViewUtils.criarBotao(Constantes.UIConstants.BTN_DELETAR,
-				this::bDeletarActionPerformed);
-		javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
+		bCadastro = new javax.swing.JButton();
+		bEditar = new javax.swing.JButton();
+		bDeletar = new javax.swing.JButton();
+		jScrollPane2 = new javax.swing.JScrollPane();
 		jTableAlunos = new javax.swing.JTable();
-		javax.swing.JLabel lblTitulo = ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_GERENCIA_ALUNOS);
-		javax.swing.JButton refresh = ViewUtils.criarBotao(Constantes.UIConstants.BTN_ATUALIZAR,
-				this::refreshActionPerformed);
-		javax.swing.JButton export = ViewUtils.criarBotao(Constantes.UIConstants.BTN_EXPORTAR,
-				this::exportActionPerformed);
-		javax.swing.JMenuBar jMenuBar1 = ViewUtils.criarMenuBar();
-		javax.swing.JMenu menu = new javax.swing.JMenu();
-		javax.swing.JMenuItem menuGerenciaProfessores = ViewUtils.criarMenuItem("Gerenciar Professores",
-				this::menuGerenciaProfessoresActionPerformed, "menuGerenciaProfessores");
+		jLabel1 = new javax.swing.JLabel();
+		refresh = new javax.swing.JButton();
+		export = new javax.swing.JButton();
+		jMenuBar1 = new javax.swing.JMenuBar();
+		menu = new javax.swing.JMenu();
+		menuGerenciaProfessores = new javax.swing.JMenuItem();
+		menuExport = new javax.swing.JMenuItem();
+		menuRefresh = new javax.swing.JMenuItem();
+		jMenuItem1 = new javax.swing.JMenuItem();
+		menuLeave = new javax.swing.JMenuItem();
+
+		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		setTitle("Gerência de Alunos");
+		setBackground(new java.awt.Color(80, 80, 80));
+		setResizable(false);
+
+		bCadastro.setText("Cadastrar novo");
+		bCadastro.setToolTipText("");
+		bCadastro.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				bCadastroActionPerformed(evt);
+			}
+		});
+
+		bEditar.setText("Editar");
+		bEditar.setToolTipText("");
+		bEditar.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				bEditarActionPerformed(evt);
+			}
+		});
+
+		bDeletar.setText("Deletar");
+		bDeletar.setToolTipText("");
+		bDeletar.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				bDeletarActionPerformed(evt);
+			}
+		});
 
 		jTableAlunos.setModel(new javax.swing.table.DefaultTableModel(
 				new Object[][] { { null, null, null, null, null }, { null, null, null, null, null },
@@ -57,12 +84,16 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 				new String[] { "ID", "Nome", "Idade", "Curso", "Fase" }) {
 			boolean[] canEdit = new boolean[] { false, false, false, false, true };
 
-			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				return canEdit[columnIndex];
 			}
 		});
 		jTableAlunos.setSelectionForeground(new java.awt.Color(239, 239, 239));
+		jTableAlunos.addMouseListener(new java.awt.event.MouseAdapter() {
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				jTableAlunosMouseClicked(evt);
+			}
+		});
 		jScrollPane2.setViewportView(jTableAlunos);
 		if (jTableAlunos.getColumnModel().getColumnCount() > 0) {
 			jTableAlunos.getColumnModel().getColumn(0).setMinWidth(40);
@@ -75,16 +106,26 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 			jTableAlunos.getColumnModel().getColumn(3).setMaxWidth(300);
 		}
 
-		lblTitulo.setFont(new java.awt.Font("Tahoma", 1, 40)); // NOI18N
-		lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		lblTitulo.setText("Cadastro de Alunos");
+		jLabel1.setFont(new java.awt.Font("Tahoma", 1, 40)); // NOI18N
+		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		jLabel1.setText("Cadastro de Alunos");
 
 		refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/View/refresh.png"))); // NOI18N
 		refresh.setText("  Atualizar tabela");
 		refresh.setToolTipText("CTRL+R");
+		refresh.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				refreshActionPerformed(evt);
+			}
+		});
 
 		export.setText("Exportar para Excel");
 		export.setToolTipText("CTRL+E");
+		export.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				exportActionPerformed(evt);
+			}
+		});
 
 		menu.setForeground(new java.awt.Color(239, 239, 239));
 		menu.setText("Arquivo");
@@ -92,16 +133,54 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		menuGerenciaProfessores.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P,
 				java.awt.event.InputEvent.CTRL_DOWN_MASK));
 		menuGerenciaProfessores.setText("Gerência de Professores");
+		menuGerenciaProfessores.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				menuGerenciaProfessoresActionPerformed(evt);
+			}
+		});
 		menu.add(menuGerenciaProfessores);
 
-		javax.swing.JMenuItem menuExport = new javax.swing.JMenuItem();
-		javax.swing.JMenuItem menuRefresh = new javax.swing.JMenuItem();
-		javax.swing.JMenuItem menuSobre = new javax.swing.JMenuItem();
-		javax.swing.JMenuItem menuLeave = new javax.swing.JMenuItem();
+		menuExport.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E,
+				java.awt.event.InputEvent.CTRL_DOWN_MASK));
+		menuExport.setText("Exportar para Excel");
+		menuExport.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				menuExportActionPerformed(evt);
+			}
+		});
+		menu.add(menuExport);
 
-		ViewUtils.configurarJanelaGerencia(this, "Gerência de Alunos");
-		ViewUtils.configurarBotoesGerencia(bCadastro, bEditar, bDeletar);
-		ViewUtils.configurarMenuPadrao(menu, jMenuBar1, menuExport, menuRefresh, menuSobre, menuLeave);
+		menuRefresh.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R,
+				java.awt.event.InputEvent.CTRL_DOWN_MASK));
+		menuRefresh.setText("Atualizar tabela");
+		menuRefresh.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				menuRefreshActionPerformed(evt);
+			}
+		});
+		menu.add(menuRefresh);
+
+		jMenuItem1.setText("Sobre");
+		jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jMenuItem1ActionPerformed(evt);
+			}
+		});
+		menu.add(jMenuItem1);
+
+		menuLeave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S,
+				java.awt.event.InputEvent.CTRL_DOWN_MASK));
+		menuLeave.setText("Sair");
+		menuLeave.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				menuLeaveActionPerformed(evt);
+			}
+		});
+		menu.add(menuLeave);
+
+		jMenuBar1.add(menu);
+
+		setJMenuBar(jMenuBar1);
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
@@ -126,13 +205,13 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(export, javax.swing.GroupLayout.PREFERRED_SIZE, 143,
 										javax.swing.GroupLayout.PREFERRED_SIZE))
-						.addComponent(lblTitulo, javax.swing.GroupLayout.Alignment.TRAILING,
+						.addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING,
 								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 								Short.MAX_VALUE))
 						.addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
 				.createSequentialGroup().addContainerGap()
-				.addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 99,
+				.addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 99,
 						javax.swing.GroupLayout.PREFERRED_SIZE)
 				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(bCadastro)
@@ -275,6 +354,11 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 		tela.setVisible(true);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
 
+	private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
+		Sobre tela = new Sobre();
+		tela.setVisible(true);
+	}// GEN-LAST:event_jMenuItem1ActionPerformed
+
 	public void carregaTabela() {
 		DefaultTableModel modelo = (DefaultTableModel) this.jTableAlunos.getModel();
 		modelo.setNumRows(0);
@@ -326,6 +410,20 @@ public class GerenciaAlunos extends javax.swing.JFrame {
 	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private javax.swing.JButton bCadastro;
+	private javax.swing.JButton bDeletar;
+	private javax.swing.JButton bEditar;
+	private javax.swing.JButton export;
+	private javax.swing.JLabel jLabel1;
+	private javax.swing.JMenuBar jMenuBar1;
+	private javax.swing.JMenuItem jMenuItem1;
+	private javax.swing.JScrollPane jScrollPane2;
 	private javax.swing.JTable jTableAlunos;
+	private javax.swing.JMenu menu;
+	private javax.swing.JMenuItem menuExport;
+	private javax.swing.JMenuItem menuGerenciaProfessores;
+	private javax.swing.JMenuItem menuLeave;
+	private javax.swing.JMenuItem menuRefresh;
+	private javax.swing.JButton refresh;
 	// End of variables declaration//GEN-END:variables
 }
