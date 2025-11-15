@@ -1,35 +1,31 @@
 package model;
 
 import java.util.List;
-
 import dao.AlunoDAO;
-
 
 public class Aluno extends Pessoa {
 
-    // Atributos
     private String curso;
     private int fase;
-    private final AlunoDAO dao;
+
+    // DAO interno
+    private final AlunoDAO dao = new AlunoDAO();
 
     public Aluno() {
-        this.dao = new AlunoDAO();
     }
 
     public Aluno(String curso, int fase) {
         this.curso = curso;
         this.fase = fase;
-        this.dao = new AlunoDAO();
     }
 
     public Aluno(String curso, int fase, int id, String nome, int idade) {
         super(id, nome, idade);
         this.curso = curso;
         this.fase = fase;
-        this.dao = new AlunoDAO();
     }
 
-    // Métodos GET e SET
+    // Getters e Setters
     public String getCurso() {
         return curso;
     }
@@ -48,46 +44,37 @@ public class Aluno extends Pessoa {
 
     @Override
     public String toString() {
-        return "\n ID: " + this.getId()
-                + "\n Nome: " + this.getNome()
-                + "\n Idade: " + this.getIdade()
-                + "\n Curso: " + this.getCurso()
-                + "\n Fase:" + this.getFase()
-                + "\n -----------";
+        return "\nID: " + getId()
+                + "\nNome: " + getNome()
+                + "\nIdade: " + getIdade()
+                + "\nCurso: " + curso
+                + "\nFase: " + fase
+                + "\n-----------";
     }
 
-  
-    // Retorna a Lista de Alunos (objetos)
+    // ======== MÉTODOS DE NEGÓCIO ========
     public List<Aluno> getMinhaLista() {
         return dao.getMinhaLista();
     }
 
-    // Cadastra novo aluno
-    public boolean inserirAlunoBd(String curso, int fase, String nome, int idade) {
-        Aluno objeto = new Aluno(curso, fase, 0, nome, idade);
-        return dao.insert(objeto);
+    public boolean inserirAlunoBD(String curso, int fase, String nome, int idade) {
+        Aluno novo = new Aluno(curso, fase, 0, nome, idade);
+        return dao.insert(novo);
     }
 
-    // Deleta um aluno específico pelo seu campo ID
     public boolean deletarAlunoBD(int id) {
-        dao.delete(id);
-        return true;
+        return dao.delete(id);
     }
 
-    // Edita um aluno específico pelo seu campo ID
     public boolean atualizarAlunoBD(String curso, int fase, int id, String nome, int idade) {
-        Aluno objeto = new Aluno(curso, fase, id, nome, idade);
-        dao.update(objeto);
-        return true;
+        Aluno atualizado = new Aluno(curso, fase, id, nome, idade);
+        return dao.update(atualizado);
     }
 
-    // carrega dados de um aluno específico pelo seu ID
     public Aluno carregaAluno(int id) {
-        dao.findById(id);
-        return null;
+        return dao.findById(id);
     }
 
-    // retorna o maior ID da nossa base de dados
     public int obterMaiorId() {
         return dao.obterMaiorId();
     }

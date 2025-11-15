@@ -1,58 +1,57 @@
 package model;
 
 public class ProfessorBase extends Pessoa {
-	protected String campus;
-	protected String cpf;
-	protected String contato;
-	protected String titulo;
-	protected double salario;
 
-	public ProfessorBase() {
-		super();
-	}
+    protected String campus;
+    protected String cpf;
+    protected String contato;
+    protected String titulo;
+    protected double salario;
 
-	public ProfessorBase(int id, String nome, int idade) {
-		super(id, nome, idade);
-	}
+    public ProfessorBase() {
+    }
 
-	// Getters e Setters comuns
-	public String getCampus() {
-		return campus;
-	}
+    public ProfessorBase(int id, String nome, int idade) {
+        super(id, nome, idade);
+    }
 
-	public void setCampus(String campus) {
-		this.campus = campus;
-	}
+    public String getCampus() {
+        return campus;
+    }
 
-	public String getCpf() {
-		return cpf;
-	}
+    public void setCampus(String campus) {
+        this.campus = campus;
+    }
 
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
+    public String getCpf() {
+        return cpf;
+    }
 
-	public String getContato() {
-		return contato;
-	}
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
 
-	public void setContato(String contato) {
-		this.contato = contato;
-	}
+    public String getContato() {
+        return contato;
+    }
 
-	public String getTitulo() {
-		return titulo;
-	}
+    public void setContato(String contato) {
+        this.contato = contato;
+    }
 
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
-	}
+    public String getTitulo() {
+        return titulo;
+    }
 
-	public double getSalario() {
-		return salario;
-	}
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
 
-	public void setSalario(double salario) {
-		this.salario = salario;
-	}
+    public double getSalario() {
+        return salario;
+    }
+
+    public void setSalario(double salario) {
+        this.salario = salario;
+    }
 }

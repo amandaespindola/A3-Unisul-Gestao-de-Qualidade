@@ -11,92 +11,83 @@ import utils.ConexaoManager;
 
 public abstract class BaseDAO<T> {
 
-	protected final Logger logger = Logger.getLogger(getClass().getName());
-	protected Connection conexao;
-	private boolean conexaoExterna = false;
+    protected final Logger logger = Logger.getLogger(getClass().getName());
+    protected Connection conexao;
+    private boolean conexaoExterna = false;
 
-	protected BaseDAO() {
-	}
+    protected BaseDAO() {
+    }
 
-	public Connection abrirConexao() {
-		return getConexao();
-	}
+    protected BaseDAO(Connection conexao) {
+        this.conexao = conexao;
+        this.conexaoExterna = true;
+    }
 
-	protected BaseDAO(Connection conexao) {
-		this.conexao = conexao;
-		this.conexaoExterna = true;
-	}
+    protected Connection getConexao() {
+        if (this.conexao != null) {
+            return this.conexao; // conexão injetada (testes)
+        }
 
-	protected Connection getConexao() {
-		if (this.conexao != null) {
-			return this.conexao; // conexão injetada (ex.: testes)
-		}
-		// Pega do manager global
-		Connection c = ConexaoManager.getConnection();
-		if (c == null) {
-			logger.severe("getConexao() não encontrou conexão global (ConexaoManager não inicializado?).");
-		}
-		return c;
-	}
+        Connection c = ConexaoManager.getConnection();
+        if (c == null) {
+            logger.severe("getConexao() não encontrou conexão global (ConexaoManager não inicializado?).");
+        }
+        return c;
+    }
 
-	protected void fecharConexaoSeInterna(Connection conn) {
-		if (!conexaoExterna && conn != null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				logger.log(Level.WARNING, "Erro ao fechar conexão interna", e);
-			}
-		}
-	}
+    protected void fecharConexaoSeInterna(Connection conn) {
+        if (!conexaoExterna && conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                logger.log(Level.WARNING, "Erro ao fechar conexão interna", e);
+            }
+        }
+    }
 
-	public int obterMaiorId() {
-		String nomeTabela = getNomeTabela();
+    public int obterMaiorId() {
+        String nomeTabela = getNomeTabela();
+        String sql;
 
-		String sql;
+        // CORRIGIDO: nomes das tabelas agora estão corretos
+        switch (nomeTabela) {
+            case "tb_professores":
+                sql = "SELECT MAX(id) AS max_id FROM tb_professores";
+                break;
+            case "tb_alunos":
+                sql = "SELECT MAX(id) AS max_id FROM tb_alunos";
+                break;
+            default:
+                logger.log(Level.SEVERE, "Tabela não permitida: {0}", nomeTabela);
+                throw new IllegalArgumentException("Tabela não permitida: " + nomeTabela);
+        }
 
-		switch (nomeTabela) {
-		case "tb_professor":
-			sql = "SELECT MAX(id) AS max_id FROM tb_professor";
-			break;
-		case "tb_aluno":
-			sql = "SELECT MAX(id) AS max_id FROM tb_aluno";
-			break;
-		default:
-			logger.log(Level.SEVERE, "Tabela não permitida: {0}", nomeTabela);
-			throw new IllegalArgumentException("Tabela não permitida: " + nomeTabela);
-		}
+        try ( Connection conn = getConexao()) {
+            if (conn == null || conn.isClosed()) {
+                logger.log(Level.SEVERE, "Conexão nula ou fechada ao buscar maior ID de {0}.", nomeTabela);
+                return 0;
+            }
 
-		try (Connection conn = getConexao()) {
-			if (conn == null || conn.isClosed()) {
-				logger.log(Level.SEVERE, "Conexão nula ou fechada ao buscar maior ID de {0}.", nomeTabela);
-				return 0;
-			}
+            try ( PreparedStatement stmt = conn.prepareStatement(sql);  ResultSet rs = stmt.executeQuery()) {
 
-			try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("max_id");
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Erro ao buscar maior ID na tabela " + nomeTabela, e);
+        }
 
-				if (rs.next()) {
-					int maxId = rs.getInt("max_id");
-					logger.log(Level.FINE, "Maior ID encontrado na tabela {0}: {1}",
-							new Object[] { nomeTabela, maxId });
-					return maxId;
-				} else {
-					logger.log(Level.INFO, "Nenhum registro encontrado na tabela {0}. Retornando 0.", nomeTabela);
-					return 0;
-				}
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, String.format("Erro ao buscar maior ID da tabela %s.", nomeTabela), e);
-			return 0;
-		}
-	}
+        return 0;
+    }
 
-	protected abstract String getNomeTabela();
+    protected abstract String getNomeTabela();
 
-	public abstract boolean insert(T objeto);
+    public abstract boolean insert(T objeto);
 
-	public abstract boolean update(T objeto);
+    public abstract boolean update(T objeto);
 
-	public abstract boolean delete(int id);
+    public abstract boolean delete(int id);
 
-	public abstract T findById(int id);
+    public abstract T findById(int id);
 }

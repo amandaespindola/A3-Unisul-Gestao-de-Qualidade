@@ -2,7 +2,6 @@ package model;
 
 public abstract class Pessoa {
 
-    // Atributos
     private int id;
     private String nome;
     private int idade;
@@ -16,7 +15,6 @@ public abstract class Pessoa {
         this.idade = idade;
     }
 
- // Métodos GET e SET
     public int getId() {
         return id;
     }
@@ -40,5 +38,4 @@ public abstract class Pessoa {
     public void setIdade(int idade) {
         this.idade = idade;
     }
-
 }
