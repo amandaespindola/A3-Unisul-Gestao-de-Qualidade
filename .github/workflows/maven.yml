@@ -15,53 +15,55 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # Jobs do ambiente de desenvolvimento
+  # Ambiente de desenvolvimento
   build-dev:
     runs-on: ubuntu-latest
     environment:
       name: dev
     steps:
-      # Instala Xvfb no runner
+
+      # Instala Xvfb
       - name: Instala Xvfb
         run: sudo apt-get update && sudo apt-get install -y xvfb
 
-      - name: Configura xvfb para tela 0
-        run: Xvfb :1 -screen 0 1600x1200x24 &
-        env:
-          ➕ DISPLAY: :1
-          ➕ _JAVA_OPTIONS: "-Djava.awt.headless=false"
-      
-      # Utiliza a action checkout para fazer o git clone no runner
+      # Inicia Xvfb
+      - name: Inicia Xvfb
+        run: |
+          Xvfb :1 -screen 0 1600x1200x24 &
+          echo "DISPLAY=:1" >> $GITHUB_ENV
+          echo "_JAVA_OPTIONS=-Djava.awt.headless=false" >> $GITHUB_ENV
+
+      # Checkout
       - name: Realiza o checkout do repositório
         uses: actions/checkout@v4
       
-      # Utiliza a action setup-java para configurar a versão necessária do JDK
+      # JDK 17
       - name: Configura o JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-      
-      # Executa a compilação e testes do projeto com o Maven no runner
+
+      # Maven test
       - name: Compila o projeto com Maven
         env:
-          # Roda a aplicação no terminal virtual 1 do Xvfb
           DISPLAY: :1
           _JAVA_OPTIONS: "-Djava.awt.headless=false"
         run: mvn -B test --file pom.xml
-      
-      # Desliga o Xvfb
+
+      # Desliga Xvfb
       - name: Desliga Xvfb
         run: killall Xvfb
 
-  # Jobs do ambiente de homologação
+  # Ambiente de homologação
   build-hmg:
     runs-on: ubuntu-latest
     environment:
       name: hmg
     needs: build-dev
     steps:
+
       - name: Realiza o checkout do repositório
         uses: actions/checkout@v3
         with:
@@ -71,27 +73,29 @@ jobs:
       - name: Instala Xvfb
         run: sudo apt-get update && sudo apt-get install -y xvfb
 
-      # Inicia Xvfb
+      # Inicia Xvfb e define ambiente gráfico
       - name: Inicia Xvfb
-        run: Xvfb :1 -screen 0 1600x1200x24 &
-        
-        env:
-          DISPLAY: :1
-          _JAVA_OPTIONS: "-Djava.awt.headless=false"
-      
+        run: |
+          Xvfb :1 -screen 0 1600x1200x24 &
+          echo "DISPLAY=:1" >> $GITHUB_ENV
+          echo "_JAVA_OPTIONS=-Djava.awt.headless=false" >> $GITHUB_ENV
+
+      # JDK 17
       - name: Configura o JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+
+      # Maven test
       - name: Testa o projeto com Maven
         env:
           DISPLAY: :1
-          JAVA_OPTIONS: "-Djava.awt.headless=false"
-        run: mvn -B test --file pom.xml   
+          _JAVA_OPTIONS: "-Djava.awt.headless=false"
+        run: mvn -B test --file pom.xml
 
-        # Executa os passos da análise do código com o sonarcube
+      # Cache SonarCloud
       - name: Cache dos pacotes do SonarCloud
         uses: actions/cache@v4
         with:
@@ -99,45 +103,54 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       
+      # Cache Maven
       - name: Cache dos pacotes do Maven
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      
+
+      # Maven + Jacoco + Sonar
       - name: Verifica o projeto com Maven e Jacoco
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           DISPLAY: :1
-          JAVA_OPTIONS: "-Djava.awt.headless=false"
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=amandaespindola_A3-Unisul-Gestao-de-Qualidade org.jacoco:jacoco-maven-plugin:prepare-agent -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+          _JAVA_OPTIONS: "-Djava.awt.headless=false"
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=amandaespindola_A3-Unisul-Gestao-de-Qualidade \
+          org.jacoco:jacoco-maven-plugin:prepare-agent \
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
-  # Jobs do ambiente de produção
+  # Ambiente de produção
   build-prd:
     runs-on: ubuntu-latest
     environment:
       name: prd
     needs: build-hmg
     steps:
+
       - name: Realiza o checkout do repositório
         uses: actions/checkout@v3
+
       - name: Configura o JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-      # Executa o empacotamento do projeto com o Maven.
-      # O parâmetro -DskipTests pula os testes pois já foram executados no ambiente anterior.
+
+      # Maven package (testes já rodaram)
       - name: Empacota o projeto com Maven
         run: mvn -B package --file pom.xml -DskipTests
-      # Cria o artefato de download
+
       - name: Crie uma pasta temporária de downloads de artefatos
         run: mkdir staging
+
       - name: Copia os artefatos a serem publicados na pasta temporária
         run: cp target/*jar-with-dependencies.jar staging
+
       - name: Usa Upload Artifact do GitHub Action
         uses: actions/upload-artifact@v4
         with:
