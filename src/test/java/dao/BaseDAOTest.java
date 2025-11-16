@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BaseDAOTest {
 
@@ -81,10 +83,89 @@ class BaseDAOTest {
 	}
 
 	@Test
+	void testAbrirConexao() {
+		Connection c = dao.abrirConexao();
+		assertNotNull(c);
+	}
+
+	@Test
+	void testGetConexaoRetornaNull() {
+		BaseDAO<Object> daoNulo = new BaseDAO<Object>(null) {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_aluno";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+
+			@Override
+			protected Connection getConexao() {
+				return null;
+			}
+		};
+
+		Connection c = daoNulo.getConexao();
+		assertNull(c);
+	}
+
+	@Test
+	void testFecharConexaoSeInternaFechaConexao() throws Exception {
+		BaseDAO<Object> daoInterno = new BaseDAO<Object>() {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_aluno";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		Connection c = daoInterno.getConexao();
+		daoInterno.fecharConexaoSeInterna(c);
+
+		assertTrue(c.isClosed()); // desta vez deve fechar
+	}
+
+	@Test
 	void testFecharConexaoSeInterna() throws SQLException {
 		Connection conn = dao.getConexao();
 		dao.fecharConexaoSeInterna(conn);
-		assertFalse(conn.isClosed()); //conexao externa
+		assertFalse(conn.isClosed()); // conexao externa
 	}
 
 	// testar método obterMaiorId
