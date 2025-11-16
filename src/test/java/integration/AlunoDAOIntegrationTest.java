@@ -1,5 +1,6 @@
-package dao;
+package integration;
 
+import dao.AlunoDAO;
 import model.Aluno;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
