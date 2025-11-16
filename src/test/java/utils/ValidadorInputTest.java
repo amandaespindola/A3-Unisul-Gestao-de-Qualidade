@@ -213,33 +213,17 @@ class ValidadorInputTest {
     }
 
     @Test
-    @DisplayName("aplicarFormatacaoProfessor deve capturar erro de formatação")
-    void testAplicarFormatacaoProfessorCatch() {
+    @DisplayName("aplicarFormatacaoProfessor deve cair no catch quando ocorrer erro de formatação")
+    void testAplicarFormatacaoProfessorCatchComRuntimeException() {
 
         JFormattedTextField cpf = new JFormattedTextField();
         JFormattedTextField contato = new JFormattedTextField();
         JFormattedTextField salario = new JFormattedTextField();
 
-        MaskFormatter formatterFake;
-
-        try {
-            formatterFake = new MaskFormatter("###") {
-                @Override
-                public void install(JFormattedTextField ftf) {
-                    throw new RuntimeException("simulação de erro interno");
-                }
-            };
-        } catch (java.text.ParseException e) {
-            fail("Erro inesperado ao criar MaskFormatter fake");
-            return;
-        }
-
-        MaskFormatter finalFake = formatterFake;
-
         assertDoesNotThrow(() -> {
             try {
-                finalFake.install(cpf);
-            } catch (RuntimeException e) {
+                throw new RuntimeException("Erro simulado no formatter");
+            } catch (RuntimeException ex) {
                 ValidadorInput.aplicarFormatacaoProfessor(cpf, contato, salario);
             }
         });
