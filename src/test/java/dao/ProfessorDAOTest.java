@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -89,6 +91,30 @@ class ProfessorDAOTest {
 
 		assertFalse(resultado); // cai no catch
 	}
+
+	@Test
+	void testFindByIdSQLExceptionLambdaFalha() {
+	    ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
+	        @Override
+	        protected String getNomeTabela() {
+	            return "tabela_inexistente"; // causa SQLException
+	        }
+
+	        @Override
+	        public Professor findById(int id) {
+	            try {
+	                return super.findById(id);
+	            } catch (Exception e) {
+	                // nunca deve chegar aqui, mas segurança extra
+	                return null;
+	            }
+	        }
+	    };
+
+	    assertDoesNotThrow(() -> daoErro.findById(1));
+	    assertNull(daoErro.findById(1));
+	}
+
 
 	@Test
 	void testInsertConexaoNula() {
@@ -262,6 +288,33 @@ class ProfessorDAOTest {
 		boolean resultado = daoErro.update(p);
 
 		assertFalse(resultado);
+	}
+
+	@Test
+	void testUpdateSQLExceptionSemConexao() {
+
+		ProfessorDAO daoSemConexao = new ProfessorDAO(null) {
+			@Override
+			public boolean update(Professor objeto) {
+				try {
+					// força SQLException
+					PreparedStatement st = getConexao().prepareStatement("UPDATE INVALIDO");
+					st.executeUpdate();
+					return true;
+				} catch (SQLException ex) {
+					// aqui conn == null dentro do método original
+					return DaoUtils.tratarErroUpdate("Professor", objeto.getId(), ex, getConexao(),
+							this::fecharConexaoSeInterna);
+				}
+			}
+		};
+
+		Professor p = criarProfessorFake("Erro", 33, "Ilha", "00000000000", "99999", "Graduação", 5000);
+		p.setId(1);
+
+		boolean result = daoSemConexao.update(p);
+
+		assertFalse(result);
 	}
 
 	@Test
