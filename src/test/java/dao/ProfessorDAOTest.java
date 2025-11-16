@@ -189,6 +189,20 @@ class ProfessorDAOTest {
 		assertNull(resultado);
 	}
 
+	@Test
+	void testFindByIdSQLExceptionReal_CobreCatch() {
+		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
+			@Override
+			protected String getNomeTabela() {
+				return "tabela_inexistente";
+			}
+		};
+
+		Professor resultado = daoErro.findById(1);
+
+		assertNull(resultado);
+	}
+
 	// update
 	@Test
 	void testUpdate() {
@@ -234,6 +248,23 @@ class ProfessorDAOTest {
 		boolean atualizado = daoErro.update(p);
 
 		assertFalse(atualizado); // cai no catch REAL do ProfessorDAO
+	}
+
+	@Test
+	void testUpdateSQLExceptionCaminhoReal() {
+		ProfessorDAO daoErro = new ProfessorDAO() {
+			@Override
+			protected String getNomeTabela() {
+				return "tabela_inexistente";
+			}
+		};
+
+		Professor p = criarProfessorFake("Erro", 40, "Ilha", "99999999999", "2222", "Teste", 3000);
+		p.setId(1);
+
+		boolean resultado = daoErro.update(p);
+
+		assertFalse(resultado);
 	}
 
 	@Test
