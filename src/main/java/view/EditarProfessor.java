@@ -81,11 +81,17 @@ public class EditarProfessor extends JFrame {
 		campus = new JComboBox<>(LISTA_CAMPUS.toArray(new String[0]));
 		ViewUtils.addCampo(form, gbc, 1, 1, 3, campus);
 
-		// CPF + Contato
+		// CPF
 		ViewUtils.addLabel(form, gbc, 0, 2, "CPF:", "lblCPF");
 		cpfFormatado = new JFormattedTextField();
 		cpfFormatado.setColumns(10);
 		ViewUtils.addCampo(form, gbc, 1, 2, 1, cpfFormatado);
+
+		// Contato
+		ViewUtils.addLabel(form, gbc, 2, 2, "Contato:", "lblContato");
+		contatoFormatado = new JFormattedTextField();
+		contatoFormatado.setColumns(10);
+		ViewUtils.addCampo(form, gbc, 3, 2, 1, contatoFormatado);
 
 		// Idade + Salário
 		ViewUtils.addLabel(form, gbc, 0, 3, "Idade:", "lblIdade");
