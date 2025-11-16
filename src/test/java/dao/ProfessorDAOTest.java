@@ -177,7 +177,7 @@ class ProfessorDAOTest {
 
 	@Test
 	void testFindByIdSQLExceptionReal() {
-		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
+		ProfessorDAO daoErro = new ProfessorDAO() {
 			@Override
 			protected String getNomeTabela() {
 				return "tabela_inexistente"; // causa SQLException no SELECT
@@ -216,12 +216,15 @@ class ProfessorDAOTest {
 
 	@Test
 	void testUpdateSQLExceptionReal() {
-
-		// Conexao válida, mas tabela ERRADA
 		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
 			@Override
+			public boolean update(Professor objeto) {
+				return super.update(objeto);
+			}
+
+			@Override
 			protected String getNomeTabela() {
-				return "tabela_inexistente"; // força SQLException
+				return "tabela_inexistente";
 			}
 		};
 
@@ -303,7 +306,12 @@ class ProfessorDAOTest {
 
 	@Test
 	void testGetMinhaListaConexaoNula() {
-		ProfessorDAO daoNulo = new ProfessorDAO(null);
+		ProfessorDAO daoNulo = new ProfessorDAO(null) {
+			@Override
+			protected Connection getConexao() {
+				return null;
+			}
+		};
 
 		List<Professor> lista = daoNulo.getMinhaLista();
 
