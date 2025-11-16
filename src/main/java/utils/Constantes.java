@@ -36,7 +36,7 @@ public final class Constantes {
         return List.copyOf(Arrays.stream(FASES).boxed().toList());
     }
 
-    public class UIConstants {
+    public static class UIConstants {
 
         private UIConstants() {
             throw new UnsupportedOperationException("Classe de constantes UI não pode ser instanciada");

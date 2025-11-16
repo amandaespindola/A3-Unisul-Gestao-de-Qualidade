@@ -1,16 +1,43 @@
 package model;
 
+/**
+ * Classe base para professores do sistema acadêmico.
+ * <p>
+ * Fornece atributos comuns de professores, como campus, CPF, contato, título e salário.
+ * Serve como superclasse para {@link Professor}.
+ * </p>
+ */
 public class ProfessorBase extends Pessoa {
+	
+	/** Campus em que o professor atua. */
 	protected String campus;
+	
+	/** CPF do professor. */
 	protected String cpf;
+	
+	/** Contato do professor (telefone ou e-mail). */
 	protected String contato;
+	
+	/** Título acadêmico do professor. */
 	protected String titulo;
+	
+	/** Salário do professor. */
 	protected double salario;
 
+	/**
+     * Construtor padrão.
+     */
 	public ProfessorBase() {
 		super();
 	}
 
+	/**
+     * Construtor completo com atributos da classe {@link Pessoa}.
+     *
+     * @param id    Identificador único.
+     * @param nome  Nome do professor.
+     * @param idade Idade do professor.
+     */
 	public ProfessorBase(int id, String nome, int idade) {
 		super(id, nome, idade);
 	}
