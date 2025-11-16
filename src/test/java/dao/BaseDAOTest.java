@@ -39,7 +39,7 @@ class BaseDAOTest {
 		dao = new BaseDAO<Object>(conn) {
 			@Override
 			protected String getNomeTabela() {
-				return "tb_aluno";
+				return "tb_alunos";
 			}
 
 			@Override
@@ -67,9 +67,9 @@ class BaseDAOTest {
 	private void criarTabelasSQLite(Connection conn) throws SQLException {
 		try (Statement st = conn.createStatement()) {
 			st.execute(
-					"CREATE TABLE IF NOT EXISTS tb_aluno (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "nome TEXT)");
+					"CREATE TABLE IF NOT EXISTS tb_alunos (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "nome TEXT)");
 
-			st.execute("CREATE TABLE IF NOT EXISTS tb_professor (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+			st.execute("CREATE TABLE IF NOT EXISTS tb_professores (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "nome TEXT)");
 		}
 	}
@@ -93,7 +93,7 @@ class BaseDAOTest {
 		BaseDAO<Object> daoNulo = new BaseDAO<Object>(null) {
 			@Override
 			protected String getNomeTabela() {
-				return "tb_aluno";
+				return "tb_alunos";
 			}
 
 			@Override
@@ -138,7 +138,7 @@ class BaseDAOTest {
 
 			@Override
 			protected String getNomeTabela() {
-				return "tb_aluno";
+				return "tb_alunos";
 			}
 
 			@Override
@@ -171,7 +171,7 @@ class BaseDAOTest {
 		BaseDAO<Object> daoInterno = new BaseDAO<Object>() {
 			@Override
 			protected String getNomeTabela() {
-				return "tb_aluno";
+				return "tb_alunos";
 			}
 
 			@Override
@@ -222,8 +222,8 @@ class BaseDAOTest {
 	void testObterMaiorIdAlunoComRegistros() throws Exception {
 		Connection conn = ConexaoManager.getConnection();
 		try (Statement st = conn.createStatement()) {
-			st.execute("INSERT INTO tb_aluno (nome) VALUES ('João')");
-			st.execute("INSERT INTO tb_aluno (nome) VALUES ('Maria')");
+			st.execute("INSERT INTO tb_alunos (nome) VALUES ('João')");
+			st.execute("INSERT INTO tb_alunos (nome) VALUES ('Maria')");
 		}
 
 		int maiorId = dao.obterMaiorId();
@@ -235,7 +235,7 @@ class BaseDAOTest {
 		BaseDAO<Object> daoProf = new BaseDAO<Object>() {
 			@Override
 			protected String getNomeTabela() {
-				return "tb_professor";
+				return "tb_professores";
 			}
 
 			@Override
@@ -261,9 +261,9 @@ class BaseDAOTest {
 
 		Connection conn = ConexaoManager.getConnection();
 		try (Statement st = conn.createStatement()) {
-			st.execute("INSERT INTO tb_professor (nome) VALUES ('Prof A')");
-			st.execute("INSERT INTO tb_professor (nome) VALUES ('Prof B')");
-			st.execute("INSERT INTO tb_professor (nome) VALUES ('Prof C')");
+			st.execute("INSERT INTO tb_professores (nome) VALUES ('Prof A')");
+			st.execute("INSERT INTO tb_professores (nome) VALUES ('Prof B')");
+			st.execute("INSERT INTO tb_professores (nome) VALUES ('Prof C')");
 		}
 
 		int maiorId = daoProf.obterMaiorId();
