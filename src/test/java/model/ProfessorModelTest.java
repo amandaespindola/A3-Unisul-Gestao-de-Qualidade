@@ -66,6 +66,41 @@ class ProfessorModelTest {
 	}
 
 	@Test
+	void testAtualizarAlunoBDChamaDAO() {
+		ProfessorDAO daoMock = mock(ProfessorDAO.class);
+		when(daoMock.update(any(Professor.class))).thenReturn(true);
+
+		ProfessorDTO dto = new ProfessorDTO();
+		dto.setCampus("Ilha");
+		dto.setCpf("123");
+		dto.setContato("999");
+		dto.setTitulo("Mestre");
+		dto.setSalario(3000);
+		dto.setNome("Maria");
+		dto.setId(1);
+		dto.setIdade(40);
+
+		Professor professor = new Professor();
+		injectDao(professor, daoMock);
+
+		boolean r = professor.atualizarAlunoBD(dto);
+
+		Assertions.assertTrue(r);
+		verify(daoMock, times(1)).update(any(Professor.class));
+	}
+
+	@Test
+	void testConstrutorComParametrosSimples() {
+		Professor p = new Professor("Ilha", "123", "999", "Doutor", 7000.0);
+
+		Assertions.assertEquals("Ilha", p.getCampus());
+		Assertions.assertEquals("123", p.getCpf());
+		Assertions.assertEquals("999", p.getContato());
+		Assertions.assertEquals("Doutor", p.getTitulo());
+		Assertions.assertEquals(7000.0, p.getSalario());
+	}
+
+	@Test
 	void testGetMinhaListaChamaDAO() {
 		ProfessorDAO daoMock = mock(ProfessorDAO.class);
 
@@ -115,7 +150,6 @@ class ProfessorModelTest {
 		Assertions.assertTrue(r);
 		verify(daoMock).delete(10);
 	}
-
 
 	@Test
 	void testCarregaProfessorChamaFindById() {

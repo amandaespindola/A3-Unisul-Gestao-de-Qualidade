@@ -1,20 +1,24 @@
 package dao;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import utils.ConexaoManager;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BaseDAOTest {
 
@@ -39,7 +43,7 @@ class BaseDAOTest {
 		dao = new BaseDAO<Object>(conn) {
 			@Override
 			protected String getNomeTabela() {
-				return "tb_aluno";
+				return "tb_alunos";
 			}
 
 			@Override
@@ -67,9 +71,9 @@ class BaseDAOTest {
 	private void criarTabelasSQLite(Connection conn) throws SQLException {
 		try (Statement st = conn.createStatement()) {
 			st.execute(
-					"CREATE TABLE IF NOT EXISTS tb_aluno (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "nome TEXT)");
+					"CREATE TABLE IF NOT EXISTS tb_alunos (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "nome TEXT)");
 
-			st.execute("CREATE TABLE IF NOT EXISTS tb_professor (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+			st.execute("CREATE TABLE IF NOT EXISTS tb_professores (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ "nome TEXT)");
 		}
 	}
@@ -93,7 +97,7 @@ class BaseDAOTest {
 		BaseDAO<Object> daoNulo = new BaseDAO<Object>(null) {
 			@Override
 			protected String getNomeTabela() {
-				return "tb_aluno";
+				return "tb_alunos";
 			}
 
 			@Override
@@ -138,7 +142,7 @@ class BaseDAOTest {
 
 			@Override
 			protected String getNomeTabela() {
-				return "tb_aluno";
+				return "tb_alunos";
 			}
 
 			@Override
@@ -171,7 +175,7 @@ class BaseDAOTest {
 		BaseDAO<Object> daoInterno = new BaseDAO<Object>() {
 			@Override
 			protected String getNomeTabela() {
-				return "tb_aluno";
+				return "tb_alunos";
 			}
 
 			@Override
@@ -198,17 +202,15 @@ class BaseDAOTest {
 		Connection c = daoInterno.getConexao();
 		daoInterno.fecharConexaoSeInterna(c);
 
-		assertTrue(c.isClosed()); 
+		assertTrue(c.isClosed());
 	}
 
 	@Test
 	void testFecharConexaoSeInterna() throws SQLException {
 		Connection conn = dao.getConexao();
 		dao.fecharConexaoSeInterna(conn);
-		assertFalse(conn.isClosed()); // 
+		assertFalse(conn.isClosed()); //
 	}
-	
-
 
 	// testar método obterMaiorId
 
@@ -222,8 +224,8 @@ class BaseDAOTest {
 	void testObterMaiorIdAlunoComRegistros() throws Exception {
 		Connection conn = ConexaoManager.getConnection();
 		try (Statement st = conn.createStatement()) {
-			st.execute("INSERT INTO tb_aluno (nome) VALUES ('João')");
-			st.execute("INSERT INTO tb_aluno (nome) VALUES ('Maria')");
+			st.execute("INSERT INTO tb_alunos (nome) VALUES ('João')");
+			st.execute("INSERT INTO tb_alunos (nome) VALUES ('Maria')");
 		}
 
 		int maiorId = dao.obterMaiorId();
@@ -235,7 +237,7 @@ class BaseDAOTest {
 		BaseDAO<Object> daoProf = new BaseDAO<Object>() {
 			@Override
 			protected String getNomeTabela() {
-				return "tb_professor";
+				return "tb_professores";
 			}
 
 			@Override
@@ -261,9 +263,9 @@ class BaseDAOTest {
 
 		Connection conn = ConexaoManager.getConnection();
 		try (Statement st = conn.createStatement()) {
-			st.execute("INSERT INTO tb_professor (nome) VALUES ('Prof A')");
-			st.execute("INSERT INTO tb_professor (nome) VALUES ('Prof B')");
-			st.execute("INSERT INTO tb_professor (nome) VALUES ('Prof C')");
+			st.execute("INSERT INTO tb_professores (nome) VALUES ('Prof A')");
+			st.execute("INSERT INTO tb_professores (nome) VALUES ('Prof B')");
+			st.execute("INSERT INTO tb_professores (nome) VALUES ('Prof C')");
 		}
 
 		int maiorId = daoProf.obterMaiorId();
@@ -311,4 +313,241 @@ class BaseDAOTest {
 
 		assertThrows(IllegalArgumentException.class, daoInvalido::obterMaiorId);
 	}
+
+	@Test
+	void testGetConexaoUsandoConexaoManager() {
+		// Cria DAO sem conexão injetada
+		BaseDAO<Object> daoSemConn = new BaseDAO<Object>() {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_alunos";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		Connection c = daoSemConn.getConexao();
+		assertNotNull(c);
+	}
+
+	@Test
+	void testFecharConexaoSeInternaLancaSQLException() throws Exception {
+
+		Connection connMock = Mockito.mock(Connection.class);
+		Mockito.doThrow(new SQLException("erro")).when(connMock).close();
+
+		BaseDAO<Object> daoErro = new BaseDAO<Object>() {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_alunos";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		assertDoesNotThrow(() -> daoErro.fecharConexaoSeInterna(connMock));
+	}
+
+	@Test
+	void testObterMaiorIdNenhumRegistroComResultSetMock() throws Exception {
+
+		// Forçar rs.next() = false
+		ResultSet rsMock = Mockito.mock(ResultSet.class);
+		Mockito.when(rsMock.next()).thenReturn(false);
+
+		PreparedStatement stmtMock = Mockito.mock(PreparedStatement.class);
+		Mockito.when(stmtMock.executeQuery()).thenReturn(rsMock);
+
+		Connection connMock = Mockito.mock(Connection.class);
+		Mockito.when(connMock.isClosed()).thenReturn(false);
+		Mockito.when(connMock.prepareStatement(Mockito.anyString())).thenReturn(stmtMock);
+
+		BaseDAO<Object> daoMock = new BaseDAO<Object>(connMock) {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_alunos";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		int maior = daoMock.obterMaiorId();
+
+		assertEquals(0, maior); // cobre o ELSE do rs.next()
+	}
+
+	@Test
+	void testFecharConexaoExternaNaoFecha() throws Exception {
+		Connection connMock = Mockito.mock(Connection.class);
+
+		// DAO criado com construtor que marca conexaoExterna = true
+		BaseDAO<Object> daoExterno = new BaseDAO<Object>(connMock) {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_alunos";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		daoExterno.fecharConexaoSeInterna(connMock);
+
+		// conn.close() NÃO deve ser chamado
+		Mockito.verify(connMock, Mockito.never()).close();
+	}
+
+	@Test
+	void testObterMaiorIdComConexaoNull() {
+		BaseDAO<Object> daoNullConn = new BaseDAO<Object>() {
+
+			@Override
+			protected String getNomeTabela() {
+				return "tb_alunos";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+
+			@Override
+			protected Connection getConexao() {
+				return null; // força o caminho faltante
+			}
+		};
+
+		int maior = daoNullConn.obterMaiorId();
+
+		assertEquals(0, maior); // cobre "conn == null"
+	}
+
+	@Test
+	void testObterMaiorIdSQLExceptionNoPrepareStatement() throws Exception {
+
+		PreparedStatement stmtMock = Mockito.mock(PreparedStatement.class);
+		Mockito.when(stmtMock.executeQuery()).thenThrow(new SQLException("erro"));
+
+		Connection connMock = Mockito.mock(Connection.class);
+		Mockito.when(connMock.isClosed()).thenReturn(false);
+		Mockito.when(connMock.prepareStatement(Mockito.anyString())).thenReturn(stmtMock);
+
+		BaseDAO<Object> daoErro = new BaseDAO<Object>(connMock) {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_alunos";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		int maior = daoErro.obterMaiorId();
+
+		assertEquals(0, maior); 
+	}
+
 }

@@ -35,8 +35,8 @@ public class TelaLogin extends JFrame {
 
 	private JTextField campoUsuario;
 	private JPasswordField campoSenha;
-        
-        private static final String DEFAULT_FONT = Constantes.UIConstants.DEFAULT_FONT;
+
+	private static final String DEFAULT_FONT = Constantes.UIConstants.DEFAULT_FONT;
 
 	public TelaLogin() {
 		initComponents();

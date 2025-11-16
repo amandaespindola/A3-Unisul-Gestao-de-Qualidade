@@ -1,15 +1,36 @@
 package model;
 
+/**
+ * Representa uma pessoa genérica dentro do sistema.
+ * <p>
+ * Esta classe serve como base para entidades mais específicas, como {@link Aluno}
+ * ou {@link Professor}, fornecendo atributos comuns como id, nome e idade.
+ * </p>
+ */
 public abstract class Pessoa {
 
-    // Atributos
+	/** Identificador único da pessoa. */
     private int id;
+    
+    /** Nome completo da pessoa. */
     private String nome;
+    
+    /** Idade da pessoa. */
     private int idade;
 
+    /**
+     * Construtor padrão.
+     */
     protected Pessoa() {
     }
 
+    /**
+     * Construtor completo.
+     *
+     * @param id    Identificador único.
+     * @param nome  Nome da pessoa.
+     * @param idade Idade da pessoa.
+     */
     protected Pessoa(int id, String nome, int idade) {
         this.id = id;
         this.nome = nome;

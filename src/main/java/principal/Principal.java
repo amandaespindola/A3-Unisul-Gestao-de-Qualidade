@@ -11,10 +11,33 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+/**
+ * Classe principal da aplicação SisUni.
+ * <p>
+ * Responsável por inicializar o tema visual (claro ou escuro),
+ * aplicar personalizações de UI via {@link UIManager} e abrir a
+ * tela inicial {@link TelaLogin}.
+ * </p>
+ */
 public class Principal {
 
+	/** Logger utilizado para registrar erros de inicialização e configuração de tema. */
 	private static final Logger logger = Logger.getLogger(Principal.class.getName());
 
+	/**
+     * Ponto de entrada da aplicação.
+     * <p>
+     * Este método:
+     * <ol>
+     *   <li>Inicializa o tema padrão (escuro) para diálogos como {@link JOptionPane};</li>
+     *   <li>Solicita ao usuário a escolha entre tema claro ou escuro;</li>
+     *   <li>Aplica customizações visuais via {@link UIManager};</li>
+     *   <li>Abre a tela de login.</li>
+     * </ol>
+     * </p>
+     *
+     * @param args Parâmetros padrão de linha de comando (não utilizados).
+     */
 	public static void main(String[] args) {
 
 		// 1) Mantém o JOptionPane no tema escuro
@@ -51,6 +74,13 @@ public class Principal {
 	// ========================
 	// TEMA CLARO 
 	// ========================
+	
+	/**
+     * Aplica personalizações visuais específicas do tema claro.
+     * <p>
+     * Define fundos brancos para inputs, texto preto e botões claros.
+     * </p>
+     */
 	private static void aplicarOverridesClaro() {
 
 		// inputs brancos
@@ -72,6 +102,13 @@ public class Principal {
 	// ========================
 	// TEMA ESCURO
 	// ========================
+	
+	/**
+     * Aplica customizações para o tema escuro.
+     * <p>
+     * Mantém apenas ajustes mínimos, como a largura da borda de foco.
+     * </p>
+     */
 	private static void aplicarOverridesEscuro() {
 		UIManager.put("Component.focusWidth", 1); // mantém borda azul fina
 	}
