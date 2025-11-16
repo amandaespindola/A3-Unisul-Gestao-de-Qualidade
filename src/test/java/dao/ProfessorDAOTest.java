@@ -176,13 +176,14 @@ class ProfessorDAOTest {
 	}
 
 	@Test
-	void testFindByIdSQLExceptionReal() {
-		ProfessorDAO daoErro = new ProfessorDAO() {
-			@Override
-			protected String getNomeTabela() {
-				return "tabela_inexistente"; // causa SQLException no SELECT
-			}
-		};
+	void testFindByIdSQLExceptionReal() throws SQLException {
+		// DROP a tabela para forçar exceção no SELECT
+		Connection conn = ConexaoManager.getConnection();
+		try (Statement st = conn.createStatement()) {
+			st.execute("DROP TABLE tb_professores");
+		}
+
+		ProfessorDAO daoErro = new ProfessorDAO(conn);
 
 		Professor resultado = daoErro.findById(1);
 
@@ -229,25 +230,21 @@ class ProfessorDAOTest {
 	}
 
 	@Test
-	void testUpdateSQLExceptionReal() {
-		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
-			@Override
-			public boolean update(Professor objeto) {
-				return super.update(objeto);
-			}
+	void testUpdateSQLExceptionReal() throws SQLException {
+		// DROP tabela para forçar SQLException no UPDATE real
+		Connection conn = ConexaoManager.getConnection();
+		try (Statement st = conn.createStatement()) {
+			st.execute("DROP TABLE tb_professores");
+		}
 
-			@Override
-			protected String getNomeTabela() {
-				return "tabela_inexistente";
-			}
-		};
-
-		Professor p = criarProfessorFake("Erro", 35, "Ilha", "22222222222", "123", "Mestrado", 1000);
+		Professor p = criarProfessorFake("Erro", 30, "Ilha", "44444444444", "9999", "Mestrado", 9000);
 		p.setId(1);
+
+		ProfessorDAO daoErro = new ProfessorDAO(conn);
 
 		boolean atualizado = daoErro.update(p);
 
-		assertFalse(atualizado); // cai no catch REAL do ProfessorDAO
+		assertFalse(atualizado);
 	}
 
 	@Test
