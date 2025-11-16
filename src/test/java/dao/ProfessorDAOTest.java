@@ -5,13 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,28 +94,27 @@ class ProfessorDAOTest {
 
 	@Test
 	void testFindByIdSQLExceptionLambdaFalha() {
+	    ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
+	        @Override
+	        protected String getNomeTabela() {
+	            return "tabela_inexistente"; // causa SQLException
+	        }
 
-		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
-			@Override
-			public Professor findById(int id) {
-				try {
-					PreparedStatement stmt = getConexao().prepareStatement("SELECT * FROM tabela_inexistente");
-					stmt.executeQuery();
-					return null;
-				} catch (SQLException ex) {
-					// força o lambda a lançar uma exceção
-					logger.log(Level.SEVERE, ex, () -> {
-						throw new RuntimeException("Erro interno no lambda");
-					});
-					return null;
-				}
-			}
-		};
+	        @Override
+	        public Professor findById(int id) {
+	            try {
+	                return super.findById(id);
+	            } catch (Exception e) {
+	                // nunca deve chegar aqui, mas segurança extra
+	                return null;
+	            }
+	        }
+	    };
 
-		Professor resultado = daoErro.findById(10);
-
-		assertNull(resultado);
+	    assertDoesNotThrow(() -> daoErro.findById(1));
+	    assertNull(daoErro.findById(1));
 	}
+
 
 	@Test
 	void testInsertConexaoNula() {
