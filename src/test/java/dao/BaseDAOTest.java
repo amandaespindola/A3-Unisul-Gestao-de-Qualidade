@@ -320,7 +320,7 @@ class BaseDAOTest {
 		BaseDAO<Object> daoSemConn = new BaseDAO<Object>() {
 			@Override
 			protected String getNomeTabela() {
-				return "tb_aluno";
+				return "tb_alunos";
 			}
 
 			@Override
@@ -357,7 +357,7 @@ class BaseDAOTest {
 		BaseDAO<Object> daoErro = new BaseDAO<Object>() {
 			@Override
 			protected String getNomeTabela() {
-				return "tb_aluno";
+				return "tb_alunos";
 			}
 
 			@Override
@@ -401,7 +401,7 @@ class BaseDAOTest {
 		BaseDAO<Object> daoMock = new BaseDAO<Object>(connMock) {
 			@Override
 			protected String getNomeTabela() {
-				return "tb_aluno";
+				return "tb_alunos";
 			}
 
 			@Override
