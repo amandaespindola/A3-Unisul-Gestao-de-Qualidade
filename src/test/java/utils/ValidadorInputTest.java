@@ -91,6 +91,15 @@ class ValidadorInputTest {
     }
 
     @Test
+    @DisplayName("validarTamanhoNumericoFixo deve devolver exatamente o texto original formatado")
+    void testValidarTamanhoNumericoFixoRetornoFormatado() throws Mensagens {
+        String entrada = "123.456.789-00";
+        String resultado = ValidadorInput.validarTamanhoNumericoFixo(entrada, 11, "CPF");
+
+        assertEquals(entrada, resultado);
+    }
+
+    @Test
     @DisplayName("validarIdadePorData deve validar idade mínima corretamente")
     void testValidarIdadePorData() throws Mensagens {
         Calendar cal = GregorianCalendar.getInstance();
@@ -237,9 +246,15 @@ class ValidadorInputTest {
 
         Exception ex = assertThrows(Exception.class, constructor::newInstance);
 
-        // Verifica a causa real
         assertTrue(ex.getCause() instanceof UnsupportedOperationException,
                 "O construtor privado deve lançar UnsupportedOperationException");
+    }
+
+    @Test
+    @DisplayName("validarSelecaoComboBox deve aceitar último índice válido")
+    void testValidarSelecaoComboBoxUltimoItem() throws Mensagens {
+        var opcoes = Arrays.asList("-", "Opção 1", "Opção 2");
+        assertEquals("Opção 2", ValidadorInput.validarSelecaoComboBox(2, opcoes, "Campo"));
     }
 
 }
