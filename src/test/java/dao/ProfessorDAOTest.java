@@ -73,20 +73,15 @@ class ProfessorDAOTest {
 
 	// testar insert SQLException
 	@Test
-	void testInsertSQLException() {
+	void testInsertSQLException() throws Exception {
 
-		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
-			@Override
-			public boolean insert(Professor objeto) {
-				// força um insert inválido para cair no catch
-				try (PreparedStatement stmt = getConexao().prepareStatement("INSERT INVALIDO")) {
-					stmt.executeUpdate();
-				} catch (SQLException ex) {
-					return false;
-				}
-				return false;
-			}
-		};
+		// EXCLUI a tabela antes do insert
+		Connection conn = ConexaoManager.getConnection();
+		try (Statement st = conn.createStatement()) {
+			st.execute("DROP TABLE tb_professores");
+		}
+
+		ProfessorDAO daoErro = new ProfessorDAO(conn);
 
 		Professor p = criarProfessorFake("Erro", 35, "Continente", "22222222222", "48987654321", "Especialização",
 				12000);
@@ -180,6 +175,20 @@ class ProfessorDAOTest {
 		assertNull(resultado); // conn != null
 	}
 
+	@Test
+	void testFindByIdSQLExceptionReal() {
+		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
+			@Override
+			protected String getNomeTabela() {
+				return "tabela_inexistente"; // causa SQLException no SELECT
+			}
+		};
+
+		Professor resultado = daoErro.findById(1);
+
+		assertNull(resultado);
+	}
+
 	// update
 	@Test
 	void testUpdate() {
@@ -203,29 +212,6 @@ class ProfessorDAOTest {
 		p.setId(9999);
 		boolean atualizado = dao.update(p);
 		assertFalse(atualizado);
-	}
-
-	@Test
-	void testUpdateSQLException() {
-		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
-			@Override
-			public boolean update(Professor objeto) {
-				try {
-					// SQL inválido
-					PreparedStatement stmt = getConexao().prepareStatement("UPDATE INVALIDO");
-					stmt.executeUpdate();
-					return true;
-				} catch (SQLException ex) {
-					return false; // cai no catch
-				}
-			}
-		};
-
-		Professor p = criarProfessorFake("Carlos", 33, "Ilha", "78978978900", "9999-0000", "Mestrado", 40000);
-
-		boolean atualizado = daoErro.update(p);
-
-		assertFalse(atualizado); // caiu no catch
 	}
 
 	@Test
@@ -265,7 +251,7 @@ class ProfessorDAOTest {
 	}
 
 	@Test
-	void testUpdateSQLExceptionConexaoInterna() throws Exception {
+	void testUpdateSQLExceptionConexaoInterna() {
 		// ProfessorDAO SEM passar conexão -> usa getConexao() -> conexaoExterna = false
 		ProfessorDAO daoInterno = new ProfessorDAO() {
 			@Override
@@ -336,6 +322,21 @@ class ProfessorDAOTest {
 		List<Professor> lista = dao.getMinhaLista();
 
 		// resultado esperado: lista vazia e sem exceção
+		assertNotNull(lista);
+		assertTrue(lista.isEmpty());
+	}
+
+	@Test
+	void testGetMinhaListaFinallyComConexaoInterna() {
+		ProfessorDAO daoInterno = new ProfessorDAO() {
+			@Override
+			protected String getNomeTabela() {
+				return "tabela_inexistente"; // provoca SQLException
+			}
+		};
+
+		List<Professor> lista = daoInterno.getMinhaLista();
+
 		assertNotNull(lista);
 		assertTrue(lista.isEmpty());
 	}
