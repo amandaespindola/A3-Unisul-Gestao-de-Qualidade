@@ -8,12 +8,15 @@ import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import com.toedter.calendar.JDateChooser;
 
 import dao.ProfessorDAO;
 import model.Professor;
@@ -34,6 +37,28 @@ public class CadastroProfessor extends JFrame {
 	private com.toedter.calendar.JDateChooser idade;
 
 	private final transient ProfessorDAO professorDAO = new ProfessorDAO();
+
+	private static class CampoConfig {
+		int x, y, width;
+		String label;
+		String labelName;
+		JComponent componente;
+
+		CampoConfig(int x, int y, int width, String label, String labelName, JComponent componente) {
+
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.label = label;
+			this.labelName = labelName;
+			this.componente = componente;
+		}
+	}
+
+	private void addField(JPanel form, GridBagConstraints gbc, CampoConfig cfg) {
+		ViewUtils.addLabel(form, gbc, cfg.x, cfg.y, cfg.label, cfg.labelName);
+		ViewUtils.addCampo(form, gbc, cfg.x + 1, cfg.y, cfg.width, cfg.componente);
+	}
 
 	public CadastroProfessor() {
 		initComponents();
@@ -58,44 +83,46 @@ public class CadastroProfessor extends JFrame {
 		gbc.insets = new Insets(8, 8, 8, 8);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		// Campo Nome
+		// Nome
 		ViewUtils.addLabel(form, gbc, 0, 0, "Nome:", "lblNome");
 		nome = new JTextField(20);
 		ViewUtils.addCampo(form, gbc, 1, 0, 3, nome);
 
 		// Campus
-		ViewUtils.addLabel(form, gbc, 0, 1, "Campus:", "lblCampus");
 		campus = new JComboBox<>(Constantes.getCampus().toArray(new String[0]));
-		ViewUtils.addCampo(form, gbc, 1, 1, 3, campus);
+		addField(form, gbc, new CampoConfig(0, 1, 3, "Campus:", "lblCampus", campus));
 
-		// CPF + Contato
-		ViewUtils.addLabel(form, gbc, 0, 2, "CPF:", "lblCPF");
+		// CPF
 		cpfFormatado = new JFormattedTextField();
 		cpfFormatado.setColumns(10);
-		ViewUtils.addCampo(form, gbc, 1, 2, 1, cpfFormatado);
 
-		ViewUtils.addLabel(form, gbc, 2, 2, "Contato:", "lblContato");
+		addField(form, gbc, new CampoConfig(0, 2, 1, "CPF:", "lblCPF", cpfFormatado));
+
+		// Contato
 		contatoFormatado = new JFormattedTextField();
 		contatoFormatado.setColumns(10);
-		ViewUtils.addCampo(form, gbc, 3, 2, 1, contatoFormatado);
 
-		// Nascimento + Salário
-		ViewUtils.addLabel(form, gbc, 0, 3, "Nasc.:", "lblNascimento");
-		idade = new com.toedter.calendar.JDateChooser();
-		ViewUtils.addCampo(form, gbc, 1, 3, 1, idade);
+		addField(form, gbc, new CampoConfig(2, 2, 1, "Contato:", "lblContato", contatoFormatado));
 
-		ViewUtils.addLabel(form, gbc, 2, 3, "Salário:", "lblSalario");
+		// Data nascimento → idade
+		idade = new JDateChooser();
+
+		addField(form, gbc, new CampoConfig(0, 3, 1, "Nasc.:", "lblNascimento", idade));
+
+		// Salário
 		salarioFormatado = new JFormattedTextField();
 		salarioFormatado.setColumns(10);
-		ViewUtils.addCampo(form, gbc, 3, 3, 1, salarioFormatado);
 
-		// Título Professor
-		ViewUtils.addLabel(form, gbc, 0, 4, "Título:", "lblTituloProfessor");
+		addField(form, gbc, new CampoConfig(2, 3, 1, "Salário:", "lblSalario", salarioFormatado));
+
+		// Título do professor
 		titulo = new JComboBox<>(Constantes.getTitulos().toArray(new String[0]));
-		ViewUtils.addCampo(form, gbc, 1, 4, 3, titulo);
+
+		addField(form, gbc, new CampoConfig(0, 4, 3, "Título:", "lblTituloProfessor", titulo));
 
 		painel.add(form, BorderLayout.CENTER);
 
+		// Botões
 		ViewUtils.adicionarBotoesConfirmarCancelar(painel, this::confirmar, this::cancelar, getRootPane());
 
 		add(painel);
