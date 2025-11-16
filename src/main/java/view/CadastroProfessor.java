@@ -39,7 +39,9 @@ public class CadastroProfessor extends JFrame {
 	private final transient ProfessorDAO professorDAO = new ProfessorDAO();
 
 	private static class CampoConfig {
-		int x, y, width;
+		int x;
+		int y;
+		int width;
 		String label;
 		String labelName;
 		JComponent componente;
