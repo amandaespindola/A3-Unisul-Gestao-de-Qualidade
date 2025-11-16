@@ -1,23 +1,31 @@
 package view;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.GraphicsEnvironment;
-import java.lang.reflect.Method;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.mockStatic;
 
-import javax.swing.JButton;
-import javax.swing.JMenuBar;
-import javax.swing.JTable;
+import java.awt.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
+
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import dao.AlunoDAO;
+import model.Aluno;
+import utils.ExcelExporter;
+
+import org.junit.jupiter.api.*;
+import org.mockito.MockedStatic;
 
 class GerenciaAlunosTest {
 
@@ -39,106 +47,151 @@ class GerenciaAlunosTest {
     }
 
     @Test
-    @DisplayName("Janela deve inicializar sem exceções")
+    @DisplayName("Inicialização deve ser segura e sem exceções")
     void testInicializacao() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado no CI sem gráfico.");
+        assumeFalse(GraphicsEnvironment.isHeadless());
 
         GerenciaAlunos tela = new GerenciaAlunos();
-
         assertEquals("Gerência de Alunos", tela.getTitle());
         assertNotNull(tela.getContentPane());
     }
 
     @Test
-    @DisplayName("Painel superior deve existir e conter ao menos 1 botão")
+    @DisplayName("Painel superior deve conter botões gerenciais")
     void testPainelSuperiorEBotoes() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado no CI.");
+        assumeFalse(GraphicsEnvironment.isHeadless());
 
         GerenciaAlunos tela = new GerenciaAlunos();
-
         JButton botao = buscarComponente(tela.getContentPane(), JButton.class);
 
-        assertNotNull(botao, "Painel superior deve conter ao menos um botão gerencial");
+        assertNotNull(botao);
     }
 
     @Test
     @DisplayName("Menu superior deve existir")
     void testMenuSuperior() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado no CI.");
+        assumeFalse(GraphicsEnvironment.isHeadless());
 
         GerenciaAlunos tela = new GerenciaAlunos();
         JMenuBar menu = tela.getJMenuBar();
 
-        assertNotNull(menu, "Menu deve existir");
+        assertNotNull(menu);
         assertEquals(1, menu.getMenuCount());
     }
 
     @Test
-    @DisplayName("Tabela deve existir e ter colunas corretas")
+    @DisplayName("Tabela deve existir e ter as colunas esperadas")
     void testTabelaExiste() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado no CI.");
+        assumeFalse(GraphicsEnvironment.isHeadless());
 
         GerenciaAlunos tela = new GerenciaAlunos();
-
         JTable tabela = buscarComponente(tela.getContentPane(), JTable.class);
-        assertNotNull(tabela, "Tabela não encontrada");
+
+        assertNotNull(tabela);
 
         DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
-
         assertEquals(5, modelo.getColumnCount());
         assertEquals("ID", modelo.getColumnName(0));
         assertEquals("Nome", modelo.getColumnName(1));
     }
 
     @Test
-    @DisplayName("carregarTabela() deve executar sem lançar exceções")
-    void testCarregarTabelaNaoExplode() throws Exception {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado no CI.");
+    @DisplayName("carregarTabela() deve popular a tabela com dados simulados (mock)")
+    void testCarregarTabelaComMock() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless());
 
+        // mock da DAO
+        AlunoDAO daoMock = mock(AlunoDAO.class);
+        when(daoMock.getMinhaLista()).thenReturn(List.of(
+                new Aluno("ADS", 4, 1, "Amanda", 22),
+                new Aluno("Direito", 2, 2, "Laura", 20)
+        ));
+
+        // injeta mock
         GerenciaAlunos tela = new GerenciaAlunos();
+        Field f = GerenciaAlunos.class.getDeclaredField("alunoDAO");
+        f.setAccessible(true);
+        f.set(tela, daoMock);
 
+        // executa carregarTabela()
         Method m = GerenciaAlunos.class.getDeclaredMethod("carregarTabela");
         m.setAccessible(true);
 
-        assertDoesNotThrow(() -> {
-            try {
-                m.invoke(tela);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        assertDoesNotThrow(() -> m.invoke(tela));
 
         JTable tabela = buscarComponente(tela.getContentPane(), JTable.class);
-        assertNotNull(tabela);
-
-        assertTrue(tabela.getRowCount() >= 0);
+        assertEquals(2, tabela.getRowCount());
     }
 
     @Test
-    @DisplayName("Mouse click deve atualizar linhaSelecionada com segurança")
+    @DisplayName("Mouse click atualiza linhaSelecionada com segurança")
     void testMouseClick() throws Exception {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado no CI.");
+        assumeFalse(GraphicsEnvironment.isHeadless());
 
         GerenciaAlunos tela = new GerenciaAlunos();
-
         JTable tabela = buscarComponente(tela.getContentPane(), JTable.class);
-        assertNotNull(tabela);
 
         DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
         modelo.addRow(new Object[]{1, "Aluno Teste", 20, "Curso X", "1ª"});
 
         tabela.setRowSelectionInterval(0, 0);
 
-        var metodoClick = GerenciaAlunos.class.getDeclaredMethod("jTableMouseClick", java.awt.event.MouseEvent.class);
-        metodoClick.setAccessible(true);
+        Method metodo = GerenciaAlunos.class.getDeclaredMethod(
+                "jTableMouseClick",
+                java.awt.event.MouseEvent.class
+        );
+        metodo.setAccessible(true);
 
-        metodoClick.invoke(tela,
-                new java.awt.event.MouseEvent(tabela, 0, 0, 0, 5, 5, 1, false));
+        metodo.invoke(tela, new java.awt.event.MouseEvent(
+                tabela, 0, 0, 0, 5, 5, 1, false
+        ));
 
-        var campo = GerenciaAlunos.class.getDeclaredField("linhaSelecionada");
+        Field campo = GerenciaAlunos.class.getDeclaredField("linhaSelecionada");
         campo.setAccessible(true);
-        int selecionada = campo.getInt(tela);
 
-        assertEquals(0, selecionada);
+        assertEquals(0, campo.getInt(tela));
+    }
+
+    // Testes de botões (avertura de telas / exportação)
+    @Test
+    @DisplayName("exportarExcel deve chamar método corretamente sem abrir JFileChooser nem JOptionPane")
+    void testExportarExcelMockado() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado no CI.");
+
+        GerenciaAlunos tela = new GerenciaAlunos();
+
+        // Mock estático do ExcelExporter e do JOptionPane
+        try (MockedStatic<ExcelExporter> mockExcel = mockStatic(ExcelExporter.class); MockedStatic<JOptionPane> mockDialogs = mockStatic(JOptionPane.class)) {
+
+            mockExcel.when(() -> ExcelExporter.exportTableToExcel(any()))
+                    .then(invocation -> null);
+
+            mockDialogs.when(() -> JOptionPane.showMessageDialog(any(), anyString()))
+                    .then(invocation -> null);
+
+            Method metodo = GerenciaAlunos.class.getDeclaredMethod("exportarExcel");
+            metodo.setAccessible(true);
+
+            assertDoesNotThrow(() -> metodo.invoke(tela));
+
+            mockExcel.verify(() -> ExcelExporter.exportTableToExcel(any()), times(1));
+            mockDialogs.verify(() -> JOptionPane.showMessageDialog(any(), anyString()), times(1));
+        }
+    }
+
+    @Test
+    @DisplayName("abrirCadastro não deve lançar exceções (mockado)")
+    void testAbrirCadastroMockado() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless());
+
+        try (MockedStatic<JOptionPane> mockDialogs = mockStatic(JOptionPane.class)) {
+
+            GerenciaAlunos tela = new GerenciaAlunos();
+
+            Method metodo = GerenciaAlunos.class.getDeclaredMethod("abrirCadastro");
+            metodo.setAccessible(true);
+
+            assertDoesNotThrow(() -> metodo.invoke(tela));
+        }
     }
 }
