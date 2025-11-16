@@ -150,6 +150,34 @@ class AlunoDAOTest {
 		assertNull(encontrado);
 	}
 
+	@Test
+	void testFindByIdConexaoNula() {
+		AlunoDAO daoNulo = new AlunoDAO(null) {
+			@Override
+			protected Connection getConexao() {
+				return null; // força conn == null
+			}
+		};
+
+		Aluno resultado = daoNulo.findById(1);
+
+		assertNull(resultado);
+	}
+
+	@Test
+	void testFindByIdSQLException() {
+		AlunoDAO daoErro = new AlunoDAO(ConexaoManager.getConnection()) {
+			@Override
+			protected String getNomeTabela() {
+				return "tabela_inexistente"; // causa SQLException
+			}
+		};
+
+		Aluno resultado = daoErro.findById(1);
+
+		assertNull(resultado); 
+	}
+
 	// update
 	@Test
 	void testUpdate() {
