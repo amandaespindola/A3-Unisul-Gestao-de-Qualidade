@@ -3,7 +3,6 @@ package utils;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.Constructor;
-
 import org.junit.jupiter.api.Test;
 
 class ConstantesTest {
@@ -13,7 +12,10 @@ class ConstantesTest {
 		Constructor<Constantes> ctor = Constantes.class.getDeclaredConstructor();
 		ctor.setAccessible(true);
 
-		assertThrows(UnsupportedOperationException.class, ctor::newInstance);
+		Exception ex = assertThrows(Exception.class, () -> ctor.newInstance());
+		assertThrows(UnsupportedOperationException.class, () -> {
+			throw (Exception) ex.getCause();
+		});
 	}
 
 	@Test
@@ -21,8 +23,9 @@ class ConstantesTest {
 		Constructor<Constantes.UIConstants> ctor = Constantes.UIConstants.class.getDeclaredConstructor();
 		ctor.setAccessible(true);
 
+		Exception ex = assertThrows(Exception.class, () -> ctor.newInstance());
 		assertThrows(UnsupportedOperationException.class, () -> {
-			ctor.newInstance();
+			throw (Exception) ex.getCause();
 		});
 	}
 }
