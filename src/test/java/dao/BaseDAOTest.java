@@ -1,20 +1,24 @@
 package dao;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import utils.ConexaoManager;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BaseDAOTest {
 
@@ -198,17 +202,15 @@ class BaseDAOTest {
 		Connection c = daoInterno.getConexao();
 		daoInterno.fecharConexaoSeInterna(c);
 
-		assertTrue(c.isClosed()); 
+		assertTrue(c.isClosed());
 	}
 
 	@Test
 	void testFecharConexaoSeInterna() throws SQLException {
 		Connection conn = dao.getConexao();
 		dao.fecharConexaoSeInterna(conn);
-		assertFalse(conn.isClosed()); // 
+		assertFalse(conn.isClosed()); //
 	}
-	
-
 
 	// testar método obterMaiorId
 
@@ -311,4 +313,121 @@ class BaseDAOTest {
 
 		assertThrows(IllegalArgumentException.class, daoInvalido::obterMaiorId);
 	}
+
+	@Test
+	void testGetConexaoUsandoConexaoManager() {
+		// Cria DAO sem conexão injetada
+		BaseDAO<Object> daoSemConn = new BaseDAO<Object>() {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_aluno";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		Connection c = daoSemConn.getConexao();
+		assertNotNull(c);
+	}
+
+	@Test
+	void testFecharConexaoSeInternaLancaSQLException() throws Exception {
+
+		Connection connMock = Mockito.mock(Connection.class);
+		Mockito.doThrow(new SQLException("erro")).when(connMock).close();
+
+		BaseDAO<Object> daoErro = new BaseDAO<Object>() {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_aluno";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		assertDoesNotThrow(() -> daoErro.fecharConexaoSeInterna(connMock));
+	}
+
+	@Test
+	void testObterMaiorIdNenhumRegistroComResultSetMock() throws Exception {
+
+		// Forçar rs.next() = false
+		ResultSet rsMock = Mockito.mock(ResultSet.class);
+		Mockito.when(rsMock.next()).thenReturn(false);
+
+		PreparedStatement stmtMock = Mockito.mock(PreparedStatement.class);
+		Mockito.when(stmtMock.executeQuery()).thenReturn(rsMock);
+
+		Connection connMock = Mockito.mock(Connection.class);
+		Mockito.when(connMock.isClosed()).thenReturn(false);
+		Mockito.when(connMock.prepareStatement(Mockito.anyString())).thenReturn(stmtMock);
+
+		BaseDAO<Object> daoMock = new BaseDAO<Object>(connMock) {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_aluno";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		int maior = daoMock.obterMaiorId();
+
+		assertEquals(0, maior); // cobre o ELSE do rs.next()
+	}
+
 }
