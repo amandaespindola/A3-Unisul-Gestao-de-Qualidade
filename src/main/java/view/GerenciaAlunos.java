@@ -25,14 +25,42 @@ import utils.TableUtils;
 import utils.ValidadorInput;
 import utils.ViewUtils;
 
+/**
+ * Tela de gerenciamento de alunos do sistema.
+ * Permite visualizar, cadastrar, editar, excluir e exportar dados de alunos para Excel.
+ *
+ * A classe utiliza uma tabela Swing (JTable) e integra com {@link dao.AlunoDAO}
+ * para carregar e manipular os registros armazenados no banco.
+ *
+ * A interface oferece ações rápidas como:
+ * <ul>
+ *   <li>Abrir formulário de cadastro</li>
+ *   <li>Editar aluno selecionado</li>
+ *   <li>Excluir aluno</li>
+ *   <li>Exportar para Excel</li>
+ *   <li>Navegar para a janela de gerenciamento de professores</li>
+ * </ul>
+ *
+ * Esta janela é criada com dimensões fixas e layout baseado em BorderLayout.
+ */
 public class GerenciaAlunos extends JFrame {
 
+	/** Logger utilizado para registrar ações e erros da interface. */
 	private static final Logger LOGGER = Logger.getLogger(GerenciaAlunos.class.getName());
 
+	/** Tabela onde os alunos são exibidos. */
 	private JTable jTableAlunos;
+	
+	/** DAO responsável pela comunicação com o banco de dados para alunos. */
 	private final transient AlunoDAO alunoDAO = new AlunoDAO();
+	
+	/** Índice da linha selecionada na JTable. -1 significa nenhuma seleção. */
 	private int linhaSelecionada = -1;
 
+	/**
+     * Construtor padrão.
+     * Configura os componentes da UI, carrega a tabela e adiciona listener de clique.
+     */
 	public GerenciaAlunos() {
 		initComponents();
 		carregarTabela();
@@ -40,6 +68,10 @@ public class GerenciaAlunos extends JFrame {
 		TableUtils.addMouseClickListener(jTableAlunos, this::jTableMouseClick);
 	}
 
+	/**
+     * Inicializa todos os componentes gráficos da janela.
+     * Define o título, tamanho, painéis superiores, tabela e menu.
+     */
 	private void initComponents() {
 
 		setTitle("Gerência de Alunos");
@@ -76,10 +108,17 @@ public class GerenciaAlunos extends JFrame {
 	// AÇÕES
 	// -------------------------------------------------------------------------
 
+	/**
+     * Abre a janela de cadastro de novo aluno.
+     */
 	private void abrirCadastro() {
 		new CadastroAluno().setVisible(true);
 	}
 
+	/**
+     * Abre a tela de edição do aluno selecionado na tabela.
+     * Caso nenhuma linha esteja selecionada, exibe mensagem de aviso.
+     */
 	private void editar() {
 		if (linhaSelecionada == -1) {
 			JOptionPane.showMessageDialog(this, "Selecione um aluno para editar.");
@@ -97,6 +136,10 @@ public class GerenciaAlunos extends JFrame {
 		linhaSelecionada = -1;
 	}
 
+	/**
+     * Exclui o aluno selecionado, após confirmar com o usuário.
+     * Em caso de erro ou ausência de seleção, exibe a mensagem apropriada.
+     */
 	private void deletar() {
 		try {
 			if (jTableAlunos.getSelectedRow() == -1) {
@@ -124,6 +167,10 @@ public class GerenciaAlunos extends JFrame {
 		}
 	}
 
+	/**
+     * Exporta os dados exibidos na tabela para um arquivo Excel.
+     * Utiliza {@link utils.ExcelExporter}.
+     */
 	private void exportarExcel() {
 		try {
 			ExcelExporter.exportTableToExcel(jTableAlunos);
@@ -133,11 +180,20 @@ public class GerenciaAlunos extends JFrame {
 		}
 	}
 
+	/**
+     * Abre a janela de gerenciamento de professores e fecha a atual.
+     */
 	private void abrirProfessores() {
 		new GerenciaProfessores().setVisible(true);
 		dispose();
 	}
 
+	/**
+     * Executado quando uma linha da tabela é clicada.
+     * Atualiza a variável que guarda a linha selecionada.
+     *
+     * @param evt Evento do clique do mouse.
+     */
 	private void jTableMouseClick(java.awt.event.MouseEvent evt) {
 		linhaSelecionada = jTableAlunos.getSelectedRow();
 	}
@@ -146,6 +202,10 @@ public class GerenciaAlunos extends JFrame {
 	// CARREGAR TABELA
 	// -------------------------------------------------------------------------
 
+	/**
+     * Recarrega os dados da tabela com a lista atual de alunos.
+     * Consulta o banco via {@link dao.AlunoDAO#getMinhaLista()}.
+     */
 	private void carregarTabela() {
 		DefaultTableModel modelo = (DefaultTableModel) jTableAlunos.getModel();
 		modelo.setNumRows(0);
@@ -157,7 +217,11 @@ public class GerenciaAlunos extends JFrame {
 		}
 	}
 
-	// MAIN
+	/**
+     * Método principal para executar a janela de gerenciamento de alunos.
+     *
+     * @param args Argumentos de linha de comando (não utilizados).
+     */
 	public static void main(String[] args) {
 		LookAndFeelHelper.aplicarNimbus();
 		EventQueue.invokeLater(() -> new GerenciaAlunos().setVisible(true));

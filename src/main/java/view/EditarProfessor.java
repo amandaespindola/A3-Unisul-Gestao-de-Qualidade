@@ -24,28 +24,72 @@ import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
 
+/**
+ * Janela responsável pela edição dos dados de um professor já cadastrado.
+ * Permite alterar informações pessoais, contato, campus, idade, salário e título acadêmico.
+ *
+ * A classe utiliza componentes Swing, validações utilitárias e integra com o
+ * {@link dao.ProfessorDAO} para atualizar os dados no banco de dados.
+ *
+ * Campos podem ser pré-preenchidos quando o construtor recebe um vetor de dados.
+ *
+ * @author Seu Nome
+ */
 public class EditarProfessor extends JFrame {
 
+	/** Campo de texto para o nome do professor. */
 	private JTextField nome;
+	
+	/** ComboBox de campus disponíveis. */
 	private JComboBox<String> campus;
+	
+	/** ComboBox de títulos acadêmicos disponíveis. */
 	private JComboBox<String> titulo;
+	
+	/** Campo formatado para CPF. */
 	private JFormattedTextField cpfFormatado;
+	
+	/** Campo formatado para contato telefônico. */
 	private JFormattedTextField contatoFormatado;
+	
+	/** Campo formatado para salário. */
 	private JFormattedTextField salarioFormatado;
+	
+	/** Campo de texto para idade. */
 	private JTextField idade;
 
+	/** DAO responsável por operações de banco de dados para Professor. */	
 	private final transient ProfessorDAO professorDAO = new ProfessorDAO();
+	
+	/**
+     * Vetor contendo os dados do professor a ser editado.
+     * A ordem esperada é:
+     * [nome, idade, campus, cpf, contato, titulo, salario, id]
+     */
 	private final String[] dadosProfessor;
 
+	/** Lista estática de campus cadastrados nas constantes. */
 	private static final List<String> LISTA_CAMPUS = Constantes.getCampus();
+	
+	/** Lista estática de títulos acadêmicos. */
 	private static final List<String> LISTA_TITULOS = Constantes.getTitulos();
 
+	/**
+     * Construtor padrão. Utilizado quando não há dados pré-existentes para preencher.
+     * Abre a janela vazia para edição.
+     */
 	public EditarProfessor() {
 		this.dadosProfessor = null;
 		initComponents();
 		formatarCampos();
 	}
 
+	/**
+     * Construtor utilizado ao editar um professor já existente.
+     *
+     * @param dados Vetor contendo os dados do professor conforme ordenação definida,
+     *              utilizado para preencher os campos automaticamente.
+     */
 	public EditarProfessor(String[] dados) {
 		this.dadosProfessor = dados;
 		initComponents();
@@ -53,6 +97,10 @@ public class EditarProfessor extends JFrame {
 		preencherCampos();
 	}
 
+	/**
+     * Inicializa e organiza todos os componentes da interface gráfica
+     * utilizando BorderLayout e GridBagLayout.
+     */
 	private void initComponents() {
 
 		setTitle("Editar Professor");
@@ -118,12 +166,18 @@ public class EditarProfessor extends JFrame {
 
 	}
 
-	// Formatador de CPF, Salário, Contato
+	/**
+     * Aplica máscaras e formatações para CPF, contato e salário.
+     * Utiliza formatadores definidos em {@link ViewUtils}.
+     */
 	private void formatarCampos() {
 		ViewUtils.aplicarFormatacaoProfessorComAlerta(this, cpfFormatado, contatoFormatado, salarioFormatado);
 	}
 
-	// Preenche campos com dados já existentes
+	/**
+     * Preenche os campos da interface com os valores recebidos no vetor dadosProfessor.
+     * Só executa se dadosProfessor não for nulo.
+     */
 	private void preencherCampos() {
 		if (dadosProfessor == null)
 			return;
@@ -143,6 +197,13 @@ public class EditarProfessor extends JFrame {
 		}
 	}
 
+	/**
+     * Ação executada ao confirmar a edição.
+     * Valida todos os campos, cria um {@link ProfessorDTO},
+     * converte para {@link Professor} e solicita atualização ao banco via DAO.
+     *
+     * Exibe mensagens de erro ou sucesso ao usuário.
+     */
 	private void confirmar() {
 		try {
 			int id = Integer.parseInt(dadosProfessor[7]);
@@ -181,23 +242,50 @@ public class EditarProfessor extends JFrame {
 		}
 	}
 
+	/**
+     * Ação executada ao cancelar a operação.
+     * Apenas fecha a janela.
+     */
 	private void cancelar() {
 		dispose();
 	}
 
-	// VALIDADORES
+	/**
+     * Valida o campus selecionado.
+     *
+     * @return O campus selecionado.
+     * @throws Mensagens caso nenhum campus válido seja selecionado.
+     */
 	private String validarCampus() throws Mensagens {
 		return ValidadorInput.validarSelecaoComboBox(campus.getSelectedIndex(), LISTA_CAMPUS, "Campus");
 	}
 
+	/**
+     * Valida o título acadêmico selecionado.
+     *
+     * @return O título selecionado.
+     * @throws Mensagens caso nenhum título válido seja selecionado.
+     */
 	private String validarTitulo() throws Mensagens {
 		return ValidadorInput.validarSelecaoComboBox(titulo.getSelectedIndex(), LISTA_TITULOS, "Título");
 	}
 
+	/**
+     * Valida o nome do professor.
+     *
+     * @return O nome validado.
+     * @throws Mensagens caso o nome seja muito curto ou inválido.
+     */
 	private String validarNome() throws Mensagens {
 		return ValidadorInput.validarNome(nome.getText(), 2);
 	}
 
+	/**
+     * Valida o CPF informado e verifica duplicidade no banco.
+     *
+     * @return O CPF validado.
+     * @throws Mensagens caso esteja em formato inválido ou já exista cadastrado.
+     */
 	private String validarCpf() throws Mensagens {
 		String cpf = ValidadorInput.validarTamanhoNumericoFixo(cpfFormatado.getText(), 11, "CPF");
 		int idAtual = Integer.parseInt(dadosProfessor[7]);
@@ -208,10 +296,22 @@ public class EditarProfessor extends JFrame {
 		return cpf;
 	}
 
+	/**
+     * Valida o número de contato.
+     *
+     * @return O número validado.
+     * @throws Mensagens caso esteja em formato inválido.
+     */
 	private String validarContato() throws Mensagens {
 		return ValidadorInput.validarTamanhoNumericoFixo(contatoFormatado.getText(), 11, "Contato");
 	}
 
+	/**
+     * Valida a idade informada.
+     *
+     * @return A idade validada.
+     * @throws Mensagens caso o campo esteja vazio ou inválido.
+     */
 	private int validarIdade() throws Mensagens {
 		if (idade.getText().isEmpty()) {
 			throw new Mensagens("Idade não pode ser vazia");
@@ -219,6 +319,11 @@ public class EditarProfessor extends JFrame {
 		return ValidadorInput.validarTamanhoMinimoNumerico(idade.getText(), 11);
 	}
 
+	/**
+     * Método principal para abrir a janela individualmente.
+     *
+     * @param args Argumentos da linha de comando.
+     */
 	public static void main(String[] args) {
 		LookAndFeelHelper.aplicarNimbus();
 		EventQueue.invokeLater(() -> new EditarProfessor().setVisible(true));

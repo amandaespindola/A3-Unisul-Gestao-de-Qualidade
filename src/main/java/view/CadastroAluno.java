@@ -22,18 +22,46 @@ import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
 
+/**
+ * Tela de cadastro de alunos.
+ *
+ * <p>Permite inserir nome, curso, fase e data de nascimento de um aluno,
+ * validando os campos e registrando os dados no banco de dados por meio de
+ * {@link AlunoDAO}. A interface utiliza componentes auxiliares da classe
+ * {@link ViewUtils} para padronização visual.</p>
+ *
+ * <p>Esta classe herda de {@link JFrame} e cria uma janela independente
+ * utilizada no módulo de gestão de alunos do sistema.</p>
+ */
 public class CadastroAluno extends JFrame {
 
+	/** Campo de texto para o nome do aluno. */
 	private JTextField nome;
+	
+	/** ComboBox contendo a lista de cursos disponíveis. */
 	private JComboBox<String> curso;
+	
+	/** ComboBox contendo a lista de fases possíveis. */
 	private JComboBox<Integer> fase;
+	
+	/** Campo de seleção de data para idade/nascimento. */
 	private com.toedter.calendar.JDateChooser idade;
+	
+	/** DAO responsável por operações de persistência do aluno. */
 	private final transient AlunoDAO alunoDAO = new AlunoDAO();
 
+	/**
+     * Construtor padrão.
+     * <p>Inicializa os componentes gráficos e monta a interface de cadastro.</p>
+     */
 	public CadastroAluno() {
 		initComponents();
 	}
 
+	/**
+     * Inicializa e organiza todos os componentes visuais da tela.
+     * <p>Define título, layout, campos do formulário e botões de ação.</p>
+     */
 	private void initComponents() {
 
 		setTitle("Cadastro de Aluno");
@@ -82,7 +110,15 @@ public class CadastroAluno extends JFrame {
 		setLocationRelativeTo(null);
 	}
 
-	// AÇÃO CONFIRMAR
+	/**
+     * Ação executada ao pressionar o botão "Confirmar".
+     *
+     * <p>Realiza validação dos campos utilizando {@link ValidadorInput},
+     * cria um novo objeto {@link Aluno} e o envia ao banco de dados
+     * por meio do método {@link AlunoDAO#insert(model.Aluno)}.</p>
+     *
+     * <p>Exibe mensagens de sucesso ou erro conforme necessário.</p>
+     */
 	private void confirmar() {
 		try {
 			String nomeAluno = ValidadorInput.validarNome(nome.getText(), 2);
@@ -109,12 +145,21 @@ public class CadastroAluno extends JFrame {
 		}
 	}
 
-	// AÇÃO CANCELAR
+	/**
+     * Fecha a janela de cadastro sem salvar informações.
+     * <p>Executado quando o usuário clica em "Cancelar".</p>
+     */
+
 	private void cancelar() {
 		dispose();
 	}
 
-	// MAIN PARA TESTAR A TELA
+	/**
+     * Método main utilizado para teste isolado da tela.
+     * <p>Aplica o tema Nimbus e exibe a janela.</p>
+     *
+     * @param args argumentos da linha de comando (não utilizados)
+     */
 	public static void main(String[] args) {
 		LookAndFeelHelper.aplicarNimbus();
 		EventQueue.invokeLater(() -> new CadastroAluno().setVisible(true));

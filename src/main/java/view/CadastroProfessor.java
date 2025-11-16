@@ -23,23 +23,62 @@ import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
 
+/**
+ * Tela de cadastro de professores da instituição.
+ * <p>
+ * Esta interface permite inserir dados como nome, campus, CPF, contato,
+ * título, data de nascimento e salário. Os dados são validados e enviados ao
+ * {@link ProfessorDAO} para persistência no banco de dados.
+ * </p>
+ *
+ * <p>
+ * A tela utiliza componentes Swing e o layout GridBagLayout para organização
+ * dos campos, além de formatadores e validadores utilitários para garantir a
+ * consistência das informações inseridas.
+ * </p>
+ */
 public class CadastroProfessor extends JFrame {
 
+	/** Campo de texto para o nome do professor. */
 	private JTextField nome;
+	
+	/** ComboBox que contém a lista de campus disponíveis. */
 	private JComboBox<String> campus;
+	
+	/** ComboBox contendo os títulos possíveis (Mestre, Doutor, etc.). */
 	private JComboBox<String> titulo;
+	
+	/** Campo formatado para entrada do CPF. */
 	private JFormattedTextField cpfFormatado;
+	
+	/** Campo formatado para o número de contato do professor. */
 	private JFormattedTextField contatoFormatado;
+	
+	/** Campo formatado para o salário do professor. */
 	private JFormattedTextField salarioFormatado;
+	
+	/** Componente para seleção de data de nascimento. */
 	private com.toedter.calendar.JDateChooser idade;
 
+	/**
+     * DAO responsável pela persistência de dados do professor.
+     * Usado para inserir novos registros e validar CPF duplicado.
+     */
 	private final transient ProfessorDAO professorDAO = new ProfessorDAO();
 
+	/**
+     * Construtor padrão. Inicializa os componentes da interface gráfica
+     * e aplica a formatação aos campos que exigem máscara.
+     */
 	public CadastroProfessor() {
 		initComponents();
 		formatarCampos();
 	}
 
+	/**
+     * Inicializa e configura todos os elementos da interface gráfica,
+     * organizando o formulário e os botões principais.
+     */
 	private void initComponents() {
 		setTitle("Cadastro de Professor");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -107,10 +146,23 @@ public class CadastroProfessor extends JFrame {
 // AÇÕES
 // -------------------------
 
+	/**
+     * Aplica as formatações necessárias aos campos de CPF, contato e salário,
+     * exibindo alertas caso a formatação esteja incorreta.
+     */
 	private void formatarCampos() {
 		ViewUtils.aplicarFormatacaoProfessorComAlerta(this, cpfFormatado, contatoFormatado, salarioFormatado);
 	}
 
+	/**
+     * Valida o CPF informado no campo correspondente.
+     * <p>
+     * Realiza validação de tamanho e verifica se o CPF já existe no sistema.
+     * </p>
+     *
+     * @return o CPF validado em formato numérico (somente dígitos)
+     * @throws Mensagens caso o CPF seja inválido ou já esteja cadastrado
+     */
 	private String validarCpf() throws Mensagens {
 		String cpf = ValidadorInput.validarTamanhoNumericoFixo(cpfFormatado.getText(), 11, "CPF");
 
@@ -120,6 +172,15 @@ public class CadastroProfessor extends JFrame {
 		return cpf;
 	}
 
+	/**
+     * Realiza a ação de confirmação do cadastro do professor.
+     * <p>
+     * Este método valida todos os campos do formulário, monta um
+     * {@link ProfessorDTO}, converte-o em um objeto {@link Professor} e tenta
+     * salvá-lo no banco de dados via {@link ProfessorDAO}.
+     * </p>
+     * Caso o cadastro seja bem-sucedido, uma mensagem é exibida ao usuário.
+     */
 	private void confirmar() {
 		try {
 			String nomeProfessor = ValidadorInput.validarNome(nome.getText(), 2);
@@ -162,11 +223,21 @@ public class CadastroProfessor extends JFrame {
 		}
 	}
 
+	/**
+     * Fecha a tela atual sem realizar alterações.
+     */
 	private void cancelar() {
 		dispose();
 	}
 
-// MAIN
+	/**
+     * Método principal utilizado para testes da tela.
+     * <p>
+     * Aplica o tema Nimbus e exibe a janela de cadastro de professores.
+     * </p>
+     *
+     * @param args argumentos de linha de comando (não utilizados)
+     */
 	public static void main(String[] args) {
 		LookAndFeelHelper.aplicarNimbus();
 		EventQueue.invokeLater(() -> new CadastroProfessor().setVisible(true));

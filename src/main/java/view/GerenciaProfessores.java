@@ -27,14 +27,31 @@ import utils.TableUtils;
 import utils.ValidadorInput;
 import utils.ViewUtils;
 
+/**
+ * Tela de gerenciamento de professores.
+ * <p>
+ * Permite visualizar, cadastrar, editar, excluir e exportar a lista de
+ * professores cadastrados no sistema. Também possibilita navegar para a
+ * tela de gerenciamento de alunos.
+ */
 public class GerenciaProfessores extends JFrame {
 
+	/** Tabela que exibe os professores. */
 	private JTable tabelaProf;
+	
+	/** DAO responsável pelas operações de banco relacionadas a professores. */
 	private final transient ProfessorDAO professorDAO = new ProfessorDAO();
+	
+	/** Índice da linha selecionada na tabela. */
 	private int linhaSelecionada = -1;
 
+	/** Logger da classe para registros de execução. */
 	private static final Logger LOGGER = Logger.getLogger(GerenciaProfessores.class.getName());
 
+	/**
+     * Construtor da tela de gerenciamento.
+     * Inicializa os componentes e carrega a tabela.
+     */
 	public GerenciaProfessores() {
 		initComponents();
 		carregarTabela();
@@ -42,6 +59,9 @@ public class GerenciaProfessores extends JFrame {
 		TableUtils.addMouseClickListener(tabelaProf, this::mouseClickTabela);
 	}
 
+	/**
+     * Inicializa todos os componentes da interface gráfica.
+     */
 	private void initComponents() {
 
 		setTitle("Gerência de Professores");
@@ -90,6 +110,9 @@ public class GerenciaProfessores extends JFrame {
 	// AÇÕES
 	// ============================================================
 
+	/**
+     * Abre a tela de cadastro de professores.
+     */
 	private void abrirCadastro() {
 		try {
 			new CadastroProfessor().setVisible(true);
@@ -98,6 +121,10 @@ public class GerenciaProfessores extends JFrame {
 		}
 	}
 
+	/**
+     * Abre a tela de edição do professor selecionado.
+     * Exibe aviso caso nenhuma linha esteja selecionada.
+     */
 	private void editar() {
 		if (linhaSelecionada == -1) {
 			JOptionPane.showMessageDialog(this, "Selecione um professor para editar.");
@@ -124,6 +151,9 @@ public class GerenciaProfessores extends JFrame {
 		linhaSelecionada = -1;
 	}
 
+	/**
+     * Exclui o professor selecionado após confirmação do usuário.
+     */
 	private void deletar() {
 		try {
 			if (tabelaProf.getSelectedRow() == -1) {
@@ -151,6 +181,9 @@ public class GerenciaProfessores extends JFrame {
 		}
 	}
 
+	/**
+     * Exporta o conteúdo da tabela para um arquivo Excel.
+     */
 	private void exportarExcel() {
 		try {
 			ExcelExporter.exportTableToExcel(tabelaProf);
@@ -160,11 +193,19 @@ public class GerenciaProfessores extends JFrame {
 		}
 	}
 
+	/**
+     * Abre a tela de gerenciamento de alunos e fecha a atual.
+     */
 	private void abrirAlunos() {
 		new GerenciaAlunos().setVisible(true);
 		dispose();
 	}
 
+	/**
+     * Armazena a linha da tabela que foi clicada pelo usuário.
+     *
+     * @param evt Evento de clique do mouse.
+     */
 	private void mouseClickTabela(java.awt.event.MouseEvent evt) {
 		linhaSelecionada = tabelaProf.getSelectedRow();
 	}
@@ -173,6 +214,9 @@ public class GerenciaProfessores extends JFrame {
 	// CARREGA TABELA
 	// ============================================================
 
+	/**
+     * Recarrega os dados da tabela com a lista atual de professores.
+     */
 	private void carregarTabela() {
 		DefaultTableModel modelo = (DefaultTableModel) tabelaProf.getModel();
 		modelo.setNumRows(0);
@@ -186,7 +230,11 @@ public class GerenciaProfessores extends JFrame {
 		}
 	}
 
-	// MAIN
+	/**
+     * Método principal que inicia a aplicação.
+     *
+     * @param args Argumentos da linha de comando.
+     */
 	public static void main(String[] args) {
 		LookAndFeelHelper.aplicarNimbus();
 		EventQueue.invokeLater(() -> new GerenciaProfessores().setVisible(true));
