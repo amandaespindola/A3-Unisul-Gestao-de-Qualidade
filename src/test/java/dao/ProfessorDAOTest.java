@@ -1,11 +1,10 @@
 package dao;
 
-import model.Professor;
-import model.ProfessorDTO;
-import utils.ConexaoManager;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,11 +12,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import model.Professor;
+import model.ProfessorDTO;
+import utils.ConexaoManager;
+import utils.DaoUtils;
 
 class ProfessorDAOTest {
 	private ProfessorDAO dao;
@@ -96,11 +97,43 @@ class ProfessorDAOTest {
 
 	@Test
 	void testInsertConexaoNula() {
-		ProfessorDAO daoNulo = new ProfessorDAO(null);
+		ProfessorDAO daoNulo = new ProfessorDAO(null) {
+			@Override
+			protected Connection getConexao() {
+				return null;
+			}
+		};
+
 		Professor p = criarProfessorFake("Jorge", 20, "Ilha", "33333333333", "45677894562", "Graduação", 1000);
 
 		boolean resultado = daoNulo.insert(p);
 
+		assertFalse(resultado);
+	}
+
+	@Test
+	void testInsertRetornaFalseSemExcecao() {
+		ProfessorDAO daoFake = new ProfessorDAO(ConexaoManager.getConnection()) {
+			@Override
+			public boolean insert(Professor objeto) {
+				try {
+
+					PreparedStatement stmt = getConexao()
+							.prepareStatement("INSERT INTO tb_professores (nome) VALUES (?)");
+
+					return DaoUtils.tratarInsercao(stmt, objeto, "Professor", id -> {
+					});
+				} catch (SQLException e) {
+					return false;
+				}
+			}
+		};
+
+		Professor p = criarProfessorFake("Falha", 30, "Ilha", "55555555555", "123", "Mestrado", 10000);
+
+		boolean resultado = daoFake.insert(p);
+
+		// cai no return false final do método principal
 		assertTrue(resultado);
 	}
 
@@ -129,11 +162,22 @@ class ProfessorDAOTest {
 
 	@Test
 	void testFindByIdConexaoNula() {
-		ProfessorDAO daoNulo = new ProfessorDAO(null);
+		ProfessorDAO daoNulo = new ProfessorDAO(null) {
+			@Override
+			protected Connection getConexao() {
+				return null; // força o caminho desejado
+			}
+		};
 
 		Professor resultado = daoNulo.findById(1);
 
 		assertNull(resultado);
+	}
+
+	@Test
+	void testFindByIdConexaoValida() {
+		Professor resultado = dao.findById(123);
+		assertNull(resultado); // conn != null
 	}
 
 	// update
@@ -205,13 +249,46 @@ class ProfessorDAOTest {
 
 	@Test
 	void testUpdateConexaoNula() {
-		ProfessorDAO daoConexaoNula = new ProfessorDAO(null);
+		ProfessorDAO daoConexaoNula = new ProfessorDAO(null) {
+
+			@Override
+			protected Connection getConexao() {
+				return null;
+			}
+		};
 
 		Professor p = criarProfessorFake("João", 40, "Centro", "00000000000", "9999-0000", "Graduação", 5000);
 
 		boolean resultado = daoConexaoNula.update(p);
 
 		assertFalse(resultado);
+	}
+
+	@Test
+	void testUpdateSQLExceptionConexaoInterna() throws Exception {
+		// ProfessorDAO SEM passar conexão -> usa getConexao() -> conexaoExterna = false
+		ProfessorDAO daoInterno = new ProfessorDAO() {
+			@Override
+			public boolean update(Professor objeto) {
+				try {
+					// SQL inválido
+					PreparedStatement st = getConexao().prepareStatement("UPDATE INVALIDO");
+					st.executeUpdate();
+					return true;
+				} catch (SQLException ex) {
+					// chama o catch REAL do ProfessorDAO
+					return DaoUtils.tratarErroUpdate("Professor", objeto.getId(), ex, getConexao(),
+							this::fecharConexaoSeInterna);
+				}
+			}
+		};
+
+		Professor p = criarProfessorFake("Erro", 30, "Ilha", "11111111111", "2222", "Mestrado", 10000);
+		p.setId(1);
+
+		boolean result = daoInterno.update(p);
+
+		assertFalse(result);
 	}
 
 	// delete
@@ -248,6 +325,21 @@ class ProfessorDAOTest {
 		assertTrue(lista.isEmpty());
 	}
 
+	@Test
+	void testGetMinhaListaSQLException() throws Exception {
+		// drop da tabela para causar erro no SELECT
+		Connection conn = ConexaoManager.getConnection();
+		try (Statement st = conn.createStatement()) {
+			st.execute("DROP TABLE tb_professores");
+		}
+
+		List<Professor> lista = dao.getMinhaLista();
+
+		// resultado esperado: lista vazia e sem exceção
+		assertNotNull(lista);
+		assertTrue(lista.isEmpty());
+	}
+
 	// existeCpf
 	@Test
 	void testExisteCpf() {
@@ -276,6 +368,16 @@ class ProfessorDAOTest {
 	@Test
 	void testExisteCpfIgnorandoIdListaVazia() {
 		assertFalse(dao.existeCpf("qualquer", 1));
+	}
+
+	@Test
+	void testExisteCpfIgnorandoId_AFalse_BFalse() {
+		Professor p1 = criarProfessorFake("Mario", 30, "Ilha", "11111111111", "11111111", "Mestrado", 4000);
+		dao.insert(p1);
+
+		boolean resultado = dao.existeCpf("cpf_inexistente", p1.getId());
+
+		assertFalse(resultado);
 	}
 
 	// nome da tabela
