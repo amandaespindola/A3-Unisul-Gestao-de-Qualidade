@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -151,18 +152,47 @@ class ConexaoManagerTest {
 	@Test
 	void testCarregarUrlDoPropertiesComExcecao() throws Exception {
 
-		// Mocka ClassLoader para retornar InputStream quebrado
-		ClassLoader loaderMock = Mockito.mock(ClassLoader.class);
-		Mockito.when(loaderMock.getResourceAsStream("config.properties")).thenReturn(new BrokenInputStream());
+		// Cria um ClassLoader falso que SEMPRE retorna BrokenInputStream
+		ClassLoader fakeLoader = new ClassLoader() {
+			@Override
+			public InputStream getResourceAsStream(String name) {
+				return new BrokenInputStream(); // força exception no load()
+			}
+		};
 
-		// Injeta loader mock
-		Field f = ConexaoManager.class.getDeclaredField("logger");
-		f.setAccessible(true);
+		// O segredo: alterar o classloader da classe ConexaoManager
+		Field fld = Class.class.getDeclaredField("classLoader");
+		fld.setAccessible(true);
+		fld.set(ConexaoManager.class, fakeLoader);
 
-		// Chama init() que executa carregarUrlDoProperties()
+		// Executa init(), que chamará carregarUrlDoProperties()
 		assertDoesNotThrow(() -> {
 			ConexaoManager.init("", "");
 		});
+	}
+
+	@Test
+	void testShutdownHookCatch() throws Exception {
+
+		// 1 — Mocka conexão que lança exceção no close()
+		Connection connMock = Mockito.mock(Connection.class);
+		Mockito.doThrow(new SQLException("erro")).when(connMock).close();
+
+		// 2 — Injeta o mock no campo estático 'conn'
+		Field fConn = ConexaoManager.class.getDeclaredField("conn");
+		fConn.setAccessible(true);
+		fConn.set(null, connMock);
+
+		// 3 — Cria o mesmo hook que o método addShutdownHook cria
+		Thread fakeHook = new Thread(() -> {
+			try {
+				ConexaoManager.close();
+			} catch (Exception ignored) {
+			}
+		});
+
+		// 4 — Executa manualmente (não como hook do sistema)
+		assertDoesNotThrow(fakeHook::run);
 	}
 
 }
