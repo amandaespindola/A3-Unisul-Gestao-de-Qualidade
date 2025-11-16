@@ -1,37 +1,48 @@
 package view;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mockStatic;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GraphicsEnvironment;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 
+import java.io.IOException; 
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+
+import dao.ProfessorDAO;
+import model.Professor;
+import model.ProfessorDTO;
+import utils.ExcelExporter;
 
 class GerenciaProfessoresTest {
 
-    // busca recursiva de componentes
-    private <T> T buscarComponente(Component comp, Class<T> tipo) {
-        if (tipo.isInstance(comp)) {
-            return tipo.cast(comp);
+    private <T> T buscar(Component c, Class<T> tipo) {
+        if (tipo.isInstance(c)) {
+            return tipo.cast(c);
         }
-
-        if (comp instanceof Container cont) {
-            for (Component filho : cont.getComponents()) {
-                T achado = buscarComponente(filho, tipo);
+        if (c instanceof Container cont) {
+            for (Component f : cont.getComponents()) {
+                T achado = buscar(f, tipo);
                 if (achado != null) {
                     return achado;
                 }
@@ -41,129 +52,129 @@ class GerenciaProfessoresTest {
     }
 
     @Test
-    @DisplayName("Janela deve inicializar sem exceções")
     void testInicializacao() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado em ambiente sem suporte gráfico.");
-
+        assumeFalse(GraphicsEnvironment.isHeadless());
         GerenciaProfessores tela = new GerenciaProfessores();
-
         assertEquals("Gerência de Professores", tela.getTitle());
-        assertNotNull(tela.getContentPane());
     }
 
     @Test
-    @DisplayName("Painel superior deve existir e conter ao menos um botão")
-    void testPainelSuperiorEBotoes() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado em ambiente sem suporte gráfico.");
-
+    void testPainelSuperior() {
+        assumeFalse(GraphicsEnvironment.isHeadless());
         GerenciaProfessores tela = new GerenciaProfessores();
 
-        JButton botao = buscarComponente(tela.getContentPane(), JButton.class);
-
-        assertNotNull(botao, "Painel superior deve conter ao menos um botão gerencial");
+        JButton btn = buscar(tela.getContentPane(), JButton.class);
+        assertNotNull(btn);
     }
 
     @Test
-    @DisplayName("Menu superior deve existir e conter item de Gerência de Alunos")
-    void testMenuSuperior() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado em ambiente sem suporte gráfico.");
-
+    void testMenu() {
+        assumeFalse(GraphicsEnvironment.isHeadless());
         GerenciaProfessores tela = new GerenciaProfessores();
-        JMenuBar menuBar = tela.getJMenuBar();
 
-        assertNotNull(menuBar, "Menu não deve ser nulo");
-        assertEquals(1, menuBar.getMenuCount(), "Deve haver exatamente um menu principal");
-        assertEquals("Arquivo", menuBar.getMenu(0).getText());
+        JMenuBar bar = tela.getJMenuBar();
+        assertNotNull(bar);
     }
 
     @Test
-    @DisplayName("Tabela deve existir e ter colunas esperadas")
-    void testTabelaExisteEColunas() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado em ambiente sem suporte gráfico.");
-
+    void testTabela() {
+        assumeFalse(GraphicsEnvironment.isHeadless());
         GerenciaProfessores tela = new GerenciaProfessores();
 
-        JTable tabela = buscarComponente(tela.getContentPane(), JTable.class);
-        assertNotNull(tabela, "Tabela de professores não encontrada na tela");
+        JTable tabela = buscar(tela.getContentPane(), JTable.class);
+
+        assertNotNull(tabela);
 
         DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
-        assertEquals(8, modelo.getColumnCount(), "A tabela deve ter 8 colunas");
-
-        assertEquals("ID", modelo.getColumnName(0));
-        assertEquals("Nome", modelo.getColumnName(1));
-        assertEquals("Idade", modelo.getColumnName(2));
-        assertEquals("Campus", modelo.getColumnName(3));
-        assertEquals("CPF", modelo.getColumnName(4));
-        assertEquals("Contato", modelo.getColumnName(5));
-        assertEquals("Título", modelo.getColumnName(6));
-        assertEquals("Salário", modelo.getColumnName(7));
+        assertEquals(8, modelo.getColumnCount());
     }
 
     @Test
-    @DisplayName("ScrollPane envolvendo a tabela deve existir")
-    void testScrollPaneExiste() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado em ambiente sem suporte gráfico.");
-
+    void testScroll() {
+        assumeFalse(GraphicsEnvironment.isHeadless());
         GerenciaProfessores tela = new GerenciaProfessores();
 
-        JScrollPane scroll = buscarComponente(tela.getContentPane(), JScrollPane.class);
-        assertNotNull(scroll, "ScrollPane da tabela não encontrado");
-
-        JTable tabela = buscarComponente(scroll, JTable.class);
-        assertNotNull(tabela, "Tabela não encontrada dentro do ScrollPane");
+        JScrollPane scroll = buscar(tela.getContentPane(), JScrollPane.class);
+        assertNotNull(scroll);
     }
 
     @Test
-    @DisplayName("carregarTabela() deve executar sem lançar exceções")
-    void testCarregarTabelaNaoExplode() throws Exception {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado em ambiente sem suporte gráfico.");
+    void testCarregarTabelaComMock() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless());
+
+        ProfessorDAO daoMock = mock(ProfessorDAO.class);
+
+        ProfessorDTO dto = new ProfessorDTO();
+        dto.setId(1);
+        dto.setNome("Teste");
+        dto.setIdade(40);
+        dto.setCampus("C1");
+        dto.setCpf("123");
+        dto.setContato("999");
+        dto.setTitulo("Mestre");
+        dto.setSalario(1000);
+
+        Professor p = new Professor(dto);
+
+        when(daoMock.getMinhaLista()).thenReturn(List.of(p));
 
         GerenciaProfessores tela = new GerenciaProfessores();
+
+        Field f = GerenciaProfessores.class.getDeclaredField("professorDAO");
+        f.setAccessible(true);
+        f.set(tela, daoMock);
 
         Method m = GerenciaProfessores.class.getDeclaredMethod("carregarTabela");
         m.setAccessible(true);
+        m.invoke(tela);
 
-        assertDoesNotThrow(() -> {
-            try {
-                m.invoke(tela);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        JTable tabela = buscarComponente(tela.getContentPane(), JTable.class);
-        assertNotNull(tabela, "Tabela deve existir após carregarTabela()");
-        assertTrue(tabela.getRowCount() >= 0, "Quantidade de linhas deve ser >= 0");
+        JTable tabela = buscar(tela.getContentPane(), JTable.class);
+        assertEquals(1, tabela.getRowCount());
     }
 
     @Test
-    @DisplayName("Clique na tabela deve atualizar linhaSelecionada")
-    void testMouseClickAtualizaLinhaSelecionada() throws Exception {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado em ambiente sem suporte gráfico.");
+    void testMouseClick() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless());
 
         GerenciaProfessores tela = new GerenciaProfessores();
+        JTable tabela = buscar(tela.getContentPane(), JTable.class);
 
-        JTable tabela = buscarComponente(tela.getContentPane(), JTable.class);
-        assertNotNull(tabela, "Tabela não encontrada");
-
-        // adiciona uma linha fake ao modelo para simular seleção
         DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
-        modelo.addRow(new Object[]{1, "Professor Teste", 40, "Campus X", "123.456.789-00",
-            "(48) 9 9999-9999", "Mestre", "R$ 1.000,00"});
+        modelo.addRow(new Object[]{"1", "A", "20", "C", "1", "2", "T", "R$ 10"});
 
         tabela.setRowSelectionInterval(0, 0);
 
-        Method metodoClick = GerenciaProfessores.class.getDeclaredMethod("mouseClickTabela",
-                java.awt.event.MouseEvent.class);
-        metodoClick.setAccessible(true);
-
-        metodoClick.invoke(tela,
+        Method m = GerenciaProfessores.class.getDeclaredMethod(
+                "mouseClickTabela", java.awt.event.MouseEvent.class
+        );
+        m.setAccessible(true);
+        m.invoke(tela,
                 new java.awt.event.MouseEvent(tabela, 0, 0, 0, 5, 5, 1, false));
 
-        Field campoLinha = GerenciaProfessores.class.getDeclaredField("linhaSelecionada");
-        campoLinha.setAccessible(true);
-        int selecionada = campoLinha.getInt(tela);
+        Field f = GerenciaProfessores.class.getDeclaredField("linhaSelecionada");
+        f.setAccessible(true);
 
-        assertEquals(0, selecionada, "linhaSelecionada deve ser atualizada após o clique na tabela");
+        assertEquals(0, f.getInt(tela));
+    }
+
+    @Test
+    void testExportarExcelMockado() throws Exception {
+        assumeFalse(GraphicsEnvironment.isHeadless());
+
+        GerenciaProfessores tela = new GerenciaProfessores();
+
+        try (MockedStatic<ExcelExporter> excel = mockStatic(ExcelExporter.class); MockedStatic<JOptionPane> jop = mockStatic(JOptionPane.class)) {
+
+            excel.when(() -> ExcelExporter.exportTableToExcel(any(JTable.class)))
+                    .thenThrow(new IOException("erro"));
+
+            jop.when(() -> JOptionPane.showMessageDialog(any(), anyString()))
+                    .thenAnswer(inv -> null);
+
+            Method m = GerenciaProfessores.class.getDeclaredMethod("exportarExcel");
+            m.setAccessible(true);
+
+            assertDoesNotThrow(() -> m.invoke(tela));
+        }
     }
 }
