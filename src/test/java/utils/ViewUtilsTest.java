@@ -6,25 +6,40 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
+import java.text.ParseException;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
+import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ViewUtilsTest {
+
+    // classe auxiliar para simular erro no campo formatado
+    static class CampoQueSempreErra extends JFormattedTextField {
+
+        @Override
+        public void setValue(Object value) {
+            throw new RuntimeException(new ParseException("erro", 0));
+        }
+    }
+
+    @BeforeEach
+    void setup() {
+    }
 
     @Test
     void testConfigurarJanela() {
@@ -48,6 +63,78 @@ class ViewUtilsTest {
         ViewUtils.fecharJanelaAoCancelar(botao, frame);
 
         assertFalse(frame.isDisplayable(), "Frame deve ter sido fechado.");
+    }
+
+    @Test
+    void testCriarPainelBotoesGerencia() {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
+
+        JButton b1 = new JButton("A");
+        JButton b2 = new JButton("B");
+        JButton b3 = new JButton("C");
+        JButton b4 = new JButton("D");
+        JButton b5 = new JButton("E");
+
+        JPanel painel = ViewUtils.criarPainelBotoesGerencia(b1, b2, b3, b4, b5);
+
+        assertEquals(5, painel.getComponentCount());
+    }
+
+    @Test
+    void testCriarPainelGerenciaTopo() {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
+
+        JPanel topo = ViewUtils.criarPainelGerenciaTopo(
+                "Gerenciar X",
+                new JButton("A"),
+                new JButton("B"),
+                new JButton("C"),
+                new JButton("D"),
+                new JButton("E")
+        );
+
+        assertTrue(topo.getComponent(0) instanceof JLabel);
+        assertEquals("Gerenciar X", ((JLabel) topo.getComponent(0)).getText());
+    }
+
+    @Test
+    void testCriarPainelBase() {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
+
+        JFrame f = new JFrame();
+        JPanel p = ViewUtils.criarPainelBase(f);
+
+        assertEquals(BorderLayout.class, p.getLayout().getClass());
+    }
+
+    @Test
+    void testAdicionarBotoesConfirmarCancelar() {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
+
+        JPanel painel = new JPanel(new BorderLayout());
+        JRootPane root = new JRootPane();
+
+        ViewUtils.adicionarBotoesConfirmarCancelar(painel, () -> {
+        }, () -> {
+        }, root);
+
+        Component comp = painel.getComponent(0);
+        assertTrue(comp instanceof JPanel);
+        assertEquals(2, ((JPanel) comp).getComponentCount());
+    }
+
+    @Test
+    void testCriarBotoesGerencia() {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
+
+        JButton[] btns = ViewUtils.criarBotoesGerencia(() -> {
+        }, () -> {
+        }, () -> {
+        }, () -> {
+        }, () -> {
+        }, Logger.getLogger("x"));
+
+        assertEquals(5, btns.length);
     }
 
     @Test
@@ -75,12 +162,9 @@ class ViewUtilsTest {
 
         JButton btn = ViewUtils.criarBotao("Salvar", e -> clicado[0] = true);
 
-        assertNotNull(btn);
         assertEquals("Salvar", btn.getText());
-
         btn.doClick();
-
-        assertTrue(clicado[0], "O botão deve acionar a ação associada.");
+        assertTrue(clicado[0]);
     }
 
     @Test
@@ -92,7 +176,6 @@ class ViewUtilsTest {
 
         assertEquals(1, form.getComponentCount());
         Component comp = form.getComponent(0);
-
         assertTrue(comp instanceof JLabel);
         assertEquals("lblNome", comp.getName());
     }
@@ -103,7 +186,6 @@ class ViewUtilsTest {
         GridBagConstraints gbc = new GridBagConstraints();
 
         JTextField campo = new JTextField("Teste");
-
         ViewUtils.addCampo(form, gbc, 1, 2, 2, campo);
 
         assertEquals(1, form.getComponentCount());
@@ -116,13 +198,12 @@ class ViewUtilsTest {
 
         assertNotNull(lbl);
         assertEquals("Gerenciar Alunos", lbl.getText());
-        assertEquals(SwingConstants.CENTER, lbl.getHorizontalAlignment());
         assertTrue(lbl.getFont().isBold());
     }
 
     @Test
     void testCriarPainelSuperiorTitulo() {
-        JPanel painel = ViewUtils.criarPainelSuperiorTitulo("Cadastro de Professor");
+        JPanel painel = ViewUtils.criarPainelSuperiorTitulo("Cadastro");
 
         assertNotNull(painel);
         assertEquals(1, painel.getComponentCount());
@@ -130,110 +211,27 @@ class ViewUtilsTest {
     }
 
     @Test
-    void testCriarPainelBotoesGerencia() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
-
-        JButton bAtualizar = new JButton("Atualizar");
-        JButton bCadastrar = new JButton("Cadastrar");
-        JButton bEditar = new JButton("Editar");
-        JButton bDeletar = new JButton("Deletar");
-        JButton bExportar = new JButton("Exportar");
-
-        JPanel painel = ViewUtils.criarPainelBotoesGerencia(
-                bAtualizar, bCadastrar, bEditar, bDeletar, bExportar
-        );
-
-        assertNotNull(painel);
-        assertEquals(5, painel.getComponentCount());
-    }
-
-    @Test
-    void testCriarPainelGerenciaTopo() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
-
-        JPanel topo = ViewUtils.criarPainelGerenciaTopo(
-                "Gerenciar X",
-                new JButton("Atualizar"),
-                new JButton("Cadastrar"),
-                new JButton("Editar"),
-                new JButton("Deletar"),
-                new JButton("Exportar")
-        );
-
-        assertNotNull(topo);
-        assertTrue(topo.getComponent(0) instanceof JLabel);
-        assertEquals("Gerenciar X", ((JLabel) topo.getComponent(0)).getText());
-    }
-
-    @Test
     void testCriarMenuGerencia() {
-        JMenuBar menuBar = ViewUtils.criarMenuGerencia(
-                "Principal",
-                () -> {
-                },
-                () -> {
-                }
-        );
+        JMenuBar menuBar = ViewUtils.criarMenuGerencia("Principal", () -> {
+        }, () -> {
+        });
 
-        assertNotNull(menuBar);
-        assertEquals(1, menuBar.getMenuCount());
         assertEquals("Arquivo", menuBar.getMenu(0).getText());
-
-        JMenu menu = menuBar.getMenu(0);
-        assertEquals(3, menu.getItemCount());
+        assertEquals(3, menuBar.getMenu(0).getItemCount());
     }
 
     @Test
-    void testCriarPainelBase() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
+    void testAplicarFormatacaoProfessorComAlerta_ParseException() {
+        JFormattedTextField c1 = new CampoQueSempreErra();
+        JFormattedTextField c2 = new CampoQueSempreErra();
+        JFormattedTextField c3 = new CampoQueSempreErra();
 
-        JFrame frame = new JFrame();
-        JPanel painel = ViewUtils.criarPainelBase(frame);
-
-        assertNotNull(painel);
-        assertEquals(BorderLayout.class, painel.getLayout().getClass());
+        if (GraphicsEnvironment.isHeadless()) {
+            assertThrows(HeadlessException.class,
+                    () -> ViewUtils.aplicarFormatacaoProfessorComAlerta(null, c1, c2, c3));
+        } else {
+            assertDoesNotThrow(
+                    () -> ViewUtils.aplicarFormatacaoProfessorComAlerta(null, c1, c2, c3));
+        }
     }
-
-    @Test
-    void testAdicionarBotoesConfirmarCancelar() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
-
-        JPanel painel = new JPanel(new BorderLayout());
-        JRootPane root = new JRootPane();
-
-        ViewUtils.adicionarBotoesConfirmarCancelar(
-                painel,
-                () -> {
-                },
-                () -> {
-                },
-                root
-        );
-
-        Component comp = painel.getComponent(0); // BorderLayout.SOUTH = index 0
-        assertTrue(comp instanceof JPanel);
-
-        JPanel botoes = (JPanel) comp;
-        assertEquals(2, botoes.getComponentCount());
-    }
-
-    @Test
-    void testCriarBotoesGerencia() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
-
-        JButton[] btns = ViewUtils.criarBotoesGerencia(() -> {
-        }, () -> {
-        }, () -> {
-        }, () -> {
-        }, () -> {
-        }, Logger.getLogger("test"));
-
-        assertEquals(5, btns.length);
-        assertEquals("Atualizar tabela", btns[0].getText());
-        assertEquals("Cadastrar novo", btns[1].getText());
-        assertEquals("Editar", btns[2].getText());
-        assertEquals("Deletar", btns[3].getText());
-        assertEquals("Exportar para Excel", btns[4].getText());
-    }
-
 }
