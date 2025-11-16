@@ -18,7 +18,7 @@ import org.mockito.Mockito;
 
 import utils.DaoUtils;
 
-public class DaoUtilsTest {
+class DaoUtilsTest {
 
 	// ======================
 	// tratarInsercao()
