@@ -12,7 +12,7 @@ class ConstantesTest {
 		Constructor<Constantes> ctor = Constantes.class.getDeclaredConstructor();
 		ctor.setAccessible(true);
 
-		Exception ex = assertThrows(Exception.class, () -> ctor.newInstance());
+		Exception ex = assertThrows(Exception.class, ctor::newInstance);
 		assertThrows(UnsupportedOperationException.class, () -> {
 			throw (Exception) ex.getCause();
 		});
@@ -23,7 +23,7 @@ class ConstantesTest {
 		Constructor<Constantes.UIConstants> ctor = Constantes.UIConstants.class.getDeclaredConstructor();
 		ctor.setAccessible(true);
 
-		Exception ex = assertThrows(Exception.class, () -> ctor.newInstance());
+		Exception ex = assertThrows(Exception.class, ctor::newInstance);
 		assertThrows(UnsupportedOperationException.class, () -> {
 			throw (Exception) ex.getCause();
 		});
