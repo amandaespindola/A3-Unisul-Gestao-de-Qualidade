@@ -39,6 +39,7 @@ class ViewUtilsTest {
 
     @BeforeEach
     void setup() {
+        // método vazio, para possível uso futuro e para padronização dos testes.
     }
 
     @Test
