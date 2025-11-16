@@ -56,18 +56,14 @@ class LookAndFeelHelperTest {
 	}
 
 	@Test
-	@DisplayName("aplicarNimbus deve percorrer a lista mesmo sem Nimbus (caminho do FOR sem match)")
-	void testAplicarNimbusSemNimbus() throws Exception {
+	void testAplicarNimbusSemNimbus() {
 
 		UIManager.LookAndFeelInfo[] fakeInfos = {
 				new UIManager.LookAndFeelInfo("Metal", "javax.swing.plaf.metal.MetalLookAndFeel") };
 
-		// Acessa o campo privado installedLAFs via reflection
-		var field = UIManager.class.getDeclaredField("installedLAFs");
-		field.setAccessible(true);
-		field.set(null, fakeInfos);
+		// substitui a lista de LAFs global (APIs públicas, permitido pelo Java 17)
+		UIManager.setInstalledLookAndFeels(fakeInfos);
 
-		// Não deve lançar erro
 		assertDoesNotThrow(LookAndFeelHelper::aplicarNimbus);
 	}
 

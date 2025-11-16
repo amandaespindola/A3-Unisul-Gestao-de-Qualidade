@@ -150,9 +150,9 @@ class ConexaoManagerTest {
 	}
 
 	@Test
-	void testCarregarUrlDoPropertiesComExcecao() throws Exception {
+	void testCarregarUrlDoPropertiesComExcecao() {
 
-		// Cria um ClassLoader falso que SEMPRE retorna BrokenInputStream
+		// ClassLoader que sempre retorna InputStream quebrado
 		ClassLoader fakeLoader = new ClassLoader() {
 			@Override
 			public InputStream getResourceAsStream(String name) {
@@ -160,15 +160,18 @@ class ConexaoManagerTest {
 			}
 		};
 
-		// O segredo: alterar o classloader da classe ConexaoManager
-		Field fld = Class.class.getDeclaredField("classLoader");
-		fld.setAccessible(true);
-		fld.set(ConexaoManager.class, fakeLoader);
+		// Usa o context classloader no lugar do classloader real da classe
+		ClassLoader original = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(fakeLoader);
 
-		// Executa init(), que chamará carregarUrlDoProperties()
-		assertDoesNotThrow(() -> {
-			ConexaoManager.init("", "");
-		});
+		try {
+			assertDoesNotThrow(() -> {
+				ConexaoManager.init("", ""); // chama carregarUrlDoProperties()
+			});
+		} finally {
+			// restaura para não afetar outros testes
+			Thread.currentThread().setContextClassLoader(original);
+		}
 	}
 
 	@Test
