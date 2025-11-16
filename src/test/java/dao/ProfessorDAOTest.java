@@ -176,11 +176,26 @@ class ProfessorDAOTest {
 	}
 
 	@Test
-	void testFindByIdSQLExceptionReal() {
+	void testFindByIdSQLExceptionReal() throws SQLException {
+		// DROP a tabela para forçar exceção no SELECT
+		Connection conn = ConexaoManager.getConnection();
+		try (Statement st = conn.createStatement()) {
+			st.execute("DROP TABLE tb_professores");
+		}
+
+		ProfessorDAO daoErro = new ProfessorDAO(conn);
+
+		Professor resultado = daoErro.findById(1);
+
+		assertNull(resultado);
+	}
+
+	@Test
+	void testFindByIdSQLExceptionReal_CobreCatch() {
 		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
 			@Override
 			protected String getNomeTabela() {
-				return "tabela_inexistente"; // causa SQLException no SELECT
+				return "tabela_inexistente";
 			}
 		};
 
@@ -215,22 +230,38 @@ class ProfessorDAOTest {
 	}
 
 	@Test
-	void testUpdateSQLExceptionReal() {
+	void testUpdateSQLExceptionReal() throws SQLException {
+		// DROP tabela para forçar SQLException no UPDATE real
+		Connection conn = ConexaoManager.getConnection();
+		try (Statement st = conn.createStatement()) {
+			st.execute("DROP TABLE tb_professores");
+		}
 
-		// Conexao válida, mas tabela ERRADA
-		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
-			@Override
-			protected String getNomeTabela() {
-				return "tabela_inexistente"; // força SQLException
-			}
-		};
-
-		Professor p = criarProfessorFake("Erro", 35, "Ilha", "22222222222", "123", "Mestrado", 1000);
+		Professor p = criarProfessorFake("Erro", 30, "Ilha", "44444444444", "9999", "Mestrado", 9000);
 		p.setId(1);
+
+		ProfessorDAO daoErro = new ProfessorDAO(conn);
 
 		boolean atualizado = daoErro.update(p);
 
-		assertFalse(atualizado); // cai no catch REAL do ProfessorDAO
+		assertFalse(atualizado);
+	}
+
+	@Test
+	void testUpdateSQLExceptionCaminhoReal() {
+		ProfessorDAO daoErro = new ProfessorDAO() {
+			@Override
+			protected String getNomeTabela() {
+				return "tabela_inexistente";
+			}
+		};
+
+		Professor p = criarProfessorFake("Erro", 40, "Ilha", "99999999999", "2222", "Teste", 3000);
+		p.setId(1);
+
+		boolean resultado = daoErro.update(p);
+
+		assertFalse(resultado);
 	}
 
 	@Test
@@ -303,7 +334,12 @@ class ProfessorDAOTest {
 
 	@Test
 	void testGetMinhaListaConexaoNula() {
-		ProfessorDAO daoNulo = new ProfessorDAO(null);
+		ProfessorDAO daoNulo = new ProfessorDAO(null) {
+			@Override
+			protected Connection getConexao() {
+				return null;
+			}
+		};
 
 		List<Professor> lista = daoNulo.getMinhaLista();
 
