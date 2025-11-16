@@ -26,6 +26,14 @@ public class ConexaoManager {
 	private static String password; // última senha usada
 	private static boolean initialized = false; // se já chamamos init()
 
+	private static void executarShutdownSeguro() {
+		try {
+			close();
+		} catch (Exception ignored) {
+			// erro ignorado intencionalmente no shutdown
+		}
+	}
+
 	private ConexaoManager() {
 	}
 
@@ -127,15 +135,7 @@ public class ConexaoManager {
 	}
 
 	private static void addShutdownHook() {
-		// registra apenas 1 vez
-		// (não é crítico registrar mais de uma, mas economiza)
-		// você pode guardar um flag se quiser evitar múltiplos hooks
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			try {
-				close();
-			} catch (Exception ignored) {
-				// ignorado intencionalmente: erro ao fechar conexão no shutdown não causa
-			}
-		}));
+		Runtime.getRuntime().addShutdownHook(new Thread(ConexaoManager::executarShutdownSeguro));
 	}
+
 }

@@ -8,12 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.apache.commons.io.input.BrokenInputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 class ConexaoManagerTest {
@@ -106,7 +108,7 @@ class ConexaoManagerTest {
 	}
 
 	@Test
-	void testAbrirNovaConexaoDriverInvalido() throws Exception {
+	void testAbrirNovaConexaoDriverInvalido() {
 		ConexaoManager.setDriverClass("driver.invalido.Classe");
 
 		ConexaoManager.init("x", "y"); // tenta abrir e captura erro
@@ -191,11 +193,53 @@ class ConexaoManagerTest {
 			try {
 				ConexaoManager.close();
 			} catch (Exception ignored) {
+				// Ignorado propositalmente no teste: falhas no close não afetam o cenário
 			}
 		});
 
 		// 4 — Executa manualmente (não como hook do sistema)
 		assertDoesNotThrow(fakeHook::run);
+	}
+
+	@Test
+	void testCarregarUrlDoPropertiesExecutaCatch() {
+
+		// classloader que retorna um InputStream quebrado
+		ClassLoader fakeLoader = new ClassLoader() {
+			@Override
+			public InputStream getResourceAsStream(String name) {
+				return new BrokenInputStream(); // lança IOException no load()
+			}
+		};
+
+		// troca apenas TEMPORARIAMENTE o context classloader
+		ClassLoader original = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(fakeLoader);
+
+		try {
+			assertDoesNotThrow(() -> ConexaoManager.init("", ""));
+		} finally {
+			Thread.currentThread().setContextClassLoader(original);
+		}
+	}
+
+	@Test
+	void testExecutarShutdownSeguroCapturaExcecao() throws Exception {
+
+		// mock da conexão que lança exceção ao fechar
+		Connection connMock = Mockito.mock(Connection.class);
+		Mockito.doThrow(new SQLException("erro")).when(connMock).close();
+
+		// injeta no campo estático "conn"
+		Field fConn = ConexaoManager.class.getDeclaredField("conn");
+		fConn.setAccessible(true);
+		fConn.set(null, connMock);
+
+		// chama exatamente o método usado no hook
+		Method m = ConexaoManager.class.getDeclaredMethod("executarShutdownSeguro");
+		m.setAccessible(true);
+
+		assertDoesNotThrow(() -> m.invoke(null));
 	}
 
 }
