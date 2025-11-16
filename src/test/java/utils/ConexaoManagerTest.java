@@ -136,18 +136,15 @@ class ConexaoManagerTest {
 	}
 
 	@Test
-	void testAbrirNovaConexaoSQLException() throws Exception {
-		// Configura um driver válido
-		ConexaoManager.setDriverClass("org.sqlite.JDBC");
+	void testAbrirNovaConexaoSQLException() {
 
-		// Força DriverManager.getConnection a lançar erro
-		Mockito.mockStatic(java.sql.DriverManager.class).when(() -> java.sql.DriverManager
-				.getConnection(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new SQLException("falha"));
+		// Força uma URL inválida que SEMPRE gera SQLException no SQLite
+		ConexaoManager.setJdbcUrl("jdbc:sqlite://caminho/invalido/nao/existe");
+		ConexaoManager.setDriverClass("org.sqlite.JDBC");
 
 		ConexaoManager.init("user", "pass");
 
-		// getConnection deve retornar null
+		// Se o catch for executado, getConnection() será null
 		assertNull(ConexaoManager.getConnection());
 	}
 
