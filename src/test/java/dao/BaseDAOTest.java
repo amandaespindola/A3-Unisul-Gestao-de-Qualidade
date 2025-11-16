@@ -430,4 +430,124 @@ class BaseDAOTest {
 		assertEquals(0, maior); // cobre o ELSE do rs.next()
 	}
 
+	@Test
+	void testFecharConexaoExternaNaoFecha() throws Exception {
+		Connection connMock = Mockito.mock(Connection.class);
+
+		// DAO criado com construtor que marca conexaoExterna = true
+		BaseDAO<Object> daoExterno = new BaseDAO<Object>(connMock) {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_alunos";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		daoExterno.fecharConexaoSeInterna(connMock);
+
+		// conn.close() NÃO deve ser chamado
+		Mockito.verify(connMock, Mockito.never()).close();
+	}
+
+	@Test
+	void testObterMaiorIdComConexaoNull() {
+		BaseDAO<Object> daoNullConn = new BaseDAO<Object>() {
+
+			@Override
+			protected String getNomeTabela() {
+				return "tb_alunos";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+
+			@Override
+			protected Connection getConexao() {
+				return null; // força o caminho faltante
+			}
+		};
+
+		int maior = daoNullConn.obterMaiorId();
+
+		assertEquals(0, maior); // cobre "conn == null"
+	}
+
+	@Test
+	void testObterMaiorIdSQLExceptionNoPrepareStatement() throws Exception {
+
+		PreparedStatement stmtMock = Mockito.mock(PreparedStatement.class);
+		Mockito.when(stmtMock.executeQuery()).thenThrow(new SQLException("erro"));
+
+		Connection connMock = Mockito.mock(Connection.class);
+		Mockito.when(connMock.isClosed()).thenReturn(false);
+		Mockito.when(connMock.prepareStatement(Mockito.anyString())).thenReturn(stmtMock);
+
+		BaseDAO<Object> daoErro = new BaseDAO<Object>(connMock) {
+			@Override
+			protected String getNomeTabela() {
+				return "tb_alunos";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		int maior = daoErro.obterMaiorId();
+
+		assertEquals(0, maior); 
+	}
+
 }
