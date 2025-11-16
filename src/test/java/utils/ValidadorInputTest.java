@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.swing.JFormattedTextField;
-import javax.swing.text.MaskFormatter;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
