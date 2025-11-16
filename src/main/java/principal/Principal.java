@@ -32,7 +32,7 @@ public class Principal {
      *   <li>Inicializa o tema padrão (escuro) para diálogos como {@link JOptionPane};</li>
      *   <li>Solicita ao usuário a escolha entre tema claro ou escuro;</li>
      *   <li>Aplica customizações visuais via {@link UIManager};</li>
-     *   <li>Abre a tela de login.</li>
+     *   <li>Abre a tela de login..</li>
      * </ol>
      * </p>
      *
