@@ -143,7 +143,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Maven package (testes já rodaram)
+      # Maven package
       - name: Empacota o projeto com Maven
         run: mvn -B package --file pom.xml -DskipTests
 
