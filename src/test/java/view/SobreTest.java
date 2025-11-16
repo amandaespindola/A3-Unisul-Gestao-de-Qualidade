@@ -1,10 +1,12 @@
 package view;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.GraphicsEnvironment;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JLabel;
@@ -27,6 +29,8 @@ class SobreTest {
     @Test
     @DisplayName("A janela Sobre deve ser criada sem lançar exceções")
     void testCriacaoDaJanela() {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Ambiente sem suporte gráfico — teste ignorado no CI.");
+
         assertDoesNotThrow(() -> {
             Sobre sobre = new Sobre();
             assertNotNull(sobre);
@@ -36,6 +40,8 @@ class SobreTest {
     @Test
     @DisplayName("Componentes principais devem existir após initComponents()")
     void testComponentesPrincipais() throws InvocationTargetException, InterruptedException {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Ambiente sem suporte gráfico — teste ignorado no CI.");
+
         final Sobre[] janela = new Sobre[1];
 
         EventQueue.invokeAndWait(() -> janela[0] = new Sobre());
@@ -44,15 +50,15 @@ class SobreTest {
 
         assertEquals(BorderLayout.class, sobre.getLayout().getClass());
 
-        // verifica topo
+        // topo
         Component topo = sobre.getContentPane().getComponent(0);
         assertTrue(topo instanceof JPanel);
 
-        // verifica separador central
+        // separador
         Component sep1 = sobre.getContentPane().getComponent(1);
         assertTrue(sep1 instanceof JSeparator);
 
-        // painel do centro
+        // centro
         Component centro = sobre.getContentPane().getComponent(2);
         assertTrue(centro instanceof JPanel);
     }
@@ -60,6 +66,8 @@ class SobreTest {
     @Test
     @DisplayName("Título principal deve ser criado corretamente")
     void testTituloPrincipal() throws InvocationTargetException, InterruptedException {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Ambiente sem suporte gráfico — teste ignorado no CI.");
+
         final Sobre[] janela = new Sobre[1];
 
         EventQueue.invokeAndWait(() -> janela[0] = new Sobre());
@@ -75,6 +83,8 @@ class SobreTest {
     @Test
     @DisplayName("Painel de integrantes deve conter exatamente 6 labels")
     void testIntegrantes() throws InvocationTargetException, InterruptedException {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Ambiente sem suporte gráfico — teste ignorado no CI.");
+
         final Sobre[] janela = new Sobre[1];
 
         EventQueue.invokeAndWait(() -> janela[0] = new Sobre());
@@ -89,6 +99,8 @@ class SobreTest {
     @Test
     @DisplayName("O label de data deve estar presente e correto")
     void testData() throws InvocationTargetException, InterruptedException {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Ambiente sem suporte gráfico — teste ignorado no CI.");
+
         final Sobre[] janela = new Sobre[1];
 
         EventQueue.invokeAndWait(() -> janela[0] = new Sobre());
