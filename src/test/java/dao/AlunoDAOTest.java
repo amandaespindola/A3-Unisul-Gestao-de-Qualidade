@@ -175,7 +175,7 @@ class AlunoDAOTest {
 
 		Aluno resultado = daoErro.findById(1);
 
-		assertNull(resultado); 
+		assertNull(resultado);
 	}
 
 	// update
@@ -274,6 +274,35 @@ class AlunoDAOTest {
 
 		List<Aluno> lista = dao.getMinhaLista();
 		assertEquals(3, lista.size());
+	}
+
+	@Test
+	void testGetMinhaListaConexaoNula() {
+		AlunoDAO daoNulo = new AlunoDAO(null) {
+			@Override
+			protected Connection getConexao() {
+				return null;
+			}
+		};
+
+		List<Aluno> lista = daoNulo.getMinhaLista();
+
+		assertNotNull(lista);
+		assertTrue(lista.isEmpty());
+	}
+
+	@Test
+	void testGetMinhaListaSQLException() throws Exception {
+		// Derruba a tabela para forçar SQLException
+		Connection conn = ConexaoManager.getConnection();
+		try (Statement st = conn.createStatement()) {
+			st.execute("DROP TABLE tb_alunos");
+		}
+
+		List<Aluno> lista = dao.getMinhaLista();
+
+		assertNotNull(lista);
+		assertTrue(lista.isEmpty()); // pois não deve lançar exceção
 	}
 
 }
