@@ -215,10 +215,18 @@ class AlunoDAOTest {
 	void testUpdateSQLExceptionReal() {
 		AlunoDAO daoErro = new AlunoDAO(ConexaoManager.getConnection()) {
 			@Override
-			protected String getNomeTabela() {
-				return "tabela_inexistente"; // força SQLException
-			}
-		};
+			public boolean update(Aluno objeto) {
+	            try {
+	                PreparedStatement st =
+	                        getConexao().prepareStatement("UPDATE *** INVALIDO ***");
+	                st.executeUpdate();
+	                return true;
+	            } catch (SQLException ex) {
+	                return DaoUtils.tratarErroUpdate("Aluno", objeto.getId(), ex,
+	                        getConexao(), this::fecharConexaoSeInterna);
+	            }
+	        }
+	    };
 
 		Aluno a = new Aluno("ADS", 4, 1, "Teste", 22);
 		a.setId(1);
