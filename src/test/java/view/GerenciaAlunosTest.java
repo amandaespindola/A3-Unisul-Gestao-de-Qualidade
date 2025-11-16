@@ -200,7 +200,6 @@ class GerenciaAlunosTest {
         assumeFalse(GraphicsEnvironment.isHeadless(), "Ignorado no CI");
 
         GerenciaAlunos tela = new GerenciaAlunos();
-        JTable tabela = buscar(tela.getContentPane(), JTable.class);
 
         try (MockedStatic<ExcelExporter> excel = Mockito.mockStatic(ExcelExporter.class); MockedStatic<JOptionPane> msg = Mockito.mockStatic(JOptionPane.class)) {
 
