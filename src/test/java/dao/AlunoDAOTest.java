@@ -305,4 +305,9 @@ class AlunoDAOTest {
 		assertTrue(lista.isEmpty()); // pois não deve lançar exceção
 	}
 
+	@Test
+	void testGetNomeTabela() {
+		assertEquals("tb_alunos", dao.getNomeTabela());
+	}
+
 }
