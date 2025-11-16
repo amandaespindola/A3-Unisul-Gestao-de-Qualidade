@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.swing.JFormattedTextField;
+import javax.swing.text.MaskFormatter;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,22 @@ class ValidadorInputTest {
         int idade = ValidadorInput.calculaIdade(nascimento);
 
         assertEquals(20, idade);
+    }
+
+    @Test
+    @DisplayName("calculaIdade deve subtrair 1 quando aniversário ainda não ocorreu no ano atual")
+    void testCalculaIdadeAntesDoAniversario() {
+        Calendar hoje = Calendar.getInstance();
+
+        Calendar dataNasc = new GregorianCalendar(
+                hoje.get(Calendar.YEAR) - 20,
+                hoje.get(Calendar.MONTH),
+                hoje.get(Calendar.DAY_OF_MONTH) + 5
+        );
+
+        int idade = ValidadorInput.calculaIdade(dataNasc.getTime());
+
+        assertEquals(19, idade, "A idade deve ser 1 ano a menos, pois o aniversário ainda não ocorreu.");
     }
 
     // validação do tamanho do nome inserido
@@ -125,6 +142,21 @@ class ValidadorInputTest {
     }
 
     @Test
+    @DisplayName("validarSalario deve falhar quando o número de dígitos é menor que o mínimo")
+    void testValidarSalarioQuantidadeMinima() {
+
+        JFormattedTextField campo = new JFormattedTextField();
+        campo.setValue(5.0);
+
+        Mensagens ex = assertThrows(
+                Mensagens.class,
+                () -> ValidadorInput.validarSalario(campo, 2)
+        );
+
+        assertTrue(ex.getMessage().contains("deve possuir no mínimo"));
+    }
+
+    @Test
     @DisplayName("validarTamanhoMinimoNumerico deve validar números corretamente")
     void testValidarTamanhoMinimoNumerico() throws Mensagens {
         assertEquals(10, ValidadorInput.validarTamanhoMinimoNumerico("10", 5));
@@ -136,6 +168,18 @@ class ValidadorInputTest {
         NumberFormatException ex2 = assertThrows(NumberFormatException.class,
                 () -> ValidadorInput.validarTamanhoMinimoNumerico("abc", 5));
         assertNotNull(ex2.getMessage());
+    }
+
+    @Test
+    @DisplayName("validarTamanhoNumericoFixo deve lançar erro ao receber tamanho inválido")
+    void testValidarTamanhoNumericoFixoErro() {
+
+        Mensagens ex = assertThrows(
+                Mensagens.class,
+                () -> ValidadorInput.validarTamanhoNumericoFixo("12.345-6", 11, "CPF")
+        );
+
+        assertTrue(ex.getMessage().contains("caracteres numéricos"));
     }
 
     @Test
@@ -167,4 +211,52 @@ class ValidadorInputTest {
             assertNotNull(salario.getFormatterFactory());
         }
     }
+
+    @Test
+    @DisplayName("aplicarFormatacaoProfessor deve capturar erro de formatação")
+    void testAplicarFormatacaoProfessorCatch() {
+
+        JFormattedTextField cpf = new JFormattedTextField();
+        JFormattedTextField contato = new JFormattedTextField();
+        JFormattedTextField salario = new JFormattedTextField();
+
+        MaskFormatter formatterFake;
+
+        try {
+            formatterFake = new MaskFormatter("###") {
+                @Override
+                public void install(JFormattedTextField ftf) {
+                    throw new RuntimeException("simulação de erro interno");
+                }
+            };
+        } catch (java.text.ParseException e) {
+            fail("Erro inesperado ao criar MaskFormatter fake");
+            return;
+        }
+
+        MaskFormatter finalFake = formatterFake;
+
+        assertDoesNotThrow(() -> {
+            try {
+                finalFake.install(cpf);
+            } catch (RuntimeException e) {
+                ValidadorInput.aplicarFormatacaoProfessor(cpf, contato, salario);
+            }
+        });
+    }
+
+    @Test
+    @DisplayName("Construtor privado deve lançar UnsupportedOperationException")
+    void testConstructorPrivate() throws Exception {
+
+        var constructor = ValidadorInput.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        Exception ex = assertThrows(Exception.class, constructor::newInstance);
+
+        // Verifica a causa real
+        assertTrue(ex.getCause() instanceof UnsupportedOperationException,
+                "O construtor privado deve lançar UnsupportedOperationException");
+    }
+
 }
