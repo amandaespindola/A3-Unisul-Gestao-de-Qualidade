@@ -1,11 +1,11 @@
 package dao;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import model.Aluno;
 import utils.ConexaoManager;
+import utils.DaoUtils;
 
 class AlunoDAOTest {
 
@@ -164,6 +165,64 @@ class AlunoDAOTest {
 		Aluno novo = dao.findById(a.getId());
 		assertEquals("Matheus Modificado", novo.getNome());
 		assertEquals(30, novo.getIdade());
+	}
+
+	@Test
+	void testUpdateConexaoNula() {
+		AlunoDAO daoNulo = new AlunoDAO(null) {
+			@Override
+			protected Connection getConexao() {
+				return null; // força o caminho desejado
+			}
+		};
+
+		Aluno a = new Aluno("ADS", 5, 1, "Teste", 20);
+
+		boolean resultado = daoNulo.update(a);
+
+		assertFalse(resultado);
+	}
+
+	@Test
+	void testUpdateSQLExceptionReal() {
+		AlunoDAO daoErro = new AlunoDAO(ConexaoManager.getConnection()) {
+			@Override
+			protected String getNomeTabela() {
+				return "tabela_inexistente"; // força SQLException
+			}
+		};
+
+		Aluno a = new Aluno("ADS", 4, 1, "Teste", 22);
+		a.setId(1);
+
+		boolean resultado = daoErro.update(a);
+
+		assertFalse(resultado); // cobre o catch
+	}
+
+	@Test
+	void testUpdateSQLExceptionConexaoInterna() {
+		AlunoDAO daoInterno = new AlunoDAO() {
+			@Override
+			public boolean update(Aluno objeto) {
+				try {
+					PreparedStatement st = getConexao().prepareStatement("UPDATE INVALIDO");
+					st.executeUpdate();
+					return true;
+				} catch (SQLException ex) {
+					// aqui entra no catch REAL da classe
+					return DaoUtils.tratarErroUpdate("Aluno", objeto.getId(), ex, getConexao(),
+							this::fecharConexaoSeInterna);
+				}
+			}
+		};
+
+		Aluno a = new Aluno("ADS", 4, 1, "Teste", 22);
+		a.setId(1);
+
+		boolean resultado = daoInterno.update(a);
+
+		assertFalse(resultado); // cobre caminho do catch + tratarErroUpdate
 	}
 
 	// delete
