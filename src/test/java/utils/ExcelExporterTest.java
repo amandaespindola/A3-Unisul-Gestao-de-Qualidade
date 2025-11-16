@@ -110,7 +110,7 @@ class ExcelExporterTest {
                 new String[]{"Valor"}
         );
 
-        Path arquivoTemp = Files.createTempFile("excel_float_test", ".xls");
+        Path arquivoFloatTemp = Files.createTempFile("excel_float_test", ".xls");
 
         // usa o método mockado para evitar JFileChooser
         ExcelExporter.exportTableToExcelMocked(tabela, arquivoTemp);
@@ -123,7 +123,7 @@ class ExcelExporterTest {
             assertEquals(10.5f, (float) cell.getNumericCellValue(), 0.0001);
         }
 
-        Files.deleteIfExists(arquivoTemp);
+        Files.deleteIfExists(arquivoFloatTemp);
     }
 
     @Test
