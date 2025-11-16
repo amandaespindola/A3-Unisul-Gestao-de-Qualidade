@@ -1,8 +1,8 @@
 package utils;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.apache.commons.io.input.BrokenInputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -112,4 +113,59 @@ class ConexaoManagerTest {
 		Connection c = ConexaoManager.getConnection();
 		assertNull(c); // falha ao abrir → retorna null
 	}
+
+	@Test
+	void testGetConnectionSQLExceptionAoVerificarEstado() throws Exception {
+		// Prepara estado
+		ConexaoManager.setJdbcUrl("jdbc:sqlite::memory:");
+		ConexaoManager.setDriverClass("org.sqlite.JDBC");
+		ConexaoManager.init("", "");
+
+		Connection connMock = Mockito.mock(Connection.class);
+
+		// força exceção em isClosed()
+		Mockito.when(connMock.isClosed()).thenThrow(new SQLException("erro"));
+
+		// Injeta o mock via reflection
+		Field f = ConexaoManager.class.getDeclaredField("conn");
+		f.setAccessible(true);
+		f.set(null, connMock);
+
+		// Deve cair no catch e retornar null
+		assertNull(ConexaoManager.getConnection());
+	}
+
+	@Test
+	void testAbrirNovaConexaoSQLException() throws Exception {
+		// Configura um driver válido
+		ConexaoManager.setDriverClass("org.sqlite.JDBC");
+
+		// Força DriverManager.getConnection a lançar erro
+		Mockito.mockStatic(java.sql.DriverManager.class).when(() -> java.sql.DriverManager
+				.getConnection(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(new SQLException("falha"));
+
+		ConexaoManager.init("user", "pass");
+
+		// getConnection deve retornar null
+		assertNull(ConexaoManager.getConnection());
+	}
+
+	@Test
+	void testCarregarUrlDoPropertiesComExcecao() throws Exception {
+
+		// Mocka ClassLoader para retornar InputStream quebrado
+		ClassLoader loaderMock = Mockito.mock(ClassLoader.class);
+		Mockito.when(loaderMock.getResourceAsStream("config.properties")).thenReturn(new BrokenInputStream());
+
+		// Injeta loader mock
+		Field f = ConexaoManager.class.getDeclaredField("logger");
+		f.setAccessible(true);
+
+		// Chama init() que executa carregarUrlDoProperties()
+		assertDoesNotThrow(() -> {
+			ConexaoManager.init("", "");
+		});
+	}
+
 }

@@ -547,7 +547,7 @@ class BaseDAOTest {
 
 		int maior = daoErro.obterMaiorId();
 
-		assertEquals(0, maior); // cobre catch(SQLException)
+		assertEquals(0, maior); 
 	}
 
 }
