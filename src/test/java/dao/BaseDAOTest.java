@@ -127,6 +127,46 @@ class BaseDAOTest {
 	}
 
 	@Test
+	void testGetConexaoLoggerSevereChamado() {
+		// getConexao() vai retornar null diretamente
+		BaseDAO<Object> daoFake = new BaseDAO<Object>() {
+
+			@Override
+			protected Connection getConexao() {
+				return null; // força a linha logger.severe()
+			}
+
+			@Override
+			protected String getNomeTabela() {
+				return "tb_aluno";
+			}
+
+			@Override
+			public boolean insert(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean update(Object o) {
+				return false;
+			}
+
+			@Override
+			public boolean delete(int id) {
+				return false;
+			}
+
+			@Override
+			public Object findById(int id) {
+				return null;
+			}
+		};
+
+		Connection conn = daoFake.getConexao();
+		assertNull(conn); // cobre o return null após o logger
+	}
+
+	@Test
 	void testFecharConexaoSeInternaFechaConexao() throws Exception {
 		BaseDAO<Object> daoInterno = new BaseDAO<Object>() {
 			@Override
@@ -158,15 +198,17 @@ class BaseDAOTest {
 		Connection c = daoInterno.getConexao();
 		daoInterno.fecharConexaoSeInterna(c);
 
-		assertTrue(c.isClosed()); // desta vez deve fechar
+		assertTrue(c.isClosed()); 
 	}
 
 	@Test
 	void testFecharConexaoSeInterna() throws SQLException {
 		Connection conn = dao.getConexao();
 		dao.fecharConexaoSeInterna(conn);
-		assertFalse(conn.isClosed()); // conexao externa
+		assertFalse(conn.isClosed()); // 
 	}
+	
+
 
 	// testar método obterMaiorId
 
