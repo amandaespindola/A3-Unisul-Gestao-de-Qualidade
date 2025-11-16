@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,6 +89,31 @@ class ProfessorDAOTest {
 		boolean resultado = daoErro.insert(p);
 
 		assertFalse(resultado); // cai no catch
+	}
+
+	@Test
+	void testFindByIdSQLExceptionLambdaFalha() {
+
+		ProfessorDAO daoErro = new ProfessorDAO(ConexaoManager.getConnection()) {
+			@Override
+			public Professor findById(int id) {
+				try {
+					PreparedStatement stmt = getConexao().prepareStatement("SELECT * FROM tabela_inexistente");
+					stmt.executeQuery();
+					return null;
+				} catch (SQLException ex) {
+					// força o lambda a lançar uma exceção
+					logger.log(Level.SEVERE, ex, () -> {
+						throw new RuntimeException("Erro interno no lambda");
+					});
+					return null;
+				}
+			}
+		};
+
+		Professor resultado = daoErro.findById(10);
+
+		assertNull(resultado);
 	}
 
 	@Test
@@ -262,6 +288,33 @@ class ProfessorDAOTest {
 		boolean resultado = daoErro.update(p);
 
 		assertFalse(resultado);
+	}
+
+	@Test
+	void testUpdateSQLExceptionSemConexao() {
+
+		ProfessorDAO daoSemConexao = new ProfessorDAO(null) {
+			@Override
+			public boolean update(Professor objeto) {
+				try {
+					// força SQLException
+					PreparedStatement st = getConexao().prepareStatement("UPDATE INVALIDO");
+					st.executeUpdate();
+					return true;
+				} catch (SQLException ex) {
+					// aqui conn == null dentro do método original
+					return DaoUtils.tratarErroUpdate("Professor", objeto.getId(), ex, getConexao(),
+							this::fecharConexaoSeInterna);
+				}
+			}
+		};
+
+		Professor p = criarProfessorFake("Erro", 33, "Ilha", "00000000000", "99999", "Graduação", 5000);
+		p.setId(1);
+
+		boolean result = daoSemConexao.update(p);
+
+		assertFalse(result);
 	}
 
 	@Test
