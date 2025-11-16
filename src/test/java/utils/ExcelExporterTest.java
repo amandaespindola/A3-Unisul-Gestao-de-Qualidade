@@ -1,12 +1,24 @@
 package utils;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
-import org.junit.jupiter.api.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.JTable;
+
 import java.io.IOException;
-import java.nio.file.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,6 +98,44 @@ class ExcelExporterTest {
                 () -> ExcelExporter.exportTableToExcelMocked(tabelaExemplo, invalidPath));
 
         assertNotNull(thrown);
+    }
+
+    @Test
+    @DisplayName("setCellValue deve escrever corretamente valores Float no arquivo Excel")
+    void testSetCellValueFloat() throws Exception {
+        JTable tabela = new JTable(
+                new Object[][]{
+                    {10.5f}
+                },
+                new String[]{"Valor"}
+        );
+
+        Path arquivoFloatTemp = Files.createTempFile("excel_float_test", ".xls");
+
+        // usa o método mockado para evitar JFileChooser
+        ExcelExporter.exportTableToExcelMocked(tabela, arquivoTemp);
+
+        try (Workbook wb = new HSSFWorkbook(Files.newInputStream(arquivoTemp))) {
+            Sheet sheet = wb.getSheetAt(0);
+            Row row = sheet.getRow(1);
+            Cell cell = row.getCell(0);
+
+            assertEquals(10.5f, (float) cell.getNumericCellValue(), 0.0001);
+        }
+
+        Files.deleteIfExists(arquivoFloatTemp);
+    }
+
+    @Test
+    @DisplayName("Construtor privado deve lançar UnsupportedOperationException quando instanciado via reflexão")
+    void testConstructorPrivate() throws Exception {
+        Constructor<ExcelExporter> cons = ExcelExporter.class.getDeclaredConstructor();
+        cons.setAccessible(true);
+
+        InvocationTargetException excecao
+                = assertThrows(InvocationTargetException.class, cons::newInstance);
+
+        assertTrue(excecao.getTargetException() instanceof UnsupportedOperationException);
     }
 
 }
