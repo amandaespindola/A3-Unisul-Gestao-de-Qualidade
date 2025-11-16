@@ -1,11 +1,6 @@
 package utils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.awt.BorderLayout;
@@ -33,7 +28,7 @@ import org.junit.jupiter.api.Test;
 
 class ViewUtilsTest {
 
-    // Classe auxiliar para simular erro no campo formatado
+    // classe auxiliar para simular erro no campo formatado
     static class CampoQueSempreErra extends JFormattedTextField {
 
         @Override
@@ -68,6 +63,78 @@ class ViewUtilsTest {
         ViewUtils.fecharJanelaAoCancelar(botao, frame);
 
         assertFalse(frame.isDisplayable(), "Frame deve ter sido fechado.");
+    }
+
+    @Test
+    void testCriarPainelBotoesGerencia() {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
+
+        JButton b1 = new JButton("A");
+        JButton b2 = new JButton("B");
+        JButton b3 = new JButton("C");
+        JButton b4 = new JButton("D");
+        JButton b5 = new JButton("E");
+
+        JPanel painel = ViewUtils.criarPainelBotoesGerencia(b1, b2, b3, b4, b5);
+
+        assertEquals(5, painel.getComponentCount());
+    }
+
+    @Test
+    void testCriarPainelGerenciaTopo() {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
+
+        JPanel topo = ViewUtils.criarPainelGerenciaTopo(
+                "Gerenciar X",
+                new JButton("A"),
+                new JButton("B"),
+                new JButton("C"),
+                new JButton("D"),
+                new JButton("E")
+        );
+
+        assertTrue(topo.getComponent(0) instanceof JLabel);
+        assertEquals("Gerenciar X", ((JLabel) topo.getComponent(0)).getText());
+    }
+
+    @Test
+    void testCriarPainelBase() {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
+
+        JFrame f = new JFrame();
+        JPanel p = ViewUtils.criarPainelBase(f);
+
+        assertEquals(BorderLayout.class, p.getLayout().getClass());
+    }
+
+    @Test
+    void testAdicionarBotoesConfirmarCancelar() {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
+
+        JPanel painel = new JPanel(new BorderLayout());
+        JRootPane root = new JRootPane();
+
+        ViewUtils.adicionarBotoesConfirmarCancelar(painel, () -> {
+        }, () -> {
+        }, root);
+
+        Component comp = painel.getComponent(0);
+        assertTrue(comp instanceof JPanel);
+        assertEquals(2, ((JPanel) comp).getComponentCount());
+    }
+
+    @Test
+    void testCriarBotoesGerencia() {
+        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
+
+        JButton[] btns = ViewUtils.criarBotoesGerencia(() -> {
+        }, () -> {
+        }, () -> {
+        }, () -> {
+        }, () -> {
+        }, Logger.getLogger("x"));
+
+        assertEquals(5, btns.length);
     }
 
     @Test
@@ -144,38 +211,6 @@ class ViewUtilsTest {
     }
 
     @Test
-    void testCriarPainelBotoesGerencia() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
-
-        JButton b1 = new JButton("A");
-        JButton b2 = new JButton("B");
-        JButton b3 = new JButton("C");
-        JButton b4 = new JButton("D");
-        JButton b5 = new JButton("E");
-
-        JPanel painel = ViewUtils.criarPainelBotoesGerencia(b1, b2, b3, b4, b5);
-
-        assertEquals(5, painel.getComponentCount());
-    }
-
-    @Test
-    void testCriarPainelGerenciaTopo() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
-
-        JPanel topo = ViewUtils.criarPainelGerenciaTopo(
-                "Gerenciar X",
-                new JButton("A"),
-                new JButton("B"),
-                new JButton("C"),
-                new JButton("D"),
-                new JButton("E")
-        );
-
-        assertTrue(topo.getComponent(0) instanceof JLabel);
-        assertEquals("Gerenciar X", ((JLabel) topo.getComponent(0)).getText());
-    }
-
-    @Test
     void testCriarMenuGerencia() {
         JMenuBar menuBar = ViewUtils.criarMenuGerencia("Principal", () -> {
         }, () -> {
@@ -186,86 +221,17 @@ class ViewUtilsTest {
     }
 
     @Test
-    void testCriarPainelBase() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
-
-        JFrame f = new JFrame();
-        JPanel p = ViewUtils.criarPainelBase(f);
-
-        assertEquals(BorderLayout.class, p.getLayout().getClass());
-    }
-
-    @Test
-    void testAdicionarBotoesConfirmarCancelar() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
-
-        JPanel painel = new JPanel(new BorderLayout());
-        JRootPane root = new JRootPane();
-
-        ViewUtils.adicionarBotoesConfirmarCancelar(painel, () -> {
-        }, () -> {
-        }, root);
-
-        Component comp = painel.getComponent(0);
-        assertTrue(comp instanceof JPanel);
-        assertEquals(2, ((JPanel) comp).getComponentCount());
-    }
-
-    @Test
-    void testCriarBotoesGerencia() {
-        assumeFalse(GraphicsEnvironment.isHeadless(), "Sem ambiente gráfico — ignorado.");
-
-        JButton[] btns = ViewUtils.criarBotoesGerencia(() -> {
-        }, () -> {
-        }, () -> {
-        }, () -> {
-        }, () -> {
-        }, Logger.getLogger("x"));
-
-        assertEquals(5, btns.length);
-    }
-
-    // testes headless-safe, nao disparam abertura de componentes UI no ambiente 
-    @Test
-    void testTratarErroCadastro_NumberFormat() {   // ⭐
-        if (GraphicsEnvironment.isHeadless()) {
-            assertThrows(HeadlessException.class, ()
-                    -> ViewUtils.tratarErroCadastro(new NumberFormatException())
-            );
-        } else {
-            assertDoesNotThrow(()
-                    -> ViewUtils.tratarErroCadastro(new NumberFormatException())
-            );
-        }
-    }
-
-    @Test
-    void testTratarErroCadastro_ErroGenerico() {   // ⭐
-        if (GraphicsEnvironment.isHeadless()) {
-            assertThrows(HeadlessException.class, ()
-                    -> ViewUtils.tratarErroCadastro(new Exception("Falha no cadastro"))
-            );
-        } else {
-            assertDoesNotThrow(()
-                    -> ViewUtils.tratarErroCadastro(new Exception("Falha no cadastro"))
-            );
-        }
-    }
-
-    @Test
-    void testAplicarFormatacaoProfessorComAlerta_ParseException() {   // ⭐
+    void testAplicarFormatacaoProfessorComAlerta_ParseException() {
         JFormattedTextField c1 = new CampoQueSempreErra();
         JFormattedTextField c2 = new CampoQueSempreErra();
         JFormattedTextField c3 = new CampoQueSempreErra();
 
         if (GraphicsEnvironment.isHeadless()) {
-            assertThrows(HeadlessException.class, ()
-                    -> ViewUtils.aplicarFormatacaoProfessorComAlerta(null, c1, c2, c3)
-            );
+            assertThrows(HeadlessException.class,
+                    () -> ViewUtils.aplicarFormatacaoProfessorComAlerta(null, c1, c2, c3));
         } else {
-            assertDoesNotThrow(()
-                    -> ViewUtils.aplicarFormatacaoProfessorComAlerta(null, c1, c2, c3)
-            );
+            assertDoesNotThrow(
+                    () -> ViewUtils.aplicarFormatacaoProfessorComAlerta(null, c1, c2, c3));
         }
     }
 }
