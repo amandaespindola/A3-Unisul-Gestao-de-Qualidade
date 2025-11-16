@@ -118,7 +118,12 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           DISPLAY: :1
           _JAVA_OPTIONS: "-Djava.awt.headless=false"
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=amandaespindola_A3-Unisul-Gestao-de-Qualidade org.jacoco:jacoco-maven-plugin:prepare-agent -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+        run: |
+          mvn -B verify \
+            org.jacoco:jacoco-maven-plugin:prepare-agent \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=amandaespindola_A3-Unisul-Gestao-de-Qualidade \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
   # Ambiente de produção
   build-prd:
