@@ -22,13 +22,6 @@ class TelaPrincipalTest {
 	// Não colocar headless aqui, Xvfb precisa de display real
 	// @BeforeAll não define headless no Xvfb
 
-	// Helper para acessar campos privados
-	private Object getField(Object obj, String name) throws Exception {
-		Field f = obj.getClass().getDeclaredField(name);
-		f.setAccessible(true);
-		return f.get(obj);
-	}
-
 	// Helper para chamar métodos privados
 	private void callPrivate(Object obj, String methodName) throws Exception {
 		Method m = obj.getClass().getDeclaredMethod(methodName);

@@ -106,7 +106,7 @@ class ConexaoManagerTest {
 	}
 
 	@Test
-	void testAbrirNovaConexaoDriverInvalido() throws Exception {
+	void testAbrirNovaConexaoDriverInvalido() {
 		ConexaoManager.setDriverClass("driver.invalido.Classe");
 
 		ConexaoManager.init("x", "y"); // tenta abrir e captura erro
@@ -191,6 +191,7 @@ class ConexaoManagerTest {
 			try {
 				ConexaoManager.close();
 			} catch (Exception ignored) {
+				// Ignorado propositalmente no teste: falhas no close não afetam o cenário
 			}
 		});
 
