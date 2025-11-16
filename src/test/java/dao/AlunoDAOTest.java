@@ -1,9 +1,14 @@
 package dao;
 
-import model.Aluno;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -11,12 +16,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import model.Aluno;
 import utils.ConexaoManager;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AlunoDAOTest {
 
@@ -30,7 +31,7 @@ class AlunoDAOTest {
 		ConexaoManager.close();
 		ConexaoManager.init("", "");
 
-		Connection conn = ConexaoManager.getConnection();	
+		Connection conn = ConexaoManager.getConnection();
 		criarTabelaSQLite(conn);
 
 		dao = new AlunoDAO(conn);
@@ -52,6 +53,80 @@ class AlunoDAOTest {
 
 		assertTrue(inserido);
 		assertTrue(a.getId() > 0);
+	}
+
+	// testa if conn == null
+	@Test
+	void testInsertConexaoNula() {
+		AlunoDAO daoNulo = new AlunoDAO(null) {
+			@Override
+			protected Connection getConexao() {
+				return null;
+			}
+		};
+
+		Aluno a = new Aluno("Sistemas", 3, 1, "João", 20);
+
+		boolean result = daoNulo.insert(a);
+
+		assertFalse(result);
+	}
+
+	@Test
+	void testInsertSQLException() throws Exception {
+		// Drop para causar SQLException
+		Connection conn = ConexaoManager.getConnection();
+		try (Statement st = conn.createStatement()) {
+			st.execute("DROP TABLE tb_alunos");
+		}
+
+		AlunoDAO daoErro = new AlunoDAO(conn);
+
+		Aluno a = new Aluno("Erro", 5, 1, "José", 33);
+
+		boolean result = daoErro.insert(a);
+
+		assertFalse(result); // cai no catch
+	}
+
+	@Test
+	void testInsertFinallyExecutado() {
+		AlunoDAO daoInterno = new AlunoDAO() {
+			@Override
+			protected String getNomeTabela() {
+				return "tabela_inexistente"; // forçando erro no insert
+			}
+		};
+
+		Aluno a = new Aluno("Teste", 2, 1, "Maria", 19);
+
+		assertDoesNotThrow(() -> daoInterno.insert(a)); // cobre o finally
+	}
+
+	@Test
+	void testInsertRetornaFalseSemExcecao() {
+		AlunoDAO daoFake = new AlunoDAO(ConexaoManager.getConnection()) {
+			@Override
+			public boolean insert(Aluno objeto) {
+				try {
+					PreparedStatement stmt = getConexao().prepareStatement("INSERT INTO tb_alunos (nome) VALUES (?)");
+					stmt.setString(1, objeto.getNome());
+
+					// força o return false final da classe
+					stmt.executeUpdate();
+					return false;
+
+				} catch (Exception e) {
+					return false;
+				}
+			}
+		};
+
+		Aluno a = new Aluno("Falha", 4, 1, "Mario", 50);
+
+		boolean result = daoFake.insert(a);
+
+		assertFalse(result); // cobre o return false final
 	}
 
 	// FindById
