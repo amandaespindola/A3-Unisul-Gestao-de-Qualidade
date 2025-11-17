@@ -47,8 +47,6 @@ class CadastroAlunoTest {
 		Component centro = painel.getComponent(1);
 		assertTrue(centro instanceof JPanel);
 
-		JPanel form = (JPanel) centro;
-
 		// procura nome
 		JTextField nome = (JTextField) findField(tela, "nome");
 		assertNotNull(nome);

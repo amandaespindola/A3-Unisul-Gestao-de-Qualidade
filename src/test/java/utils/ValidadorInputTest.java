@@ -52,6 +52,52 @@ class ValidadorInputTest {
         assertEquals(19, idade, "A idade deve ser 1 ano a menos, pois o aniversário ainda não ocorreu.");
     }
 
+    // validações de segurança
+    @Test
+    @DisplayName("validarSegurancaBasica deve rejeitar XSS / HTML")
+    void testSeguranca_XSS() {
+        assertFalse(ValidadorInput.validarSegurancaBasica("<script>alert(1)</script>"));
+        assertFalse(ValidadorInput.validarSegurancaBasica("<img src=x onerror=alert(1)>"));
+        assertFalse(ValidadorInput.validarSegurancaBasica("<<b>>"));
+    }
+
+    @Test
+    @DisplayName("validarSegurancaBasica deve rejeitar SQL Injection")
+    void testSeguranca_SQLInjection() {
+        assertFalse(ValidadorInput.validarSegurancaBasica("' OR '1'='1"));
+        assertFalse(ValidadorInput.validarSegurancaBasica("DROP TABLE tb_alunos"));
+        assertFalse(ValidadorInput.validarSegurancaBasica("select * from users"));
+    }
+
+    @Test
+    @DisplayName("validarSegurancaBasica deve rejeitar path traversal")
+    void testSeguranca_PathTraversal() {
+        assertFalse(ValidadorInput.validarSegurancaBasica("../../etc/passwd"));
+        assertFalse(ValidadorInput.validarSegurancaBasica("..\\secret"));
+    }
+
+    @Test
+    @DisplayName("validarSegurancaBasica deve rejeitar Unicode suspeito")
+    void testSeguranca_Unicode() {
+        String reverser = "Admin\u202Eexe"; // bidi override
+        assertFalse(ValidadorInput.validarSegurancaBasica(reverser));
+        assertFalse(ValidadorInput.validarSegurancaBasica("Amanda 😎"));
+    }
+
+    @Test
+    @DisplayName("validarSegurancaBasica deve rejeitar shell injection")
+    void testSeguranca_ShellInjection() {
+        assertFalse(ValidadorInput.validarSegurancaBasica("`rm -rf /`"));
+        assertFalse(ValidadorInput.validarSegurancaBasica("| ls"));
+    }
+
+    @Test
+    @DisplayName("validarSegurancaBasica deve aceitar entradas seguras")
+    void testSeguranca_Seguro() {
+        assertTrue(ValidadorInput.validarSegurancaBasica("Amanda"));
+        assertTrue(ValidadorInput.validarSegurancaBasica("Joao da Silva"));
+    }
+
     // validação do tamanho do nome inserido
     @Test
     @DisplayName("validarNome deve aceitar nomes válidos e rejeitar inválidos")

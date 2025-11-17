@@ -10,6 +10,8 @@ import javax.swing.text.NumberFormatter;
 
 import view.Mensagens;
 
+import java.text.Normalizer;
+
 import javax.swing.JFormattedTextField;
 
 import java.util.logging.Level;
@@ -25,9 +27,8 @@ import java.util.logging.Level;
  * A classe não pode ser instanciada.
  */
 public final class ValidadorInput {
-	private static final java.util.logging.Logger logger = java.util.logging.Logger
-			.getLogger(ValidadorInput.class.getName());
 
+<<<<<<< HEAD
 	/**
      * Construtor privado para impedir instância da classe.
      * Esta é uma classe utilitária.
@@ -46,19 +47,31 @@ public final class ValidadorInput {
 		if (input == null) {
 			return "";
 		}
+=======
+    private static final java.util.logging.Logger logger = java.util.logging.Logger
+            .getLogger(ValidadorInput.class.getName());
 
-		StringBuilder sb = new StringBuilder();
+    private ValidadorInput() {
+        throw new UnsupportedOperationException("Esta é uma classe utilitária e não pode ser instanciada.");
+    }
+>>>>>>> 79bc5a8fc879fe38bf31a14db192a92c78a93141
 
-		for (int i = 0; i < input.length(); i++) {
-			char c = input.charAt(i);
-			if (Character.isDigit(c)) {
-				sb.append(c);
-			}
-		}
+    // Remove caracteres não-numéricos (máscara) de uma string
+    public static String removerMascara(String input) {
+        if (input == null) {
+            return "";
+        }
 
-		return sb.toString();
-	}
+        StringBuilder sb = new StringBuilder();
 
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (Character.isDigit(c)) {
+                sb.append(c);
+            }
+        }
+
+<<<<<<< HEAD
 	/**
      * Calcula a idade com base na data de nascimento.
      *
@@ -68,20 +81,27 @@ public final class ValidadorInput {
 	public static int calculaIdade(Date dataNasc) {
 		Calendar dataNascimento = new GregorianCalendar();
 		dataNascimento.setTime(dataNasc);
+=======
+        return sb.toString();
+    }
+>>>>>>> 79bc5a8fc879fe38bf31a14db192a92c78a93141
 
-		Calendar today = Calendar.getInstance();
+    // Calcula a idade com base na data de nascimento
+    public static int calculaIdade(Date dataNasc) {
+        Calendar dataNascimento = new GregorianCalendar();
+        dataNascimento.setTime(dataNasc);
 
-		int age = today.get(Calendar.YEAR) - dataNascimento.get(Calendar.YEAR);
+        Calendar today = Calendar.getInstance();
 
-		dataNascimento.add(Calendar.YEAR, age);
+        int age = today.get(Calendar.YEAR) - dataNascimento.get(Calendar.YEAR);
 
-		if (today.before(dataNascimento)) {
-			age--;
-		}
+        dataNascimento.add(Calendar.YEAR, age);
 
-		return age;
-	}
+        if (today.before(dataNascimento)) {
+            age--;
+        }
 
+<<<<<<< HEAD
 	/**
      * Valida um nome verificando se atinge o tamanho mínimo exigido.
      *
@@ -170,32 +190,63 @@ public final class ValidadorInput {
 	public static double validarSalario(JFormattedTextField campo, int tamanhoMinimo) throws Mensagens {
 		Number valor = (Number) campo.getValue();
 		String mensagemErroSalarioInvalido = "Informe um salário válido";
+=======
+        return age;
+    }
 
-		if (valor == null) {
-			// tenta parsear texto manualmente (fallback)
-			try {
-				String texto = campo.getText().replaceAll("[^0-9,]", "").replace(",", ".");
-				if (texto.isEmpty()) {
-					throw new Mensagens(mensagemErroSalarioInvalido);
-				}
-				valor = Double.parseDouble(texto);
-			} catch (Exception e) {
-				throw new Mensagens(mensagemErroSalarioInvalido);
-			}
-		}
+    // Auxiliares para validações de segurança no nome
+    public static boolean validarSegurancaBasica(String input) {
+        if (input == null || input.isBlank()) {
+            return false;
+        }
 
-		if (valor.doubleValue() <= 0) {
-			throw new Mensagens("Informe um salário válido");
-		}
+        // Permitir letras, números, acentos e espaço
+        if (input.matches("^[\\p{L}0-9 .'-]+$")) {
+            return true; // seguro
+        }
 
-		String salarioLimpo = String.valueOf((long) valor.doubleValue());
-		if (salarioLimpo.length() < tamanhoMinimo) {
-			throw new Mensagens("O campo salário deve possuir no mínimo " + tamanhoMinimo + " caracteres numéricos");
-		}
+        String txt = Normalizer.normalize(input, Normalizer.Form.NFKC).toLowerCase();
 
-		return valor.doubleValue();
-	}
+        return !temXSS(txt)
+                && !temSQLInjection(txt)
+                && !temPathTraversal(txt)
+                && !temUnicodeSuspeito(txt)
+                && !temShellInjection(txt);
+    }
+>>>>>>> 79bc5a8fc879fe38bf31a14db192a92c78a93141
 
+    private static boolean temXSS(String txt) {
+        String[] padroes = {
+            "<script", "</script", "<img", "<iframe", "<object", "<embed",
+            "<svg", "onerror", "onload", "<<", "<>", "</", "<script/>", "<!--"
+        };
+        return contemAlgum(txt, padroes);
+    }
+
+    private static boolean temSQLInjection(String txt) {
+        String[] padroes = {
+            "drop table", "select *", " or 1=1", "' or '1'='1",
+            "\" or \"\"=\"", "xp_cmdshell", "--", ";--", "' or ",
+            " exec ", " insert into "
+        };
+        return contemAlgum(txt, padroes);
+    }
+
+    private static boolean temPathTraversal(String txt) {
+        return txt.contains("../") || txt.contains("..\\");
+    }
+
+    private static boolean temUnicodeSuspeito(String txt) {
+        return txt.codePoints().anyMatch(cp
+                -> (cp >= 0x1F000)
+                || // emojis
+                (cp >= 0x2600 && cp <= 0x27BF)
+                || // símbolos
+                cp == 0x202E // bidi override
+        );
+    }
+
+<<<<<<< HEAD
 	/**
      * Valida um valor numérico garantindo que atinja um tamanho mínimo.
      *
@@ -230,31 +281,142 @@ public final class ValidadorInput {
 	public static void aplicarFormatacaoProfessor(javax.swing.JFormattedTextField cpfFormatado,
 			javax.swing.JFormattedTextField contatoFormatado, javax.swing.JFormattedTextField salarioFormatado)
 			throws java.text.ParseException {
+=======
+    private static boolean temShellInjection(String txt) {
+        String[] padroes = {"`", "$(", "|", "||", "&", ";"};
+        return contemAlgum(txt, padroes);
+    }
 
-		try {
-			// Máscara de CPF
-			MaskFormatter mask = new MaskFormatter("###.###.###-##");
-			mask.install(cpfFormatado);
+    private static boolean contemAlgum(String txt, String[] padroes) {
+        for (String p : padroes) {
+            if (txt.contains(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+>>>>>>> 79bc5a8fc879fe38bf31a14db192a92c78a93141
 
-			// Máscara de Contato
-			MaskFormatter mask2 = new MaskFormatter("(##) # ####-####");
-			mask2.install(contatoFormatado);
+    // Validação de Nome
+    public static String validarNome(String nome, int minLength) throws Mensagens {
 
-			// Formatação de Salário (similar à versão do CadastroProfessor)
-			java.text.DecimalFormat formatoDecimal = (java.text.DecimalFormat) java.text.NumberFormat
-					.getNumberInstance(new java.util.Locale("pt", "BR"));
-			formatoDecimal.applyPattern("#,##0.00");
+        if (nome == null || nome.isBlank()) {
+            throw new Mensagens("Nome deve conter ao menos " + minLength + " caracteres.");
+        }
 
-			NumberFormatter formatter = new NumberFormatter(formatoDecimal);
-			formatter.setAllowsInvalid(true);
-			formatter.setMinimum(0.0);
-			formatter.setValueClass(Double.class);
+        if (!validarSegurancaBasica(nome)) {
+            throw new Mensagens("Entrada contém caracteres inválidos.");
+        }
 
-			salarioFormatado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(formatter));
-			salarioFormatado.setFocusLostBehavior(javax.swing.JFormattedTextField.COMMIT);
+        if (nome.length() < minLength) {
+            throw new Mensagens("Nome deve conter ao menos " + minLength + " caracteres.");
+        }
 
-		} catch (java.text.ParseException ex) {
-			logger.log(Level.WARNING, "Erro de formatação", ex);
-		}
-	}
+        return nome;
+    }
+
+    // Validação de Seleção de ComboBox
+    public static String validarSelecaoComboBox(int selectedIndex, List<String> opcoes, String campoMensagem)
+            throws Mensagens {
+        if (selectedIndex <= 0 || selectedIndex >= opcoes.size()) { // O índice 0 é sempre o valor padrão ("-" ou
+            // similar)
+            throw new Mensagens("Escolha o valor para o campo: " + campoMensagem);
+        }
+        return opcoes.get(selectedIndex);
+    }
+
+    // Validação de CPF/Contato (Tamanho Numérico Fixo)
+    public static String validarTamanhoNumericoFixo(String inputFormatado, int tamanhoObrigatorio, String campoMensagem)
+            throws Mensagens {
+        String inputLimpo = removerMascara(inputFormatado);
+        if (inputLimpo.length() != tamanhoObrigatorio) {
+            throw new Mensagens(
+                    "O campo " + campoMensagem + " deve possuir " + tamanhoObrigatorio + " caracteres numéricos");
+        }
+        return inputFormatado; // Retorna o valor formatado (com máscara)
+    }
+
+    // Validação de Idade por Data de Nascimento
+    public static int validarIdadePorData(Date dataNasc, int idadeMinima) throws Mensagens {
+        if (dataNasc == null) {
+            throw new Mensagens("Data de Nascimento não pode ser vazia.");
+        }
+        int idade = calculaIdade(dataNasc);
+        if (idade < idadeMinima) {
+            throw new Mensagens("Data de Nascimento inválida ou professor menor de " + idadeMinima + " anos.");
+        }
+        return idade;
+    }
+
+    // Validação de Salário (Tamanho Numérico Mínimo e Conversão)
+    public static double validarSalario(JFormattedTextField campo, int tamanhoMinimo) throws Mensagens {
+        Number valor = (Number) campo.getValue();
+        String mensagemErroSalarioInvalido = "Informe um salário válido";
+
+        if (valor == null) {
+            // tenta parsear texto manualmente (fallback)
+            try {
+                String texto = campo.getText().replaceAll("[^0-9,]", "").replace(",", ".");
+                if (texto.isEmpty()) {
+                    throw new Mensagens(mensagemErroSalarioInvalido);
+                }
+                valor = Double.parseDouble(texto);
+            } catch (Exception e) {
+                throw new Mensagens(mensagemErroSalarioInvalido);
+            }
+        }
+
+        if (valor.doubleValue() <= 0) {
+            throw new Mensagens("Informe um salário válido");
+        }
+
+        String salarioLimpo = String.valueOf((long) valor.doubleValue());
+        if (salarioLimpo.length() < tamanhoMinimo) {
+            throw new Mensagens("O campo salário deve possuir no mínimo " + tamanhoMinimo + " caracteres numéricos");
+        }
+
+        return valor.doubleValue();
+    }
+
+    // Validação de Tamanho Mínimo Numérico (Para Campos como Idade/Fase)
+    public static int validarTamanhoMinimoNumerico(String inputStr, int tamanhoMinimo)
+            throws Mensagens, NumberFormatException {
+        int valor = Integer.parseInt(inputStr);
+        if (valor < tamanhoMinimo) {
+            throw new Mensagens("O valor deve ser no mínimo " + tamanhoMinimo + ".");
+        }
+        return valor;
+    }
+
+    // Formatação de campos de Cadastro/Edição de Professor
+    public static void aplicarFormatacaoProfessor(javax.swing.JFormattedTextField cpfFormatado,
+            javax.swing.JFormattedTextField contatoFormatado, javax.swing.JFormattedTextField salarioFormatado)
+            throws java.text.ParseException {
+
+        try {
+            // Máscara de CPF
+            MaskFormatter mask = new MaskFormatter("###.###.###-##");
+            mask.install(cpfFormatado);
+
+            // Máscara de Contato
+            MaskFormatter mask2 = new MaskFormatter("(##) # ####-####");
+            mask2.install(contatoFormatado);
+
+            // Formatação de Salário (similar à versão do CadastroProfessor)
+            java.text.DecimalFormat formatoDecimal = (java.text.DecimalFormat) java.text.NumberFormat
+                    .getNumberInstance(new java.util.Locale("pt", "BR"));
+            formatoDecimal.applyPattern("#,##0.00");
+
+            NumberFormatter formatter = new NumberFormatter(formatoDecimal);
+            formatter.setAllowsInvalid(true);
+            formatter.setMinimum(0.0);
+            formatter.setValueClass(Double.class);
+
+            salarioFormatado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(formatter));
+            salarioFormatado.setFocusLostBehavior(javax.swing.JFormattedTextField.COMMIT);
+
+        } catch (java.text.ParseException ex) {
+            logger.log(Level.WARNING, "Erro de formatação", ex);
+        }
+    }
 }

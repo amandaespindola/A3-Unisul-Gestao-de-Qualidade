@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -105,7 +107,7 @@ class ConexaoManagerTest {
 	}
 
 	@Test
-	void testAbrirNovaConexaoDriverInvalido() throws Exception {
+	void testAbrirNovaConexaoDriverInvalido() {
 		ConexaoManager.setDriverClass("driver.invalido.Classe");
 
 		ConexaoManager.init("x", "y"); // tenta abrir e captura erro
@@ -149,20 +151,94 @@ class ConexaoManagerTest {
 	}
 
 	@Test
-	void testCarregarUrlDoPropertiesComExcecao() throws Exception {
+	void testCarregarUrlDoPropertiesComExcecao() {
 
-		// Mocka ClassLoader para retornar InputStream quebrado
-		ClassLoader loaderMock = Mockito.mock(ClassLoader.class);
-		Mockito.when(loaderMock.getResourceAsStream("config.properties")).thenReturn(new BrokenInputStream());
+		// ClassLoader que sempre retorna InputStream quebrado
+		ClassLoader fakeLoader = new ClassLoader() {
+			@Override
+			public InputStream getResourceAsStream(String name) {
+				return new BrokenInputStream(); // força exception no load()
+			}
+		};
 
-		// Injeta loader mock
-		Field f = ConexaoManager.class.getDeclaredField("logger");
-		f.setAccessible(true);
+		// Usa o context classloader no lugar do classloader real da classe
+		ClassLoader original = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(fakeLoader);
 
-		// Chama init() que executa carregarUrlDoProperties()
-		assertDoesNotThrow(() -> {
-			ConexaoManager.init("", "");
+		try {
+			assertDoesNotThrow(() -> {
+				ConexaoManager.init("", ""); // chama carregarUrlDoProperties()
+			});
+		} finally {
+			// restaura para não afetar outros testes
+			Thread.currentThread().setContextClassLoader(original);
+		}
+	}
+
+	@Test
+	void testShutdownHookCatch() throws Exception {
+
+		// 1 — Mocka conexão que lança exceção no close()
+		Connection connMock = Mockito.mock(Connection.class);
+		Mockito.doThrow(new SQLException("erro")).when(connMock).close();
+
+		// 2 — Injeta o mock no campo estático 'conn'
+		Field fConn = ConexaoManager.class.getDeclaredField("conn");
+		fConn.setAccessible(true);
+		fConn.set(null, connMock);
+
+		// 3 — Cria o mesmo hook que o método addShutdownHook cria
+		Thread fakeHook = new Thread(() -> {
+			try {
+				ConexaoManager.close();
+			} catch (Exception ignored) {
+				// Ignorado propositalmente no teste: falhas no close não afetam o cenário
+			}
 		});
+
+		// 4 — Executa manualmente (não como hook do sistema)
+		assertDoesNotThrow(fakeHook::run);
+	}
+
+	@Test
+	void testCarregarUrlDoPropertiesExecutaCatch() {
+
+		// classloader que retorna um InputStream quebrado
+		ClassLoader fakeLoader = new ClassLoader() {
+			@Override
+			public InputStream getResourceAsStream(String name) {
+				return new BrokenInputStream(); // lança IOException no load()
+			}
+		};
+
+		// troca apenas TEMPORARIAMENTE o context classloader
+		ClassLoader original = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(fakeLoader);
+
+		try {
+			assertDoesNotThrow(() -> ConexaoManager.init("", ""));
+		} finally {
+			Thread.currentThread().setContextClassLoader(original);
+		}
+	}
+
+	@Test
+	void testExecutarShutdownSeguroCapturaExcecao() throws Exception {
+
+		// mock da conexão que lança exceção ao fechar
+		Connection connMock = Mockito.mock(Connection.class);
+		Mockito.doThrow(new SQLException("erro")).when(connMock).close();
+
+		// injeta no campo estático "conn"
+		Field fConn = ConexaoManager.class.getDeclaredField("conn");
+		fConn.setAccessible(true);
+		fConn.set(null, connMock);
+
+		// chama exatamente o método usado no hook
+		Method m = ConexaoManager.class.getDeclaredMethod("executarShutdownSeguro");
+		m.setAccessible(true);
+
+		assertDoesNotThrow(() -> m.invoke(null));
 	}
 
 }

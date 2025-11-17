@@ -21,12 +21,12 @@ import org.junit.jupiter.api.Test;
 
 class TelaLoginTest {
 
-	String HEADLESS_MESSAGE = "Sem suporte gráfico — teste ignorado no CI.";
+	private String headlessMessage = "Xvfb precisa de display real";
 
 	@Test
 	@DisplayName("TelaLogin deve ser instanciada sem lançar exceções")
 	void testCriacaoTela() {
-		assumeFalse(GraphicsEnvironment.isHeadless(), HEADLESS_MESSAGE);
+		assumeFalse(GraphicsEnvironment.isHeadless(), headlessMessage);
 
 		assertDoesNotThrow(TelaLogin::new);
 	}
@@ -34,7 +34,7 @@ class TelaLoginTest {
 	@Test
 	@DisplayName("Layout principal deve conter componentes essenciais")
 	void testLayoutInicial() {
-		assumeFalse(GraphicsEnvironment.isHeadless(), HEADLESS_MESSAGE);
+		assumeFalse(GraphicsEnvironment.isHeadless(), headlessMessage);
 
 		TelaLogin tela = new TelaLogin();
 
@@ -60,7 +60,7 @@ class TelaLoginTest {
 	@Test
 	@DisplayName("Campo de usuário deve existir e ter tamanhos definidos")
 	void testCampoUsuario() {
-		assumeFalse(GraphicsEnvironment.isHeadless(), HEADLESS_MESSAGE);
+		assumeFalse(GraphicsEnvironment.isHeadless(), headlessMessage);
 
 		TelaLogin tela = new TelaLogin();
 
@@ -74,7 +74,7 @@ class TelaLoginTest {
 	@Test
 	@DisplayName("Campo de senha deve existir e ter tamanhos definidos")
 	void testCampoSenha() {
-		assumeFalse(GraphicsEnvironment.isHeadless(), HEADLESS_MESSAGE);
+		assumeFalse(GraphicsEnvironment.isHeadless(), headlessMessage);
 
 		TelaLogin tela = new TelaLogin();
 
@@ -88,7 +88,7 @@ class TelaLoginTest {
 	@Test
 	@DisplayName("TelaLogin deve configurar tamanho mínimo corretamente")
 	void testDimensoes() {
-		assumeFalse(GraphicsEnvironment.isHeadless(), HEADLESS_MESSAGE);
+		assumeFalse(GraphicsEnvironment.isHeadless(), headlessMessage);
 
 		TelaLogin tela = new TelaLogin();
 

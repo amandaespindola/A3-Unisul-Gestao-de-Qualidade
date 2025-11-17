@@ -97,10 +97,36 @@ public class EditarProfessor extends JFrame {
 		preencherCampos();
 	}
 
+<<<<<<< HEAD
 	/**
      * Inicializa e organiza todos os componentes da interface gráfica
      * utilizando BorderLayout e GridBagLayout.
      */
+=======
+	private static class CampoConfig {
+		int x;
+		int y;
+		int width;
+		String label; 
+		String labelName;
+		javax.swing.JComponent componente;
+
+		CampoConfig(int x, int y, int width, String label, String labelName, javax.swing.JComponent componente) {
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.label = label;
+			this.labelName = labelName;
+			this.componente = componente;
+		}
+	}
+
+	private void addField(JPanel form, GridBagConstraints gbc, CampoConfig cfg) {
+		ViewUtils.addLabel(form, gbc, cfg.x, cfg.y, cfg.label, cfg.labelName);
+		ViewUtils.addCampo(form, gbc, cfg.x + 1, cfg.y, cfg.width, cfg.componente);
+	}
+
+>>>>>>> 79bc5a8fc879fe38bf31a14db192a92c78a93141
 	private void initComponents() {
 
 		setTitle("Editar Professor");
@@ -120,41 +146,62 @@ public class EditarProfessor extends JFrame {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
 		// Nome
-		ViewUtils.addLabel(form, gbc, 0, 0, "Nome:", "lblNome");
 		nome = new JTextField(20);
-		ViewUtils.addCampo(form, gbc, 1, 0, 3, nome);
+		addField(form, gbc, new CampoConfig(
+				0, 0, 3,
+				"Nome:", "lblNome",
+				nome
+		));
 
 		// Campus
-		ViewUtils.addLabel(form, gbc, 0, 1, "Campus:", "lblCampus");
 		campus = new JComboBox<>(LISTA_CAMPUS.toArray(new String[0]));
-		ViewUtils.addCampo(form, gbc, 1, 1, 3, campus);
+		addField(form, gbc, new CampoConfig(
+				0, 1, 3,
+				"Campus:", "lblCampus",
+				campus
+		));
 
 		// CPF
-		ViewUtils.addLabel(form, gbc, 0, 2, "CPF:", "lblCPF");
 		cpfFormatado = new JFormattedTextField();
 		cpfFormatado.setColumns(10);
-		ViewUtils.addCampo(form, gbc, 1, 2, 1, cpfFormatado);
+		addField(form, gbc, new CampoConfig(
+				0, 2, 1,
+				"CPF:", "lblCPF",
+				cpfFormatado
+		));
 
 		// Contato
-		ViewUtils.addLabel(form, gbc, 2, 2, "Contato:", "lblContato");
 		contatoFormatado = new JFormattedTextField();
 		contatoFormatado.setColumns(10);
-		ViewUtils.addCampo(form, gbc, 3, 2, 1, contatoFormatado);
+		addField(form, gbc, new CampoConfig(
+				2, 2, 1,
+				"Contato:", "lblContato",
+				contatoFormatado
+		));
 
 		// Idade + Salário
-		ViewUtils.addLabel(form, gbc, 0, 3, "Idade:", "lblIdade");
 		idade = new JTextField(10);
-		ViewUtils.addCampo(form, gbc, 1, 3, 1, idade);
+		addField(form, gbc, new CampoConfig(
+				0, 3, 1,
+				"Idade:", "lblIdade",
+				idade
+		));
 
-		ViewUtils.addLabel(form, gbc, 2, 3, "Salário:", "lblSalario");
 		salarioFormatado = new JFormattedTextField();
 		salarioFormatado.setColumns(10);
-		ViewUtils.addCampo(form, gbc, 3, 3, 1, salarioFormatado);
+		addField(form, gbc, new CampoConfig(
+				2, 3, 1,
+				"Salário:", "lblSalario",
+				salarioFormatado
+		));
 
 		// Título acadêmico
-		ViewUtils.addLabel(form, gbc, 0, 4, "Título:", "lblTituloProfessor");
 		titulo = new JComboBox<>(LISTA_TITULOS.toArray(new String[0]));
-		ViewUtils.addCampo(form, gbc, 1, 4, 3, titulo);
+		addField(form, gbc, new CampoConfig(
+				0, 4, 3,
+				"Título:", "lblTituloProfessor",
+				titulo
+		));
 
 		painel.add(form, BorderLayout.CENTER);
 
@@ -316,7 +363,7 @@ public class EditarProfessor extends JFrame {
 		if (idade.getText().isEmpty()) {
 			throw new Mensagens("Idade não pode ser vazia");
 		}
-		return ValidadorInput.validarTamanhoMinimoNumerico(idade.getText(), 11);
+		return ValidadorInput.validarTamanhoMinimoNumerico(idade.getText(), 3);
 	}
 
 	/**

@@ -54,4 +54,17 @@ class LookAndFeelHelperTest {
 		// NÃO pode lançar erro: deve passar pelo catch
 		assertDoesNotThrow(LookAndFeelHelper::aplicarNimbus);
 	}
+
+	@Test
+	void testAplicarNimbusSemNimbus() {
+
+		UIManager.LookAndFeelInfo[] fakeInfos = {
+				new UIManager.LookAndFeelInfo("Metal", "javax.swing.plaf.metal.MetalLookAndFeel") };
+
+		// substitui a lista de LAFs global (APIs públicas, permitido pelo Java 17)
+		UIManager.setInstalledLookAndFeels(fakeInfos);
+
+		assertDoesNotThrow(LookAndFeelHelper::aplicarNimbus);
+	}
+
 }
