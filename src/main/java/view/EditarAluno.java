@@ -64,7 +64,6 @@ public class EditarAluno extends JFrame {
      *   <li>[4] - Fase</li>
      * </ul>
      * Caso seja {@code null}, a tela é aberta sem preencher os campos.
-     * </p>
      */
 	private final String[] dadosAluno;
 
