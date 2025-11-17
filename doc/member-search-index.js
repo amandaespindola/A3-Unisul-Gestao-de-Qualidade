@@ -1,1 +1,0 @@
-memberSearchIndex = [{"p":"principal","c":"Principal","l":"aplicarOverridesClaro()"},{"p":"principal","c":"Principal","l":"aplicarOverridesEscuro()"},{"p":"principal","c":"Principal","l":"logger"},{"p":"principal","c":"Principal","l":"main(String[])","u":"main(java.lang.String[])"},{"p":"principal","c":"Principal","l":"Principal()","u":"%3Cinit%3E()"}];updateSearchResults();
