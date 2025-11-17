@@ -162,6 +162,9 @@
                     <docencoding>UTF-8</docencoding> 
                     <charset>UTF-8</charset> 
                     <failOnError>false</failOnError> <!-- evita parar o build por warnings --> 
+                    <includeDependencySources>false</includeDependencySources>
+                    <detectJavaApiLink>false</detectJavaApiLink>
+                    <sourcepath>src/main/java</sourcepath>
                 </configuration> 
                 <executions> 
                     <execution> 
