@@ -4,15 +4,34 @@ import java.util.List;
 
 import dao.ProfessorDAO;
 
+/**
+ * Representa um professor dentro do sistema acadêmico.
+ * <p>
+ * A classe herda de {@link ProfessorBase} e adiciona operações de persistência
+ * delegadas ao {@link ProfessorDAO}.
+ * </p>
+ */
 public class Professor extends ProfessorBase {
 
+	/** DAO responsável pelas operações de banco de dados relacionadas ao professor. */
 	private final ProfessorDAO dao;
 	
-	// Construtores
+	/**
+     * Construtor padrão. Inicializa o DAO.
+     */
 	public Professor() {
 		this.dao = new ProfessorDAO();
 	}
 
+	/**
+     * Construtor que inicializa os principais atributos do professor.
+     *
+     * @param campus  Campus em que o professor atua.
+     * @param cpf     CPF do professor.
+     * @param contato Contato do professor.
+     * @param titulo  Título acadêmico.
+     * @param salario Salário do professor.
+     */
 	public Professor(String campus, String cpf, String contato, String titulo, double salario) {
 		this.campus = campus;
 		this.cpf = cpf;
@@ -22,6 +41,11 @@ public class Professor extends ProfessorBase {
 		this.dao = new ProfessorDAO();
 	}
 
+	/**
+     * Construtor que inicializa um professor a partir de um DTO.
+     *
+     * @param dto Objeto {@link ProfessorDTO} contendo os dados do professor.
+     */
 	public Professor(ProfessorDTO dto) {
 		super(dto.getId(), dto.getNome(), dto.getIdade());
 		this.campus = dto.getCampus();
@@ -41,12 +65,21 @@ public class Professor extends ProfessorBase {
 				+ this.getTitulo() + "\n Salário:" + this.getSalario() + "\n -----------";
 	}
 
-	// Retorna a Lista de Professores (objetos)
+	/**
+     * Retorna a lista completa de professores armazenados no banco de dados.
+     *
+     * @return Lista de objetos {@link Professor}.
+     */
 	public List<Professor> getMinhaLista() {
 		return dao.getMinhaLista();
 	}
 
-	// Cadastra novo professor
+	/**
+     * Cadastra um novo professor no banco de dados.
+     *
+     * @param dto Objeto {@link ProfessorDTO} contendo os dados do professor.
+     * @return {@code true} se a operação foi realizada com sucesso.
+     */
 	public boolean inserirProfessorBD(ProfessorDTO dto) {
 
 		int id = this.obterMaiorId() + 1;
@@ -57,26 +90,45 @@ public class Professor extends ProfessorBase {
 		return true;
 	}
 
-	// Deleta um professor específico pelo seu campo ID
+	/**
+     * Exclui um professor do banco de dados com base no ID informado.
+     *
+     * @param id Identificador único do professor a ser removido.
+     * @return {@code true} se a remoção foi realizada.
+     */
 	public boolean deletarProfessorBD(int id) {
 		dao.delete(id);
 		return true;
 	}
 
-	// Edita um professor específico pelo seu campo ID
+	/**
+     * Atualiza os dados de um professor existente.
+     *
+     * @param dto Objeto {@link ProfessorDTO} contendo os dados atualizados.
+     * @return {@code true} se a atualização foi bem-sucedida.
+     */
 	public boolean atualizarAlunoBD(ProfessorDTO dto) {
 
 		Professor objeto = new Professor(dto);
 		return dao.update(objeto);
 	}
 
-	// carrega dados de um professor específico pelo seu ID
+	/**
+     * Carrega um professor específico a partir do banco de dados.
+     *
+     * @param id Identificador único do professor.
+     * @return Objeto {@link Professor} correspondente ou {@code null} se não encontrado.
+     */
 	public Professor carregaProfessor(int id) {
 		dao.findById(id);
 		return null;
 	}
 
-	// retorna o maior ID da nossa base de dados
+	/**
+     * Retorna o maior ID presente na tabela de professores.
+     *
+     * @return Maior valor de ID encontrado ou 0 caso não existam registros.
+     */
 	public int obterMaiorId() {
 		return dao.obterMaiorId();
 	}

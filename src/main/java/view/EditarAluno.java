@@ -21,27 +21,76 @@ import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
 
+/**
+ * Tela de edição de dados de um aluno já cadastrado.
+ * <p>
+ * Esta interface permite alterar informações como nome, idade, curso e fase.
+ * Os dados são pré-carregados quando o construtor recebe o array
+ * {@code dadosAluno}, geralmente vindo de uma tabela de listagem.
+ * </p>
+ *
+ * <p>
+ * A classe utiliza componentes Swing organizados em um GridBagLayout, 
+ * além de validações fornecidas pela classe {@link ValidadorInput} 
+ * e persistência utilizando {@link AlunoDAO}.
+ * </p>
+ */
 public class EditarAluno extends JFrame {
 
+	/** Campo de texto para o nome do aluno. */
 	private JTextField nome;
+	
+	/** ComboBox contendo a lista de cursos disponíveis. */
 	private JComboBox<String> curso;
+	
+	/** ComboBox contendo as fases disponíveis para seleção. */
 	private JComboBox<Integer> fase;
+	
+	/** Campo de texto para a idade do aluno. */
 	private JTextField idade;
 
+	/** DAO responsável pela persistência e recuperação de dados de alunos. */
 	private final transient AlunoDAO alunoDAO = new AlunoDAO();
+	
+	/**
+     * Array contendo os dados do aluno selecionado.
+     * <p>
+     * A estrutura esperada é:
+     * <ul>
+     *   <li>[0] - ID</li>
+     *   <li>[1] - Nome</li>
+     *   <li>[2] - Idade</li>
+     *   <li>[3] - Curso</li>
+     *   <li>[4] - Fase</li>
+     * </ul>
+     * Caso seja {@code null}, a tela é aberta sem preencher os campos.
+     */
 	private final String[] dadosAluno;
 
+	/**
+     * Construtor padrão. Abre a tela sem dados preenchidos.
+     */
 	public EditarAluno() {
 		this.dadosAluno = null;
 		initComponents();
 	}
 
+	/**
+     * Construtor que recebe os dados do aluno a ser editado.
+     * Popula os campos do formulário com as informações fornecidas.
+     *
+     * @param dados array contendo os dados completos do aluno
+     */
 	public EditarAluno(String[] dados) {
 		this.dadosAluno = dados;
 		initComponents();
 		preencherCampos();
 	}
 
+	/**
+     * Inicializa e configura a interface gráfica, criando os campos,
+     * labels, botões e organizando o layout.
+     */
 	private void initComponents() {
 
 		setTitle("Editar Aluno");
@@ -89,7 +138,12 @@ public class EditarAluno extends JFrame {
 		setLocationRelativeTo(null);
 	}
 
-	// Preenche a tela com os dados existentes
+	/**
+     * Preenche os campos da interface com os dados do aluno selecionado.
+     * <p>
+     * Apenas é executado se {@link #dadosAluno} não for {@code null}.
+     * </p>
+     */
 	private void preencherCampos() {
 		if (dadosAluno == null)
 			return;
@@ -107,6 +161,14 @@ public class EditarAluno extends JFrame {
 		fase.setSelectedIndex(listaFases.indexOf(faseAluno));
 	}
 
+	/**
+     * Realiza a validação dos campos do formulário, atualiza o objeto
+     * {@link Aluno} e solicita ao {@link AlunoDAO} que persista as alterações.
+     * <p>
+     * Em caso de sucesso, exibe uma mensagem ao usuário e fecha a janela.
+     * Caso contrário, apresenta uma mensagem de erro.
+     * </p>
+     */
 	private void confirmar() {
 		try {
 			List<String> listaCursos = Constantes.getCursos();
@@ -134,11 +196,18 @@ public class EditarAluno extends JFrame {
 		}
 	}
 
+	/**
+     * Fecha a janela sem realizar alterações.
+     */
 	private void cancelar() {
 		dispose();
 	}
 
-	// MAIN
+	/**
+     * Método principal utilizado apenas para testes da interface.
+     *
+     * @param args argumentos de linha de comando (não utilizados)
+     */
 	public static void main(String[] args) {
 		LookAndFeelHelper.aplicarNimbus();
 		java.awt.EventQueue.invokeLater(() -> new EditarAluno().setVisible(true));

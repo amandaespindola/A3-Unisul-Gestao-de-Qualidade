@@ -15,12 +15,38 @@ import utils.Constantes;
 import utils.LookAndFeelHelper;
 import utils.ViewUtils;
 
+/**
+ * Janela gráfica "Sobre" exibida na aplicação.
+ *
+ * <p>Esta tela apresenta informações gerais da instituição,
+ * da unidade curricular, do curso, da equipe de desenvolvimento
+ * e da data do projeto. É utilizada como tela informativa,
+ * acessada normalmente pelo menu "Sobre".</p>
+ *
+ * <p>A interface é construída utilizando componentes Swing e
+ * organizada com diferentes {@link java.awt.LayoutManager}s
+ * para garantir uma apresentação limpa e responsiva.</p>
+ */
 public class Sobre extends JFrame {
 
+	/**
+     * Constrói a janela "Sobre" e inicializa todos os componentes visuais.
+     */
 	public Sobre() {
 		initComponents();
 	}
 
+	/**
+     * Inicializa e organiza todos os componentes gráficos da janela.
+     *
+     * <p>Define título, dimensões, layout e cria os seguintes blocos:</p>
+     * <ul>
+     *   <li>Título e subtítulos (instituição, UC e curso);</li>
+     *   <li>Separadores visuais;</li>
+     *   <li>Lista de integrantes definida em {@link utils.Constantes.UIConstants};</li>
+     *   <li>Data de referência do projeto.</li>
+     * </ul>
+     */
 	private void initComponents() {
 
 		setTitle("Sobre");
@@ -88,7 +114,14 @@ public class Sobre extends JFrame {
 		add(lblData, BorderLayout.SOUTH);
 	}
 
-	// MAIN
+	/**
+     * Método principal utilizado para iniciar a janela de forma independente.
+     *
+     * <p>Aplica o tema visual Nimbus e executa a criação da janela
+     * na fila de eventos da AWT.</p>
+     *
+     * @param args argumentos de execução (não utilizados)
+     */
 	public static void main(String[] args) {
 		LookAndFeelHelper.aplicarNimbus();
 		EventQueue.invokeLater(() -> new Sobre().setVisible(true));

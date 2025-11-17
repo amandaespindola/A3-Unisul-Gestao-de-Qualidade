@@ -27,6 +27,22 @@ import utils.Constantes;
 import utils.ConexaoManager;
 import utils.LookAndFeelHelper;
 
+/**
+ * Tela de autenticação do sistema SisUni.
+ *
+ * <p>
+ * Esta classe representa a janela de login da aplicação, onde o usuário
+ * informa as credenciais de acesso ao banco de dados MySQL. A tela utiliza
+ * componentes Swing e aplica estilos definidos no utilitário
+ * {@link utils.LookAndFeelHelper}.
+ * </p>
+ *
+ * <p>
+ * As credenciais podem ser carregadas automaticamente a partir do arquivo
+ * {@code config.properties}, localizado no classpath do projeto. Caso o arquivo
+ * não exista, o usuário poderá digitá-las manualmente.
+ * </p>
+ */
 public class TelaLogin extends JFrame {
 
 	private static final Logger logger = Logger.getLogger(TelaLogin.class.getName());
@@ -38,11 +54,27 @@ public class TelaLogin extends JFrame {
 
 	private static final String DEFAULT_FONT = Constantes.UIConstants.DEFAULT_FONT;
 
+	/**
+     * Constrói a tela de login e realiza duas operações iniciais:
+     * <ul>
+     *   <li>Inicializa e organiza os componentes gráficos;</li>
+     *   <li>Tenta carregar credenciais do arquivo {@code config.properties}.</li>
+     * </ul>
+     */
 	public TelaLogin() {
 		initComponents();
 		carregarCredenciais();
 	}
 
+	/**
+     * Carrega as credenciais de acesso ao banco de dados
+     * a partir do arquivo {@code config.properties}.
+     *
+     * <p>
+     * Caso o arquivo não seja encontrado, o sistema exibirá um aviso
+     * no logger, permitindo que o usuário digite as credenciais manualmente.
+     * </p>
+     */
 	private void carregarCredenciais() {
 		try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
 			if (input != null) {
@@ -58,6 +90,19 @@ public class TelaLogin extends JFrame {
 		}
 	}
 
+	/**
+     * Inicializa todos os componentes visuais da tela.
+     *
+     * <p>
+     * Define título, fontes, campos de entrada, layouts e botão de ação, além de
+     * aplicar bordas, alinhamentos e comportamento do botão Enter.
+     * </p>
+     *
+     * <p>
+     * A organização visual utiliza um {@link javax.swing.GroupLayout} para
+     * centralizar os componentes verticalmente e manter um alinhamento limpo.
+     * </p>
+     */
 	private void initComponents() {
 
 		setTitle("Login");
@@ -165,6 +210,20 @@ public class TelaLogin extends JFrame {
 		setLocationRelativeTo(null);
 	}
 
+	/**
+     * Realiza o processo de autenticação.
+     *
+     * <p>
+     * O método coleta o usuário e senha digitados, substitui as credenciais
+     * carregadas caso o usuário tenha informado novos dados e inicializa a
+     * conexão global via {@link utils.ConexaoManager#init(String, String)}.
+     * </p>
+     *
+     * <p>
+     * Caso a conexão seja bem-sucedida, a tela principal do sistema
+     * ({@link TelaPrincipal}) é aberta e a tela de login é encerrada.
+     * </p>
+     */
 	private void login() {
 
 		String usuarioDigitado = campoUsuario.getText();
@@ -190,7 +249,16 @@ public class TelaLogin extends JFrame {
 		}
 	}
 
-	// MAIN
+	/**
+     * Método principal utilizado para iniciar a tela de login de maneira
+     * independente.
+     *
+     * <p>
+     * Aplica o tema Nimbus e cria a interface na fila de eventos da AWT.
+     * </p>
+     *
+     * @param args argumentos de execução (não utilizados)
+     */
 	public static void main(String[] args) {
 		LookAndFeelHelper.aplicarNimbus();
 		EventQueue.invokeLater(() -> new TelaLogin().setVisible(true));

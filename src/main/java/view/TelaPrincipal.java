@@ -19,16 +19,43 @@ import utils.Constantes;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 
+/**
+ * Tela principal do sistema SisUni.
+ *
+ * <p>
+ * Esta janela inicial centraliza o acesso às funcionalidades principais do
+ * sistema, permitindo ao usuário navegar para os módulos de gerenciamento de
+ * alunos e professores. A interface é construída utilizando Swing, mantendo um
+ * visual consistente com as demais telas da aplicação.
+ * </p>
+ *
+ * <p>
+ * A classe também aplica o tema escuro fornecido pelo FlatLaf, quando
+ * disponível, e organiza todos os elementos utilizando {@link GroupLayout}.
+ * </p>
+ */
 public class TelaPrincipal extends javax.swing.JFrame {
 
 	private static final Logger logger = Logger.getLogger(TelaPrincipal.class.getName());
 
                 private static final String DEFAULT_FONT = Constantes.UIConstants.DEFAULT_FONT;
 
+    /**
+    * Construtor padrão que inicializa a interface da tela principal.
+    */
 	public TelaPrincipal() {
 		initComponents();
 	}
 
+	/**
+     * Inicializa os componentes visuais da janela, incluindo:
+     * <ul>
+     *   <li>Título da aplicação;</li>
+     *   <li>Botões de navegação;</li>
+     *   <li>Layout centralizado utilizando {@link GroupLayout};</li>
+     *   <li>Bordas e estilos consistentes com o restante do sistema.</li>
+     * </ul>
+     */
 	private void initComponents() {
 
 		setTitle("SisUni - Principal");
@@ -94,11 +121,19 @@ public class TelaPrincipal extends javax.swing.JFrame {
 	// AÇÕES
 	// -------------------------
 
+	/**
+     * Abre a tela de gerenciamento de alunos ({@link GerenciaAlunos}) e fecha a
+     * tela atual.
+     */
 	private void abrirAlunos() {
 		new GerenciaAlunos().setVisible(true);
 		dispose();
 	}
 
+	/**
+     * Abre a tela de gerenciamento de professores ({@link GerenciaProfessores})
+     * e fecha a tela atual.
+     */
 	private void abrirProfessores() {
 		new GerenciaProfessores().setVisible(true);
 		dispose();
@@ -107,6 +142,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
 	// -------------------------
 	// MAIN
 	// -------------------------
+	
+	/**
+     * Método principal que inicia a aplicação a partir da tela principal.
+     *
+     * <p>
+     * O método tenta carregar o tema escuro FlatDarkLaf. Caso falhe, a aplicação
+     * continua utilizando o tema padrão, e uma mensagem será registrada via logger.
+     * </p>
+     *
+     * @param args argumentos de linha de comando (não utilizados)
+     */
 	public static void main(String[] args) {
 
 		try {
