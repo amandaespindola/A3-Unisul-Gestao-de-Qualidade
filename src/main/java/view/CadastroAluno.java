@@ -22,101 +22,163 @@ import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
 
+/**
+ * Tela de cadastro de alunos.
+ *
+ * <p>
+ * Permite inserir nome, curso, fase e data de nascimento de um aluno, validando
+ * os campos e registrando os dados no banco de dados por meio de
+ * {@link AlunoDAO}. A interface utiliza componentes auxiliares da classe
+ * {@link ViewUtils} para padronização visual.</p>
+ *
+ * <p>
+ * Esta classe herda de {@link JFrame} e cria uma janela independente utilizada
+ * no módulo de gestão de alunos do sistema.</p>
+ */
 public class CadastroAluno extends JFrame {
 
-	private JTextField nome;
-	private JComboBox<String> curso;
-	private JComboBox<Integer> fase;
-	private com.toedter.calendar.JDateChooser idade;
-	private final transient AlunoDAO alunoDAO = new AlunoDAO();
+    /**
+     * Campo de texto para o nome do aluno.
+     */
+    private JTextField nome;
 
-	public CadastroAluno() {
-		initComponents();
-	}
+    /**
+     * ComboBox contendo a lista de cursos disponíveis.
+     */
+    private JComboBox<String> curso;
 
-	private void initComponents() {
+    /**
+     * ComboBox contendo a lista de fases possíveis.
+     */
+    private JComboBox<Integer> fase;
 
-		setTitle("Cadastro de Aluno");
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setResizable(false);
+    /**
+     * Campo de seleção de data para idade/nascimento.
+     */
+    private com.toedter.calendar.JDateChooser idade;
 
-		JPanel painel = new JPanel(new BorderLayout(10, 10));
-		painel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    /**
+     * DAO responsável por operações de persistência do aluno.
+     */
+    private final transient AlunoDAO alunoDAO = new AlunoDAO();
 
-		// Título
-		JLabel lblTitulo = ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_CAD_ALUNO);
-		painel.add(lblTitulo, BorderLayout.NORTH);
+    /**
+     * Construtor padrão.
+     * <p>
+     * Inicializa os componentes gráficos e monta a interface de cadastro.</p>
+     */
+    public CadastroAluno() {
+        initComponents();
+    }
 
-		// Painel de formulário
-		JPanel form = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(8, 8, 8, 8);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+    /**
+     * Inicializa e organiza todos os componentes visuais da tela.
+     * <p>
+     * Define título, layout, campos do formulário e botões de ação.</p>
+     */
+    private void initComponents() {
 
-		// Campo Nome
-		ViewUtils.addLabel(form, gbc, 0, 0, "Nome:", "lblNome");
-		nome = new JTextField(20);
-		ViewUtils.addCampo(form, gbc, 1, 0, 3, nome);
+        setTitle("Cadastro de Aluno");
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setResizable(false);
 
-		// Campo Curso
-		ViewUtils.addLabel(form, gbc, 0, 1, Constantes.UIConstants.CURSO, "lblCurso");
-		curso = new JComboBox<>(Constantes.getCursos().toArray(new String[0]));
-		ViewUtils.addCampo(form, gbc, 1, 1, 3, curso);
+        JPanel painel = new JPanel(new BorderLayout(10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-		// Idade
-		ViewUtils.addLabel(form, gbc, 0, 2, Constantes.UIConstants.NASCIMENTO, "lblNascimento");
-		idade = new com.toedter.calendar.JDateChooser();
-		ViewUtils.addCampo(form, gbc, 1, 2, 1, idade);
+        // Título
+        JLabel lblTitulo = ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_CAD_ALUNO);
+        painel.add(lblTitulo, BorderLayout.NORTH);
 
-		// Fase
-		ViewUtils.addLabel(form, gbc, 2, 2, Constantes.UIConstants.FASE, "lblFase");
-		fase = new JComboBox<>(Constantes.getFases().toArray(new Integer[0]));
-		ViewUtils.addCampo(form, gbc, 3, 2, 1, fase);
+        // Painel de formulário
+        JPanel form = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		painel.add(form, BorderLayout.CENTER);
+        // Campo Nome
+        ViewUtils.addLabel(form, gbc, 0, 0, "Nome:", "lblNome");
+        nome = new JTextField(20);
+        ViewUtils.addCampo(form, gbc, 1, 0, 3, nome);
 
-		ViewUtils.adicionarBotoesConfirmarCancelar(painel, this::confirmar, this::cancelar, getRootPane());
+        // Campo Curso
+        ViewUtils.addLabel(form, gbc, 0, 1, Constantes.UIConstants.CURSO, "lblCurso");
+        curso = new JComboBox<>(Constantes.getCursos().toArray(new String[0]));
+        ViewUtils.addCampo(form, gbc, 1, 1, 3, curso);
 
-		add(painel);
-		pack();
-		setLocationRelativeTo(null);
-	}
+        // Idade
+        ViewUtils.addLabel(form, gbc, 0, 2, Constantes.UIConstants.NASCIMENTO, "lblNascimento");
+        idade = new com.toedter.calendar.JDateChooser();
+        ViewUtils.addCampo(form, gbc, 1, 2, 1, idade);
 
-	// AÇÃO CONFIRMAR
-	private void confirmar() {
-		try {
-			String nomeAluno = ValidadorInput.validarNome(nome.getText(), 2);
-			int idadeAluno = ValidadorInput.validarIdadePorData(idade.getDate(), 11);
+        // Fase
+        ViewUtils.addLabel(form, gbc, 2, 2, Constantes.UIConstants.FASE, "lblFase");
+        fase = new JComboBox<>(Constantes.getFases().toArray(new Integer[0]));
+        ViewUtils.addCampo(form, gbc, 3, 2, 1, fase);
 
-			List<String> cursos = Constantes.getCursos();
-			List<Integer> fases = Constantes.getFases();
+        painel.add(form, BorderLayout.CENTER);
 
-			String cursoAluno = ValidadorInput.validarSelecaoComboBox(curso.getSelectedIndex(), cursos, "Curso");
+        ViewUtils.adicionarBotoesConfirmarCancelar(painel, this::confirmar, this::cancelar, getRootPane());
 
-			int faseAluno = fases.get(fase.getSelectedIndex());
+        add(painel);
+        pack();
+        setLocationRelativeTo(null);
+    }
 
-			Aluno novoAluno = new Aluno(cursoAluno, faseAluno, 0, nomeAluno, idadeAluno);
+    /**
+     * Ação executada ao pressionar o botão "Confirmar".
+     *
+     * <p>
+     * Realiza validação dos campos utilizando {@link ValidadorInput}, cria um
+     * novo objeto {@link Aluno} e o envia ao banco de dados por meio do método
+     * {@link AlunoDAO#insert(model.Aluno)}.</p>
+     *
+     * <p>
+     * Exibe mensagens de sucesso ou erro conforme necessário.</p>
+     */
+    private void confirmar() {
+        try {
+            String nomeAluno = ValidadorInput.validarNome(nome.getText(), 2);
+            int idadeAluno = ValidadorInput.validarIdadePorData(idade.getDate(), 11);
 
-			if (alunoDAO.insert(novoAluno)) {
-				JOptionPane.showMessageDialog(this, "Aluno cadastrado com sucesso! ID: " + novoAluno.getId());
-				dispose();
-			} else {
-				JOptionPane.showMessageDialog(this, "Erro ao cadastrar aluno no banco.");
-			}
+            List<String> cursos = Constantes.getCursos();
+            List<Integer> fases = Constantes.getFases();
 
-		} catch (Exception e) {
-			ViewUtils.tratarErroCadastro(e);
-		}
-	}
+            String cursoAluno = ValidadorInput.validarSelecaoComboBox(curso.getSelectedIndex(), cursos, "Curso");
 
-	// AÇÃO CANCELAR
-	private void cancelar() {
-		dispose();
-	}
+            int faseAluno = fases.get(fase.getSelectedIndex());
 
-	// MAIN PARA TESTAR A TELA
-	public static void main(String[] args) {
-		LookAndFeelHelper.aplicarNimbus();
-		EventQueue.invokeLater(() -> new CadastroAluno().setVisible(true));
-	}
+            Aluno novoAluno = new Aluno(cursoAluno, faseAluno, 0, nomeAluno, idadeAluno);
+
+            if (alunoDAO.insert(novoAluno)) {
+                JOptionPane.showMessageDialog(this, "Aluno cadastrado com sucesso! ID: " + novoAluno.getId());
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao cadastrar aluno no banco.");
+            }
+
+        } catch (Exception e) {
+            ViewUtils.tratarErroCadastro(e);
+        }
+    }
+
+    /**
+     * Fecha a janela de cadastro sem salvar informações.
+     * <p>
+     * Executado quando o usuário clica em "Cancelar".</p>
+     */
+    private void cancelar() {
+        dispose();
+    }
+
+    /**
+     * Método main utilizado para teste isolado da tela.
+     * <p>
+     * Aplica o tema Nimbus e exibe a janela.</p>
+     *
+     * @param args argumentos da linha de comando (não utilizados)
+     */
+    public static void main(String[] args) {
+        LookAndFeelHelper.aplicarNimbus();
+        EventQueue.invokeLater(() -> new CadastroAluno().setVisible(true));
+    }
 }

@@ -21,126 +21,206 @@ import utils.LookAndFeelHelper;
 import utils.ValidadorInput;
 import utils.ViewUtils;
 
+/**
+ * Tela de edição de dados de um aluno já cadastrado.
+ * <p>
+ * Esta interface permite alterar informações como nome, idade, curso e fase. Os
+ * dados são pré-carregados quando o construtor recebe o array
+ * {@code dadosAluno}, geralmente vindo de uma tabela de listagem.
+ * </p>
+ *
+ * <p>
+ * A classe utiliza componentes Swing organizados em um GridBagLayout, além de
+ * validações fornecidas pela classe {@link ValidadorInput} e persistência
+ * utilizando {@link AlunoDAO}.
+ * </p>
+ */
 public class EditarAluno extends JFrame {
 
-	private JTextField nome;
-	private JComboBox<String> curso;
-	private JComboBox<Integer> fase;
-	private JTextField idade;
+    /**
+     * Campo de texto para o nome do aluno.
+     */
+    private JTextField nome;
 
-	private final transient AlunoDAO alunoDAO = new AlunoDAO();
-	private final String[] dadosAluno;
+    /**
+     * ComboBox contendo a lista de cursos disponíveis.
+     */
+    private JComboBox<String> curso;
 
-	public EditarAluno() {
-		this.dadosAluno = null;
-		initComponents();
-	}
+    /**
+     * ComboBox contendo as fases disponíveis para seleção.
+     */
+    private JComboBox<Integer> fase;
 
-	public EditarAluno(String[] dados) {
-		this.dadosAluno = dados;
-		initComponents();
-		preencherCampos();
-	}
+    /**
+     * Campo de texto para a idade do aluno.
+     */
+    private JTextField idade;
 
-	private void initComponents() {
+    /**
+     * DAO responsável pela persistência e recuperação de dados de alunos.
+     */
+    private final transient AlunoDAO alunoDAO = new AlunoDAO();
 
-		setTitle("Editar Aluno");
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setResizable(false);
+    /**
+     * Array contendo os dados do aluno selecionado.
+     * <p>
+     * A estrutura esperada é:
+     * <ul>
+     * <li>[0] - ID</li>
+     * <li>[1] - Nome</li>
+     * <li>[2] - Idade</li>
+     * <li>[3] - Curso</li>
+     * <li>[4] - Fase</li>
+     * </ul>
+     * Caso seja {@code null}, a tela é aberta sem preencher os campos.
+     */
+    private final String[] dadosAluno;
 
-		JPanel painel = new JPanel(new BorderLayout(10, 10));
-		painel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    /**
+     * Construtor padrão. Abre a tela sem dados preenchidos.
+     */
+    public EditarAluno() {
+        this.dadosAluno = null;
+        initComponents();
+    }
 
-		// Título
-		JLabel lblTitulo = ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_EDITAR_ALUNO);
-		painel.add(lblTitulo, BorderLayout.NORTH);
+    /**
+     * Construtor que recebe os dados do aluno a ser editado. Popula os campos
+     * do formulário com as informações fornecidas.
+     *
+     * @param dados array contendo os dados completos do aluno
+     */
+    public EditarAluno(String[] dados) {
+        this.dadosAluno = dados;
+        initComponents();
+        preencherCampos();
+    }
 
-		// Formulário
-		JPanel form = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(8, 8, 8, 8);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+    /**
+     * Inicializa e configura a interface gráfica, criando os campos, labels,
+     * botões e organizando o layout.
+     */
+    private void initComponents() {
 
-		// Nome
-		ViewUtils.addLabel(form, gbc, 0, 0, "Nome:", "lblNome");
-		nome = new JTextField(20);
-		ViewUtils.addCampo(form, gbc, 1, 0, 3, nome);
+        setTitle("Editar Aluno");
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setResizable(false);
 
-		// Curso
-		ViewUtils.addLabel(form, gbc, 0, 1, "Curso:", "lblCurso");
-		curso = new JComboBox<>(Constantes.getCursos().toArray(new String[0]));
-		ViewUtils.addCampo(form, gbc, 1, 1, 3, curso);
+        JPanel painel = new JPanel(new BorderLayout(10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-		// Idade + Fase
-		ViewUtils.addLabel(form, gbc, 0, 2, "Idade:", "lblIdade");
-		idade = new JTextField(10);
-		ViewUtils.addCampo(form, gbc, 1, 2, 1, idade);
+        // Título
+        JLabel lblTitulo = ViewUtils.criarLabelTitulo(Constantes.UIConstants.TITULO_EDITAR_ALUNO);
+        painel.add(lblTitulo, BorderLayout.NORTH);
 
-		ViewUtils.addLabel(form, gbc, 2, 2, "Fase:", "lblFase");
-		fase = new JComboBox<>(Constantes.getFases().toArray(new Integer[0]));
-		ViewUtils.addCampo(form, gbc, 3, 2, 1, fase);
+        // Formulário
+        JPanel form = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		painel.add(form, BorderLayout.CENTER);
+        // Nome
+        ViewUtils.addLabel(form, gbc, 0, 0, "Nome:", "lblNome");
+        nome = new JTextField(20);
+        ViewUtils.addCampo(form, gbc, 1, 0, 3, nome);
 
-		ViewUtils.adicionarBotoesConfirmarCancelar(painel, this::confirmar, this::cancelar, getRootPane());
+        // Curso
+        ViewUtils.addLabel(form, gbc, 0, 1, "Curso:", "lblCurso");
+        curso = new JComboBox<>(Constantes.getCursos().toArray(new String[0]));
+        ViewUtils.addCampo(form, gbc, 1, 1, 3, curso);
 
-		add(painel);
-		pack();
-		setLocationRelativeTo(null);
-	}
+        // Idade + Fase
+        ViewUtils.addLabel(form, gbc, 0, 2, "Idade:", "lblIdade");
+        idade = new JTextField(10);
+        ViewUtils.addCampo(form, gbc, 1, 2, 1, idade);
 
-	// Preenche a tela com os dados existentes
-	private void preencherCampos() {
-		if (dadosAluno == null)
-			return;
+        ViewUtils.addLabel(form, gbc, 2, 2, "Fase:", "lblFase");
+        fase = new JComboBox<>(Constantes.getFases().toArray(new Integer[0]));
+        ViewUtils.addCampo(form, gbc, 3, 2, 1, fase);
 
-		List<String> listaCursos = Constantes.getCursos();
-		List<Integer> listaFases = Constantes.getFases();
+        painel.add(form, BorderLayout.CENTER);
 
-		String cursoAluno = dadosAluno[3];
-		int faseAluno = Integer.parseInt(dadosAluno[4]);
+        ViewUtils.adicionarBotoesConfirmarCancelar(painel, this::confirmar, this::cancelar, getRootPane());
 
-		nome.setText(dadosAluno[1]);
-		idade.setText(dadosAluno[2]);
+        add(painel);
+        pack();
+        setLocationRelativeTo(null);
+    }
 
-		curso.setSelectedIndex(listaCursos.indexOf(cursoAluno));
-		fase.setSelectedIndex(listaFases.indexOf(faseAluno));
-	}
+    /**
+     * Preenche os campos da interface com os dados do aluno selecionado.
+     * <p>
+     * Apenas é executado se {@link #dadosAluno} não for {@code null}.
+     * </p>
+     */
+    private void preencherCampos() {
+        if (dadosAluno == null) {
+            return;
+        }
 
-	private void confirmar() {
-		try {
-			List<String> listaCursos = Constantes.getCursos();
-			List<Integer> listaFases = Constantes.getFases();
+        List<String> listaCursos = Constantes.getCursos();
+        List<Integer> listaFases = Constantes.getFases();
 
-			// Validações
-			String nomeAluno = ValidadorInput.validarNome(nome.getText(), 2);
-			int idadeAluno = ValidadorInput.validarTamanhoMinimoNumerico(idade.getText(), 11);
-			String cursoAluno = ValidadorInput.validarSelecaoComboBox(curso.getSelectedIndex(), listaCursos, "Curso");
-			int faseAluno = listaFases.get(fase.getSelectedIndex());
+        String cursoAluno = dadosAluno[3];
+        int faseAluno = Integer.parseInt(dadosAluno[4]);
 
-			int idAluno = Integer.parseInt(dadosAluno[0]);
+        nome.setText(dadosAluno[1]);
+        idade.setText(dadosAluno[2]);
 
-			Aluno alunoAtualizado = new Aluno(cursoAluno, faseAluno, idAluno, nomeAluno, idadeAluno);
+        curso.setSelectedIndex(listaCursos.indexOf(cursoAluno));
+        fase.setSelectedIndex(listaFases.indexOf(faseAluno));
+    }
 
-			if (alunoDAO.update(alunoAtualizado)) {
-				JOptionPane.showMessageDialog(this, "Aluno alterado com sucesso!");
-				dispose();
-			} else {
-				JOptionPane.showMessageDialog(this, "Erro ao alterar aluno.");
-			}
+    /**
+     * Realiza a validação dos campos do formulário, atualiza o objeto
+     * {@link Aluno} e solicita ao {@link AlunoDAO} que persista as alterações.
+     * <p>
+     * Em caso de sucesso, exibe uma mensagem ao usuário e fecha a janela. Caso
+     * contrário, apresenta uma mensagem de erro.
+     * </p>
+     */
+    private void confirmar() {
+        try {
+            List<String> listaCursos = Constantes.getCursos();
+            List<Integer> listaFases = Constantes.getFases();
 
-		} catch (Exception ex) {
-			ViewUtils.tratarErroCadastro(ex);
-		}
-	}
+            // Validações
+            String nomeAluno = ValidadorInput.validarNome(nome.getText(), 2);
+            int idadeAluno = ValidadorInput.validarTamanhoMinimoNumerico(idade.getText(), 11);
+            String cursoAluno = ValidadorInput.validarSelecaoComboBox(curso.getSelectedIndex(), listaCursos, "Curso");
+            int faseAluno = listaFases.get(fase.getSelectedIndex());
 
-	private void cancelar() {
-		dispose();
-	}
+            int idAluno = Integer.parseInt(dadosAluno[0]);
 
-	// MAIN
-	public static void main(String[] args) {
-		LookAndFeelHelper.aplicarNimbus();
-		java.awt.EventQueue.invokeLater(() -> new EditarAluno().setVisible(true));
-	}
+            Aluno alunoAtualizado = new Aluno(cursoAluno, faseAluno, idAluno, nomeAluno, idadeAluno);
+
+            if (alunoDAO.update(alunoAtualizado)) {
+                JOptionPane.showMessageDialog(this, "Aluno alterado com sucesso!");
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao alterar aluno.");
+            }
+
+        } catch (Exception ex) {
+            ViewUtils.tratarErroCadastro(ex);
+        }
+    }
+
+    /**
+     * Fecha a janela sem realizar alterações.
+     */
+    private void cancelar() {
+        dispose();
+    }
+
+    /**
+     * Método principal utilizado apenas para testes da interface.
+     *
+     * @param args argumentos de linha de comando (não utilizados)
+     */
+    public static void main(String[] args) {
+        LookAndFeelHelper.aplicarNimbus();
+        java.awt.EventQueue.invokeLater(() -> new EditarAluno().setVisible(true));
+    }
 }
