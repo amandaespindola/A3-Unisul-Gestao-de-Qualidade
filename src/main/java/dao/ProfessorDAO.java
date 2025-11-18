@@ -13,12 +13,27 @@ import model.Professor;
 import utils.DaoUtils;
 import java.util.List;
 
+/**
+ * DAO responsável pelo acesso e manipulação dos registros da entidade
+ * {@link Professor} na tabela <code>tb_professores</code>.
+ *
+ * <p>
+ * Implementa operações de CRUD utilizando a infraestrutura fornecida por
+ * {@link BaseDAO}, incluindo controle de conexão e logging.
+ * </p>
+ */
 public class ProfessorDAO extends BaseDAO<Professor> {
 
 	private static final ArrayList<Professor> minhaLista = new ArrayList<>();
 	private static final String ENTIDADE = "Professor";
 
-	// método auxiliar professorDTO
+	/**
+     * Converte um {@link ResultSet} em um objeto {@link model.ProfessorDTO}.
+     *
+     * @param res ResultSet contendo os dados do professor.
+     * @return Um DTO preenchido com os dados do banco.
+     * @throws SQLException Caso ocorra erro ao ler os dados do ResultSet.
+     */
 	private model.ProfessorDTO mapResultSetToDTO(ResultSet res) throws SQLException {
 		model.ProfessorDTO dto = new model.ProfessorDTO();
 		dto.setCampus(res.getString("campus"));
@@ -32,13 +47,29 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return dto;
 	}
 
+	/**
+     * Construtor padrão que utiliza a conexão obtida internamente pelo
+     * {@link BaseDAO}.
+     */
 	public ProfessorDAO() {
 	}
 
+	/**
+     * Construtor que recebe uma conexão externa, utilizada principalmente
+     * para transações ou operações encadeadas.
+     *
+     * @param conexao Conexão fornecida externamente.
+     */
 	public ProfessorDAO(Connection conexao) {
 		super(conexao);
 	}
 
+	/**
+     * Insere um novo professor no banco de dados.
+     *
+     * @param objeto Instância de {@link Professor} a ser inserida.
+     * @return {@code true} se a inserção for bem-sucedida; {@code false} caso contrário.
+     */
 	@Override
 	public boolean insert(Professor objeto) {
 		String sql = "INSERT INTO tb_professores (nome, idade, campus, cpf, contato, titulo, salario) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -66,6 +97,12 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return false;
 	}
 
+	/**
+     * Atualiza os dados de um professor existente no banco.
+     *
+     * @param objeto Professor contendo os valores atualizados.
+     * @return {@code true} caso a atualização seja bem-sucedida; {@code false} caso contrário.
+     */
 	@Override
 	public boolean update(Professor objeto) {
 		String sql = "UPDATE tb_professores SET nome=?, idade=?, campus=?, cpf=?, contato=?, titulo=?, salario=? WHERE id=?";
@@ -97,6 +134,12 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		}
 	}
 
+	/**
+     * Remove um professor do banco pelo ID.
+     *
+     * @param id Identificador do professor.
+     * @return {@code true} se a exclusão ocorrer com sucesso.
+     */
 	@Override
 	public boolean delete(int id) {
 		String sql = "DELETE FROM tb_professores WHERE id=?";
@@ -104,6 +147,12 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return DaoUtils.executarDelete(conn, sql, id, ENTIDADE, this::fecharConexaoSeInterna);
 	}
 
+	/**
+     * Busca um professor pelo ID.
+     *
+     * @param id Identificador do professor.
+     * @return Instância encontrada ou {@code null} caso não exista.
+     */
 	@Override
 	public Professor findById(int id) {
 		String sql = "SELECT id, nome, idade, campus, cpf, contato, titulo, salario FROM tb_professores WHERE id=?";
@@ -128,6 +177,15 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return null;
 	}
 
+	/**
+     * Retorna todos os professores cadastrados.
+     *
+     * <p>
+     * A lista é recriada a cada chamada, garantindo dados sempre atualizados.
+     * </p>
+     *
+     * @return Lista de professores armazenados no banco.
+     */
 	public List<Professor> getMinhaLista() {
 		minhaLista.clear();
 		String sql = "SELECT id, nome, idade, campus, cpf, contato, titulo, salario FROM tb_professores";
@@ -150,17 +208,34 @@ public class ProfessorDAO extends BaseDAO<Professor> {
 		return minhaLista;
 	}
 
+	/**
+     * Retorna o nome da tabela associada a {@link Professor}.
+     *
+     * @return Nome da tabela.
+     */
 	@Override
 	protected String getNomeTabela() {
 		return "tb_professores";
 	}
 
-	// Verifica CPF para novo cadastro
+	/**
+     * Verifica se um CPF já está cadastrado.
+     *
+     * @param cpf CPF a ser verificado.
+     * @return {@code true} se o CPF já existir na lista.
+     */
 	public boolean existeCpf(String cpf) {
 		return getMinhaLista().stream().anyMatch(p -> p.getCpf().equals(cpf));
 	}
 
-	// Verifica CPF ignorando o ID atual (edição)
+	/**
+     * Verifica se um CPF já está cadastrado, ignorando um determinado ID.
+     * Usado principalmente em atualizações.
+     *
+     * @param cpf CPF a ser verificado.
+     * @param idIgnorado ID que deve ser ignorado na verificação.
+     * @return {@code true} se o CPF já existir em outro registro.
+     */
 	public boolean existeCpf(String cpf, int idIgnorado) {
 		return getMinhaLista().stream().anyMatch(p -> p.getCpf().equals(cpf) && p.getId() != idIgnorado);
 	}
