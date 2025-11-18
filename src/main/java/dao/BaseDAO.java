@@ -118,11 +118,11 @@ public abstract class BaseDAO<T> {
 		String sql;
 
 		switch (nomeTabela) {
-		case "tb_professor":
-			sql = "SELECT MAX(id) AS max_id FROM tb_professor";
+		case "tb_professores":
+			sql = "SELECT MAX(id) AS max_id FROM tb_professores";
 			break;
-		case "tb_aluno":
-			sql = "SELECT MAX(id) AS max_id FROM tb_aluno";
+		case "tb_alunos":
+			sql = "SELECT MAX(id) AS max_id FROM tb_alunos";
 			break;
 		default:
 			logger.log(Level.SEVERE, "Tabela não permitida: {0}", nomeTabela);
